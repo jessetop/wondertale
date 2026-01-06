@@ -193,6 +193,7 @@
         color: var(--text-dark);
         transition: all 0.3s ease;
         outline: none;
+        min-height: 44px; /* Ensure minimum touch target */
     }
 
     input[type="text"]:focus {
@@ -204,6 +205,15 @@
     input[type="text"]::placeholder {
         color: var(--text-light);
         opacity: 0.6;
+    }
+
+    /* Checkbox styling for better touch targets */
+    input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+        transform: scale(1.5);
+        cursor: pointer;
     }
 
     /* Selection Grid */
@@ -230,13 +240,33 @@
         align-items: center;
         gap: 12px;
         min-height: 140px;
+        min-width: 44px; /* Ensure minimum touch target */
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .selection-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
     }
 
     .selection-btn:hover {
         transform: translateY(-4px);
         border-color: var(--primary);
         box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .selection-btn:hover::before {
+        opacity: 0.1;
     }
 
     .selection-btn.active {
@@ -247,17 +277,29 @@
         box-shadow: 0 12px 32px var(--shadow);
     }
 
+    .selection-btn.active::before {
+        opacity: 0;
+    }
+
+    /* Touch feedback animation */
+    .selection-btn:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
     .selection-icon {
         font-size: 48px;
         line-height: 1;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }
 
     .selection-text {
         font-size: 18px;
         line-height: 1.2;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
-    /* Number Buttons for Age */
+    /* Number Buttons for Age and Character Count */
     .number-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -278,11 +320,32 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        min-width: 44px; /* Ensure minimum touch target */
+        min-height: 44px; /* Ensure minimum touch target */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .number-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
     }
 
     .number-btn:hover {
         transform: scale(1.1);
         border-color: var(--primary);
+    }
+
+    .number-btn:hover::before {
+        opacity: 0.1;
     }
 
     .number-btn.active {
@@ -291,6 +354,16 @@
         border-color: var(--primary);
         transform: scale(1.15);
         box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .number-btn.active::before {
+        opacity: 0;
+    }
+
+    /* Touch feedback */
+    .number-btn:active {
+        transform: scale(1.05);
+        transition: transform 0.1s ease;
     }
 
     /* Keywords Input */
@@ -311,11 +384,13 @@
         color: var(--text-dark);
         transition: all 0.3s ease;
         outline: none;
+        min-height: 44px; /* Ensure minimum touch target */
     }
 
     .keyword-input:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 3px var(--shadow);
+        transform: translateY(-1px);
     }
 
     /* Submit Button */
@@ -333,6 +408,22 @@
         transition: all 0.3s ease;
         box-shadow: 0 12px 32px var(--shadow);
         margin-top: 40px;
+        min-height: 44px; /* Ensure minimum touch target */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
     }
 
     .submit-btn:hover {
@@ -340,14 +431,23 @@
         box-shadow: 0 16px 48px var(--shadow);
     }
 
+    .submit-btn:hover::before {
+        opacity: 0.2;
+    }
+
     .submit-btn:active {
         transform: translateY(-2px);
+        transition: transform 0.1s ease;
     }
 
     .submit-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         transform: none;
+    }
+
+    .submit-btn:disabled::before {
+        opacity: 0;
     }
 
     /* Back Button */
@@ -420,9 +520,67 @@
         }
     }
 
+    /* Tablet-specific optimizations */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .container {
+            max-width: 100%;
+            padding: 40px 32px;
+        }
+
+        .story-form {
+            padding: 56px 40px;
+        }
+
+        .selection-grid {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .selection-btn {
+            min-height: 160px;
+            padding: 28px 20px;
+        }
+
+        .selection-icon {
+            font-size: 56px;
+        }
+
+        .selection-text {
+            font-size: 20px;
+        }
+
+        .number-btn {
+            font-size: 36px;
+        }
+
+        .keywords-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .keyword-input {
+            padding: 20px 24px;
+            font-size: 20px;
+        }
+
+        input[type="text"] {
+            padding: 24px 28px;
+            font-size: 24px;
+        }
+    }
+
     @media (max-width: 480px) {
         .selection-grid {
             grid-template-columns: repeat(2, 1fr);
+        }
+
+        .number-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .keywords-grid {
+            grid-template-columns: 1fr;
         }
     }
 
@@ -477,33 +635,22 @@
         <h2 class="form-title">Let's Create Your Story!</h2>
 
         <form id="storyForm" method="POST" action="{{ url_for('generate_story') }}">
-            <!-- Character Name -->
+            <!-- Number of Characters -->
             <div class="form-group">
-                <label class="form-label">What's your name, adventurer? ✨</label>
-                <span class="form-helper">This is the hero of the story!</span>
-                <input type="text" id="childName" name="child_name" placeholder="Type your name here..." required>
+                <label class="form-label">How many characters in your story? 👥</label>
+                <span class="form-helper">Pick 1 to 5 characters!</span>
+                <div class="number-grid" style="grid-template-columns: repeat(5, 1fr);">
+                    <button type="button" class="number-btn" data-value="1">1</button>
+                    <button type="button" class="number-btn" data-value="2">2</button>
+                    <button type="button" class="number-btn" data-value="3">3</button>
+                    <button type="button" class="number-btn" data-value="4">4</button>
+                    <button type="button" class="number-btn" data-value="5">5</button>
+                </div>
+                <input type="hidden" id="num_characters" name="num_characters" required>
             </div>
 
-            <!-- Pronouns -->
-            <div class="form-group">
-                <label class="form-label">How should we talk about you? 🌟</label>
-                <span class="form-helper">Pick what feels right for you!</span>
-                <div class="selection-grid">
-                    <button type="button" class="selection-btn" data-value="he/him">
-                        <span class="selection-icon">👦</span>
-                        <span class="selection-text">he/him</span>
-                    </button>
-                    <button type="button" class="selection-btn" data-value="she/her">
-                        <span class="selection-icon">👧</span>
-                        <span class="selection-text">she/her</span>
-                    </button>
-                    <button type="button" class="selection-btn" data-value="they/them">
-                        <span class="selection-icon">🌈</span>
-                        <span class="selection-text">they/them</span>
-                    </button>
-                </div>
-                <input type="hidden" id="pronouns" name="pronouns" required>
-            </div>
+            <!-- Character Details (dynamically generated) -->
+            <div id="charactersContainer"></div>
 
             <!-- Age -->
             <div class="form-group">
@@ -567,11 +714,20 @@
             <!-- Keywords -->
             <div class="form-group">
                 <label class="form-label">Add some magic words! ✨</label>
-                <span class="form-helper">Type 3 words that should be in your story</span>
-                <div class="keywords-grid">
-                    <input type="text" class="keyword-input" name="keyword1" placeholder="Magic word 1..." required>
-                    <input type="text" class="keyword-input" name="keyword2" placeholder="Magic word 2..." required>
-                    <input type="text" class="keyword-input" name="keyword3" placeholder="Magic word 3..." required>
+                <span class="form-helper">Type 3 or 5 words that should be in your story</span>
+                <div class="selection-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;">
+                    <button type="button" class="selection-btn" data-value="3">
+                        <span class="selection-icon">3️⃣</span>
+                        <span class="selection-text">3 Keywords</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="5">
+                        <span class="selection-icon">5️⃣</span>
+                        <span class="selection-text">5 Keywords</span>
+                    </button>
+                </div>
+                <input type="hidden" id="keyword_count" name="keyword_count" required>
+                <div class="keywords-grid" id="keywordsContainer">
+                    <!-- Keywords will be dynamically generated -->
                 </div>
             </div>
 
@@ -604,14 +760,151 @@
     // Form Logic
     const formData = {};
 
-    // Handle selection buttons (pronouns, topic, length)
-    document.querySelectorAll('.selection-btn').forEach(btn => {
+    // Generate character input fields
+    function generateCharacterFields(count) {
+        const container = document.getElementById('charactersContainer');
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= count; i++) {
+            const characterDiv = document.createElement('div');
+            characterDiv.className = 'form-group';
+            characterDiv.innerHTML = `
+                <label class="form-label">Character ${i} Details ${i === 1 ? '✨' : '🌟'}</label>
+                <span class="form-helper">${i === 1 ? 'The main hero of the story!' : `Character ${i} in your adventure!`}</span>
+                
+                <input type="text" name="character_${i}_name" placeholder="Character ${i} name..." required 
+                       style="margin-bottom: 16px;">
+                
+                <div class="selection-grid">
+                    <button type="button" class="selection-btn" data-value="he/him" data-character="${i}">
+                        <span class="selection-icon">👦</span>
+                        <span class="selection-text">he/him</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="she/her" data-character="${i}">
+                        <span class="selection-icon">👧</span>
+                        <span class="selection-text">she/her</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="they/them" data-character="${i}">
+                        <span class="selection-icon">🌈</span>
+                        <span class="selection-text">they/them</span>
+                    </button>
+                </div>
+                <input type="hidden" name="character_${i}_pronouns" required>
+            `;
+            container.appendChild(characterDiv);
+        }
+        
+        // Re-attach event listeners for new character pronoun buttons
+        attachCharacterListeners();
+    }
+
+    // Generate keyword input fields
+    function generateKeywordFields(count) {
+        const container = document.getElementById('keywordsContainer');
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= count; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'keyword-input';
+            input.name = `keyword${i}`;
+            input.placeholder = `Magic word ${i}...`;
+            input.required = true;
+            container.appendChild(input);
+        }
+    }
+
+    // Attach event listeners for character pronoun selection
+    function attachCharacterListeners() {
+        document.querySelectorAll('.selection-btn[data-character]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const characterNum = this.getAttribute('data-character');
+                const value = this.getAttribute('data-value');
+                const group = this.closest('.form-group');
+                const hiddenInput = group.querySelector(`input[name="character_${characterNum}_pronouns"]`);
+                
+                // Remove active class from siblings
+                group.querySelectorAll('.selection-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update hidden input
+                hiddenInput.value = value;
+            });
+        });
+    }
+
+    // Handle number of characters selection
+    document.querySelectorAll('#num_characters').forEach(input => {
+        const group = input.closest('.form-group');
+        group.querySelectorAll('.number-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const value = parseInt(this.getAttribute('data-value'));
+                
+                // Remove active class from siblings
+                group.querySelectorAll('.number-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update hidden input
+                input.value = value;
+                
+                // Generate character fields
+                generateCharacterFields(value);
+            });
+        });
+    });
+
+    // Handle keyword count selection
+    document.querySelectorAll('#keyword_count').forEach(input => {
+        const group = input.closest('.form-group');
+        group.querySelectorAll('.selection-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const value = parseInt(this.getAttribute('data-value'));
+                
+                // Remove active class from siblings
+                group.querySelectorAll('.selection-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update hidden input
+                input.value = value;
+                
+                // Generate keyword fields
+                generateKeywordFields(value);
+            });
+        });
+    });
+
+    // Handle selection buttons (topic, length)
+    document.querySelectorAll('.selection-btn:not([data-character]):not([data-value="3"]):not([data-value="5"])').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             
             const group = this.closest('.form-group');
             const hiddenInput = group.querySelector('input[type="hidden"]');
             const value = this.getAttribute('data-value');
+            
+            // Skip if this is a character or keyword count button
+            if (this.hasAttribute('data-character') || 
+                (value === '3' || value === '5') && hiddenInput && hiddenInput.id === 'keyword_count') {
+                return;
+            }
             
             // Remove active class from siblings
             group.querySelectorAll('.selection-btn').forEach(b => {
@@ -622,8 +915,10 @@
             this.classList.add('active');
             
             // Update hidden input
-            hiddenInput.value = value;
-            formData[hiddenInput.id] = value;
+            if (hiddenInput) {
+                hiddenInput.value = value;
+                formData[hiddenInput.id] = value;
+            }
         });
     });
 

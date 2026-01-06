@@ -270,6 +270,23 @@
         align-items: center;
         gap: 10px;
         text-decoration: none;
+        min-height: 44px; /* Ensure minimum touch target */
+        min-width: 44px; /* Ensure minimum touch target */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
     }
 
     .action-btn-primary {
@@ -283,6 +300,15 @@
         box-shadow: 0 12px 32px var(--shadow);
     }
 
+    .action-btn-primary:hover::before {
+        opacity: 1;
+    }
+
+    .action-btn-primary:active {
+        transform: translateY(-2px);
+        transition: transform 0.1s ease;
+    }
+
     .action-btn-secondary {
         background: var(--bg-card);
         color: var(--primary);
@@ -293,6 +319,11 @@
         background: var(--primary);
         color: white;
         transform: translateY(-2px);
+    }
+
+    .action-btn-secondary:active {
+        transform: translateY(-1px);
+        transition: transform 0.1s ease;
     }
 
     /* Celebration Message */
@@ -345,6 +376,40 @@
 
         .celebration-text {
             font-size: 24px;
+        }
+    }
+
+    /* Tablet-specific optimizations for story display */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .container {
+            max-width: 100%;
+            padding: 40px 32px;
+        }
+
+        .story-container {
+            padding: 64px 48px;
+        }
+
+        .story-title {
+            font-size: 52px;
+        }
+
+        .story-content {
+            font-size: 24px;
+            line-height: 2;
+        }
+
+        .action-btn {
+            padding: 24px 48px;
+            font-size: 22px;
+        }
+
+        .celebration-text {
+            font-size: 32px;
+        }
+
+        .celebration-subtext {
+            font-size: 20px;
         }
     }
 </style>
