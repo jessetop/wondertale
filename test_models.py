@@ -93,6 +93,8 @@ class TestKeywordCountValidation:
             characters=characters,
             topic="space",
             keywords=keywords,
+            age_group="5-6",
+            story_length="medium",
             include_image=False
         )
         
@@ -113,6 +115,8 @@ class TestKeywordCountValidation:
             characters=characters,
             topic="space",
             keywords=keywords,
+            age_group="5-6",
+            story_length="medium",
             include_image=False
         )
         
@@ -133,6 +137,8 @@ class TestKeywordCountValidation:
             characters=characters,
             topic="space",
             keywords=keywords,
+            age_group="5-6",
+            story_length="medium",
             include_image=False
         )
         
@@ -163,7 +169,9 @@ class TestInputValidationErrorHandling:
                     characters=characters,
                     topic=topic,
                     keywords=keywords,
-                    include_image=False
+                    age_group="5-6",
+            story_length="medium",
+            include_image=False
                 )
                 
                 errors = request.validate()
@@ -273,6 +281,8 @@ def run_basic_tests():
             characters=characters,
             topic="space",
             keywords=keywords,
+            age_group="5-6",
+            story_length="medium",
             include_image=False
         )
         errors = request.validate()
@@ -297,6 +307,8 @@ def run_basic_tests():
             characters=characters,
             topic="space",
             keywords=keywords,
+            age_group="5-6",
+            story_length="medium",
             include_image=False
         )
         errors = request.validate()
@@ -382,7 +394,9 @@ if __name__ == "__main__":
                 characters=characters,
                 topic="space",
                 keywords=keywords,
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             errors = request.validate()
             keyword_count_errors = [e for e in errors if "keyword count" in e.lower()]
@@ -399,7 +413,9 @@ if __name__ == "__main__":
                 characters=characters,
                 topic="space",
                 keywords=keywords,
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             errors = request.validate()
             keyword_count_errors = [e for e in errors if "keyword count" in e.lower()]
@@ -416,6 +432,8 @@ if __name__ == "__main__":
             characters=characters,
             topic="dragons",
             keywords=["magic", "adventure", "friendship"],
+            age_group="5-6",
+            story_length="medium",
             include_image=True
         )
         errors = request.validate()
@@ -429,6 +447,8 @@ if __name__ == "__main__":
             characters=characters,
             topic="invalid_topic",
             keywords=["word1", "word2", "word3"],
+            age_group="5-6",
+            story_length="medium",
             include_image=False
         )
         errors = request.validate()

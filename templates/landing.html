@@ -1,0 +1,830 @@
+{% extends "base.html" %}
+
+{% block title %}WonderTale - Adventure starts with your name{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --success: #10B981;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    /* Theme variations */
+    [data-theme="magic-light"] {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-dark"] {
+        --primary: #A78BFA;
+        --primary-dark: #8B5CF6;
+        --secondary: #F472B6;
+        --accent: #2DD4BF;
+        --accent-light: #5EEAD4;
+        --bg-main: #1F1B2E;
+        --bg-card: #2D2640;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(167, 139, 250, 0.3);
+    }
+
+    [data-theme="sunny-light"] {
+        --primary: #F59E0B;
+        --primary-dark: #D97706;
+        --secondary: #3B82F6;
+        --accent: #FBBF24;
+        --accent-light: #FDE68A;
+        --bg-main: #FEF3C7;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(245, 158, 11, 0.15);
+    }
+
+    [data-theme="sunny-dark"] {
+        --primary: #FCD34D;
+        --primary-dark: #F59E0B;
+        --secondary: #60A5FA;
+        --accent: #FDE047;
+        --accent-light: #FEF08A;
+        --bg-main: #1E1B16;
+        --bg-card: #2C2618;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(252, 211, 77, 0.3);
+    }
+
+    [data-theme="ocean-light"] {
+        --primary: #0EA5E9;
+        --primary-dark: #0284C7;
+        --secondary: #FB7185;
+        --accent: #34D399;
+        --accent-light: #6EE7B7;
+        --bg-main: #F0FDFA;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(14, 165, 233, 0.15);
+    }
+
+    [data-theme="ocean-dark"] {
+        --primary: #38BDF8;
+        --primary-dark: #0EA5E9;
+        --secondary: #FDA4AF;
+        --accent: #6EE7B7;
+        --accent-light: #A7F3D0;
+        --bg-main: #0F1419;
+        --bg-card: #1A2332;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(56, 189, 248, 0.3);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        line-height: 1.6;
+        overflow-x: hidden;
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* Theme Switcher Styles */
+    .theme-switcher {
+        text-align: center;
+    }
+
+    .theme-label {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+    }
+
+    .theme-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .theme-btn {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        border: 4px solid transparent;
+        border-radius: 20px;
+        background: var(--bg-card);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .theme-btn:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .theme-btn.active {
+        border-color: var(--primary);
+        box-shadow: 0 8px 24px var(--shadow);
+        transform: scale(1.1);
+    }
+
+    .theme-circles {
+        display: flex;
+        gap: 4px;
+    }
+
+    .theme-circles span {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-icon {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    /* Playful background decorations */
+    body::before {
+        content: '';
+        position: fixed;
+        top: -10%;
+        right: -5%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+        opacity: 0.1;
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        bottom: -15%;
+        left: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+        opacity: 0.08;
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Header */
+    header {
+        padding: 32px 0;
+        position: relative;
+        z-index: 10;
+    }
+
+    .logo {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 42px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: inline-block;
+        letter-spacing: -1px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+    }
+
+    /* Hero Section */
+    .hero {
+        text-align: center;
+        padding: 60px 0 80px;
+        position: relative;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        color: white;
+        padding: 12px 28px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 32px;
+        box-shadow: 0 8px 24px var(--shadow);
+        animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    h1 {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        color: var(--text-dark);
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .tagline {
+        font-size: 64px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        margin-bottom: 32px;
+        letter-spacing: -2px;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-description {
+        font-size: 24px;
+        color: var(--text-light);
+        max-width: 800px;
+        margin: 0 auto 48px;
+        line-height: 1.7;
+        font-weight: 600;
+        animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 28px 64px;
+        border-radius: 60px;
+        font-size: 28px;
+        font-weight: 800;
+        text-decoration: none;
+        box-shadow: 0 12px 32px var(--shadow);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-family: 'Fredoka', sans-serif;
+        animation: fadeInUp 0.8s ease-out 0.6s both;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .cta-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 16px 48px var(--shadow);
+    }
+
+    .cta-button:active {
+        transform: translateY(-2px) scale(1.02);
+    }
+
+    /* Features Section */
+    .features {
+        padding: 80px 0;
+        background: var(--bg-card);
+        border-radius: 48px;
+        margin: 60px 0;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .features-title {
+        text-align: center;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 64px;
+        color: var(--text-dark);
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 40px 32px;
+        border-radius: 32px;
+        transition: all 0.3s ease;
+        background: var(--bg-main);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px var(--shadow);
+    }
+
+    .feature-icon {
+        font-size: 72px;
+        margin-bottom: 24px;
+        display: inline-block;
+        animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    .feature-card:nth-child(1) .feature-icon { animation-delay: 0s; }
+    .feature-card:nth-child(2) .feature-icon { animation-delay: 0.2s; }
+    .feature-card:nth-child(3) .feature-icon { animation-delay: 0.4s; }
+    .feature-card:nth-child(4) .feature-icon { animation-delay: 0.6s; }
+    .feature-card:nth-child(5) .feature-icon { animation-delay: 0.8s; }
+
+    .feature-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--primary);
+    }
+
+    .feature-description {
+        font-size: 18px;
+        color: var(--text-light);
+        line-height: 1.6;
+        font-weight: 600;
+    }
+
+    /* How It Works */
+    .how-it-works {
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    .how-it-works-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 64px;
+        color: var(--text-dark);
+    }
+
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 32px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .step {
+        position: relative;
+        padding: 40px 24px;
+    }
+
+    .step-number {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        border-radius: 50%;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 80px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .step-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text-dark);
+    }
+
+    .step-description {
+        font-size: 17px;
+        color: var(--text-light);
+        font-weight: 600;
+    }
+
+    /* Safety Section */
+    .safety {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 80px 0;
+        border-radius: 48px;
+        margin: 60px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .safety::before {
+        content: '🛡️';
+        position: absolute;
+        font-size: 300px;
+        opacity: 0.08;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .safety-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .safety-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 32px;
+    }
+
+    .safety-description {
+        font-size: 22px;
+        max-width: 800px;
+        margin: 0 auto 48px;
+        line-height: 1.7;
+        font-weight: 600;
+        opacity: 0.95;
+    }
+
+    .safety-badges {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        flex-wrap: wrap;
+    }
+
+    .safety-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 20px 36px;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: 700;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 60px 0 40px;
+        color: var(--text-light);
+    }
+
+    .footer-logo {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 32px;
+        font-style: italic;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .footer-link {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+        color: var(--primary);
+    }
+
+    .footer-copyright {
+        font-size: 14px;
+        opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 48px;
+        }
+
+        .tagline {
+            font-size: 42px;
+        }
+
+        .hero-description {
+            font-size: 20px;
+        }
+
+        .cta-button {
+            font-size: 24px;
+            padding: 24px 48px;
+        }
+
+        .features-title,
+        .how-it-works-title,
+        .safety-title {
+            font-size: 36px;
+        }
+
+        .logo {
+            font-size: 32px;
+        }
+
+        .theme-btn {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .theme-circles span {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .theme-icon {
+            font-size: 18px;
+        }
+        
+        .theme-label {
+            font-size: 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div class="logo">WonderTale</div>
+            
+            <!-- Theme Switcher -->
+            <div class="theme-switcher">
+                <div class="theme-label">Pick Your Colors! 🎨</div>
+                <div class="theme-buttons">
+                    <button class="theme-btn" data-theme="magic-light" title="Magic Garden">
+                        <span class="theme-circles">
+                            <span style="background: #8B5CF6;"></span>
+                            <span style="background: #EC4899;"></span>
+                            <span style="background: #14B8A6;"></span>
+                        </span>
+                        <span class="theme-icon">☀️</span>
+                    </button>
+                    <button class="theme-btn" data-theme="magic-dark" title="Magic Garden Dark">
+                        <span class="theme-circles">
+                            <span style="background: #A78BFA;"></span>
+                            <span style="background: #F472B6;"></span>
+                            <span style="background: #2DD4BF;"></span>
+                        </span>
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                    <button class="theme-btn" data-theme="sunny-light" title="Sunny Adventure">
+                        <span class="theme-circles">
+                            <span style="background: #F59E0B;"></span>
+                            <span style="background: #3B82F6;"></span>
+                            <span style="background: #FBBF24;"></span>
+                        </span>
+                        <span class="theme-icon">☀️</span>
+                    </button>
+                    <button class="theme-btn" data-theme="sunny-dark" title="Sunny Adventure Dark">
+                        <span class="theme-circles">
+                            <span style="background: #FCD34D;"></span>
+                            <span style="background: #60A5FA;"></span>
+                            <span style="background: #FDE047;"></span>
+                        </span>
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                    <button class="theme-btn" data-theme="ocean-light" title="Ocean Dreams">
+                        <span class="theme-circles">
+                            <span style="background: #0EA5E9;"></span>
+                            <span style="background: #FB7185;"></span>
+                            <span style="background: #34D399;"></span>
+                        </span>
+                        <span class="theme-icon">☀️</span>
+                    </button>
+                    <button class="theme-btn" data-theme="ocean-dark" title="Ocean Dreams Dark">
+                        <span class="theme-circles">
+                            <span style="background: #38BDF8;"></span>
+                            <span style="background: #FDA4AF;"></span>
+                            <span style="background: #6EE7B7;"></span>
+                        </span>
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">✨ Safe • Fun • Personalized</div>
+            <h1>
+                <div class="tagline">Adventure starts<br>with your name</div>
+            </h1>
+            <p class="hero-description">
+                Every child deserves to be the hero of their own story. WonderTale creates safe, personalized adventures that spark imagination and build a love for reading—one magical tale at a time.
+            </p>
+            <a href="{{ url_for('index') }}" class="cta-button">Create Your Story</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="features-title">Why Parents Love WonderTale</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Safe & Secure</h3>
+                    <p class="feature-description">Age-appropriate stories with no prompts—just safe selections for peace of mind.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3 class="feature-title">Truly Personalized</h3>
+                    <p class="feature-description">Your child becomes the star of every adventure, building confidence and joy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3 class="feature-title">Encourages Reading</h3>
+                    <p class="feature-description">Makes storytime exciting and personal—kids ask for "just one more!"</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Sparks Imagination</h3>
+                    <p class="feature-description">New worlds and possibilities in every story, from castles to outer space.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💪</div>
+                    <h3 class="feature-title">Empowering Tales</h3>
+                    <p class="feature-description">Heroes who are brave, kind, and confident—just like your child.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="how-it-works-title">How WonderTale Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Enter Name</h3>
+                    <p class="step-description">Your child types their name—that's it!</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Pick Adventure</h3>
+                    <p class="step-description">Choose from fun worlds and friendly challenges.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Select Length</h3>
+                    <p class="step-description">Short, medium, or long—perfect for any bedtime.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Read & Enjoy</h3>
+                    <p class="step-description">A personalized story appears in seconds!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="safety">
+        <div class="container">
+            <div class="safety-content">
+                <h2 class="safety-title">Built With Safety First</h2>
+                <p class="safety-description">
+                    No free-text prompts. No ads. No data collection beyond what's needed. Just safe, wholesome stories crafted with care for children ages 3-10.
+                </p>
+                <div class="safety-badges">
+                    <div class="safety-badge">No Ads</div>
+                    <div class="safety-badge">Age Appropriate</div>
+                    <div class="safety-badge">Parent Approved</div>
+                    <div class="safety-badge">Secure Platform</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero" style="padding-top: 40px;">
+        <div class="container">
+            <h2 style="font-size: 42px; margin-bottom: 32px; font-family: 'Fredoka', sans-serif;">Ready to Start Your Adventure?</h2>
+            <a href="{{ url_for('index') }}" class="cta-button">Create Your Story Now</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-logo">WonderTale</div>
+        <div class="footer-tagline">"Adventure starts with your name"</div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">About</a>
+            <a href="#" class="footer-link">Privacy</a>
+            <a href="#" class="footer-link">Terms</a>
+            <a href="#" class="footer-link">Contact</a>
+            <a href="#" class="footer-link">FAQ</a>
+        </div>
+        <p class="footer-copyright">© 2026 WonderTale.kids • Making every child the hero</p>
+    </div>
+</footer>
+{% endblock %}

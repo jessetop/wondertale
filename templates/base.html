@@ -3,25 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Children's Story Generator{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}WonderTale - Adventure starts with your name{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    {% block styles %}{% endblock %}
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🌟 Children's Story Generator 🌟</h1>
-        </header>
-        
-        <main>
-            {% block content %}{% endblock %}
-        </main>
-        
-        <footer>
-            <p>Creating magical stories for children ages 3-8</p>
-        </footer>
-    </div>
+    {% block content %}{% endblock %}
     
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+    <script>
+        // Theme Management with Cookie Storage
+        const COOKIE_NAME = 'wondertale-theme';
+        const COOKIE_DAYS = 365;
+
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/;SameSite=Lax";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.indexOf(nameEQ) === 0) {
+                    return cookie.substring(nameEQ.length);
+                }
+            }
+            return null;
+        }
+
+        // Apply theme to document
+        function applyTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            
+            // Update active button state if theme switcher exists
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.querySelector(`[data-theme="${themeName}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            // Save to cookie
+            setCookie(COOKIE_NAME, themeName, COOKIE_DAYS);
+        }
+
+        // Initialize theme
+        const savedTheme = getCookie(COOKIE_NAME) || 'magic-light';
+        applyTheme(savedTheme);
+
+        // Theme switcher event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    applyTheme(theme);
+                });
+            });
+        });
+    </script>
+    {% endblock %}
 </body>
 </html>

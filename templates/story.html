@@ -1,54 +1,436 @@
 {% extends "base.html" %}
 
-{% block title %}Your Story - Children's Story Generator{% endblock %}
+{% block title %}{{ story.title }} - WonderTale{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables (same as other pages) */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-light"] {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-dark"] {
+        --primary: #A78BFA;
+        --primary-dark: #8B5CF6;
+        --secondary: #F472B6;
+        --accent: #2DD4BF;
+        --accent-light: #5EEAD4;
+        --bg-main: #1F1B2E;
+        --bg-card: #2D2640;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(167, 139, 250, 0.3);
+    }
+
+    [data-theme="sunny-light"] {
+        --primary: #F59E0B;
+        --primary-dark: #D97706;
+        --secondary: #3B82F6;
+        --accent: #FBBF24;
+        --accent-light: #FDE68A;
+        --bg-main: #FEF3C7;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(245, 158, 11, 0.15);
+    }
+
+    [data-theme="sunny-dark"] {
+        --primary: #FCD34D;
+        --primary-dark: #F59E0B;
+        --secondary: #60A5FA;
+        --accent: #FDE047;
+        --accent-light: #FEF08A;
+        --bg-main: #1E1B16;
+        --bg-card: #2C2618;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(252, 211, 77, 0.3);
+    }
+
+    [data-theme="ocean-light"] {
+        --primary: #0EA5E9;
+        --primary-dark: #0284C7;
+        --secondary: #FB7185;
+        --accent: #34D399;
+        --accent-light: #6EE7B7;
+        --bg-main: #F0FDFA;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(14, 165, 233, 0.15);
+    }
+
+    [data-theme="ocean-dark"] {
+        --primary: #38BDF8;
+        --primary-dark: #0EA5E9;
+        --secondary: #FDA4AF;
+        --accent: #6EE7B7;
+        --accent-light: #A7F3D0;
+        --bg-main: #0F1419;
+        --bg-card: #1A2332;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(56, 189, 248, 0.3);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        line-height: 1.8;
+        min-height: 100vh;
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 24px;
+    }
+
+    /* Header */
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 42px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    .tagline {
+        font-size: 16px;
+        color: var(--text-light);
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    /* Story Display */
+    .story-container {
+        background: var(--bg-card);
+        border-radius: 32px;
+        padding: 60px;
+        box-shadow: 0 8px 32px var(--shadow);
+        transition: background-color 0.4s ease;
+        margin-bottom: 40px;
+    }
+
+    .story-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        color: white;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 24px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .story-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 32px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+    }
+
+    .story-meta {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        padding-bottom: 24px;
+        border-bottom: 3px solid var(--bg-main);
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        color: var(--text-light);
+        font-size: 15px;
+    }
+
+    .meta-icon {
+        font-size: 20px;
+    }
+
+    .story-content {
+        font-size: 22px;
+        line-height: 1.9;
+        color: var(--text-dark);
+        font-weight: 600;
+        margin-bottom: 32px;
+    }
+
+    .story-content p {
+        margin-bottom: 24px;
+    }
+
+    .story-content p:last-child {
+        margin-bottom: 0;
+    }
+
+    .story-image {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        border-radius: 20px;
+        margin: 32px auto;
+        display: block;
+        box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .story-moral {
+        background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        color: white;
+        padding: 24px 32px;
+        border-radius: 20px;
+        margin-top: 32px;
+        text-align: center;
+    }
+
+    .moral-label {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        opacity: 0.9;
+    }
+
+    .moral-text {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.6;
+    }
+
+    /* Action Buttons */
+    .actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+
+    .action-btn {
+        padding: 20px 40px;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        border-radius: 16px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .action-btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    .action-btn-primary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px var(--shadow);
+    }
+
+    .action-btn-secondary {
+        background: var(--bg-card);
+        color: var(--primary);
+        border: 3px solid var(--primary);
+    }
+
+    .action-btn-secondary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Celebration Message */
+    .celebration {
+        text-align: center;
+        background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 24px;
+        margin-bottom: 40px;
+    }
+
+    .celebration-text {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .celebration-subtext {
+        font-size: 18px;
+        font-weight: 600;
+        opacity: 0.95;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .story-container {
+            padding: 40px 32px;
+        }
+
+        .story-title {
+            font-size: 36px;
+        }
+
+        .story-content {
+            font-size: 20px;
+        }
+
+        .action-btn {
+            padding: 18px 32px;
+            font-size: 18px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 36px;
+        }
+
+        .celebration-text {
+            font-size: 24px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="story-display-container">
-    <div class="story-controls">
-        <button id="read-aloud-btn" class="control-btn">🔊 Read Aloud</button>
-        <button id="print-btn" class="control-btn">📄 Print</button>
-        <button id="save-btn" class="control-btn">💾 Save</button>
+<div class="container">
+    <header>
+        <div class="logo">WonderTale</div>
+        <p class="tagline">Adventure starts with your name</p>
+    </header>
+
+    <div class="celebration">
+        <div class="celebration-text">🎉 You did it! 🎉</div>
+        <div class="celebration-subtext">Your magical story is ready to read!</div>
     </div>
-    
-    {% if story.image_url %}
-    <div class="story-image">
-        <img src="{{ story.image_url }}" alt="Story illustration" />
-    </div>
-    {% endif %}
-    
-    <div class="story-content">
-        <h2 class="story-title">{{ story.title }}</h2>
-        <div class="story-text">
-            {{ story.content | safe }}
-        </div>
+
+    <div class="story-container">
+        <span class="story-badge">✨ Your Personal Adventure</span>
         
+        <h1 class="story-title">{{ story.title }}</h1>
+        
+        <!-- Story metadata -->
+        <div class="story-meta">
+            <div class="meta-item">
+                <span class="meta-icon">
+                    {% if story.topic == 'space' %}🚀
+                    {% elif story.topic == 'community' %}🏘️
+                    {% elif story.topic == 'dragons' %}🐉
+                    {% elif story.topic == 'fairies' %}🧚
+                    {% else %}🌟
+                    {% endif %}
+                </span>
+                <span>{{ story.topic.title() }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-icon">📖</span>
+                <span>{{ story.story_length.title() }} Length</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-icon">🎂</span>
+                <span>Age {{ story.age_group }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-icon">📝</span>
+                <span>{{ story.word_count }} words</span>
+            </div>
+        </div>
+
+        <!-- Story image if available -->
+        {% if story.image_url %}
+        <img src="{{ story.image_url }}" alt="Story illustration" class="story-image">
+        {% endif %}
+
+        <!-- Story content -->
+        <div class="story-content">
+            {% for paragraph in story.content.split('\n\n') %}
+                {% if paragraph.strip() %}
+                    <p>{{ paragraph.strip() }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Story moral -->
         {% if story.moral %}
         <div class="story-moral">
-            <h3>What We Learned:</h3>
-            <p>{{ story.moral }}</p>
+            <div class="moral-label">✨ The Lesson ✨</div>
+            <div class="moral-text">{{ story.moral }}</div>
         </div>
         {% endif %}
     </div>
-    
-    <div class="story-actions">
-        <a href="/" class="create-another-btn">🎭 Create Another Story!</a>
+
+    <div class="actions">
+        <a href="{{ url_for('index') }}" class="action-btn action-btn-primary">
+            <span>✨</span>
+            <span>Create Another Story</span>
+        </a>
+        <button class="action-btn action-btn-secondary" onclick="window.print()">
+            <span>🖨️</span>
+            <span>Print My Story</span>
+        </button>
+    </div>
+
+    <div style="text-align: center; color: var(--text-light); font-weight: 600; font-size: 16px;">
+        <p>Want to share your adventure?</p>
+        <p style="margin-top: 8px;">Ask a grown-up to help you read it together! 📚</p>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Text-to-speech functionality will be implemented in later tasks
-    document.getElementById('read-aloud-btn').addEventListener('click', function() {
-        alert('Text-to-speech functionality coming soon!');
-    });
-    
-    document.getElementById('print-btn').addEventListener('click', function() {
-        window.print();
-    });
-    
-    document.getElementById('save-btn').addEventListener('click', function() {
-        alert('Save functionality coming soon!');
-    });
-</script>
 {% endblock %}

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Story - WonderTale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Theme Variables (same as other pages) */
+        :root {
+            --primary: #8B5CF6;
+            --primary-dark: #6D28D9;
+            --secondary: #EC4899;
+            --accent: #14B8A6;
+            --accent-light: #5EEAD4;
+            --bg-main: #FFF7ED;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(139, 92, 246, 0.15);
+        }
+
+        [data-theme="magic-light"] {
+            --primary: #8B5CF6;
+            --primary-dark: #6D28D9;
+            --secondary: #EC4899;
+            --accent: #14B8A6;
+            --accent-light: #5EEAD4;
+            --bg-main: #FFF7ED;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(139, 92, 246, 0.15);
+        }
+
+        [data-theme="magic-dark"] {
+            --primary: #A78BFA;
+            --primary-dark: #8B5CF6;
+            --secondary: #F472B6;
+            --accent: #2DD4BF;
+            --accent-light: #5EEAD4;
+            --bg-main: #1F1B2E;
+            --bg-card: #2D2640;
+            --text-dark: #F3F4F6;
+            --text-light: #D1D5DB;
+            --shadow: rgba(167, 139, 250, 0.3);
+        }
+
+        [data-theme="sunny-light"] {
+            --primary: #F59E0B;
+            --primary-dark: #D97706;
+            --secondary: #3B82F6;
+            --accent: #FBBF24;
+            --accent-light: #FDE68A;
+            --bg-main: #FEF3C7;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(245, 158, 11, 0.15);
+        }
+
+        [data-theme="sunny-dark"] {
+            --primary: #FCD34D;
+            --primary-dark: #F59E0B;
+            --secondary: #60A5FA;
+            --accent: #FDE047;
+            --accent-light: #FEF08A;
+            --bg-main: #1E1B16;
+            --bg-card: #2C2618;
+            --text-dark: #F3F4F6;
+            --text-light: #D1D5DB;
+            --shadow: rgba(252, 211, 77, 0.3);
+        }
+
+        [data-theme="ocean-light"] {
+            --primary: #0EA5E9;
+            --primary-dark: #0284C7;
+            --secondary: #FB7185;
+            --accent: #34D399;
+            --accent-light: #6EE7B7;
+            --bg-main: #F0FDFA;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(14, 165, 233, 0.15);
+        }
+
+        [data-theme="ocean-dark"] {
+            --primary: #38BDF8;
+            --primary-dark: #0EA5E9;
+            --secondary: #FDA4AF;
+            --accent: #6EE7B7;
+            --accent-light: #A7F3D0;
+            --bg-main: #0F1419;
+            --bg-card: #1A2332;
+            --text-dark: #F3F4F6;
+            --text-light: #D1D5DB;
+            --shadow: rgba(56, 189, 248, 0.3);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.8;
+            min-height: 100vh;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        /* Story Display */
+        .story-container {
+            background: var(--bg-card);
+            border-radius: 32px;
+            padding: 60px;
+            box-shadow: 0 8px 32px var(--shadow);
+            transition: background-color 0.4s ease;
+            margin-bottom: 40px;
+        }
+
+        .story-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .story-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .story-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            padding-bottom: 24px;
+            border-bottom: 3px solid var(--bg-main);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .meta-icon {
+            font-size: 20px;
+        }
+
+        .story-content {
+            font-size: 22px;
+            line-height: 1.9;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .story-content p {
+            margin-bottom: 24px;
+        }
+
+        .story-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .action-btn {
+            padding: 20px 40px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .action-btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px var(--shadow);
+        }
+
+        .action-btn-secondary {
+            background: var(--bg-card);
+            color: var(--primary);
+            border: 3px solid var(--primary);
+        }
+
+        .action-btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Celebration Message */
+        .celebration {
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+        }
+
+        .celebration-text {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .celebration-subtext {
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .story-container {
+                padding: 40px 32px;
+            }
+
+            .story-title {
+                font-size: 36px;
+            }
+
+            .story-content {
+                font-size: 20px;
+            }
+
+            .action-btn {
+                padding: 18px 32px;
+                font-size: 18px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .logo {
+                font-size: 36px;
+            }
+
+            .celebration-text {
+                font-size: 24px;
+            }
+        }
+
+        /* Sparkle Animation */
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .sparkle {
+            animation: sparkle 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">WonderTale</div>
+            <p class="tagline">Adventure starts with your name</p>
+        </header>
+
+        <div class="celebration">
+            <div class="celebration-text">🎉 You did it! 🎉</div>
+            <div class="celebration-subtext">Your magical story is ready to read!</div>
+        </div>
+
+        <div class="story-container">
+            <span class="story-badge">✨ Your Personal Adventure</span>
+            
+            <!-- Title will be generated by backend -->
+            <h1 class="story-title" id="storyTitle">Emma and the Friendly Dragon</h1>
+            
+            <!-- Story metadata -->
+            <div class="story-meta">
+                <div class="meta-item">
+                    <span class="meta-icon">🏰</span>
+                    <span>Magic Castle</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">📖</span>
+                    <span>Medium Length</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🎂</span>
+                    <span>Age 6</span>
+                </div>
+            </div>
+
+            <!-- Story content will be generated by backend -->
+            <div class="story-content" id="storyContent">
+                <p>Once upon a time, in a magnificent castle high on a hill, there lived a brave young adventurer named Emma. She loved exploring the castle's many rooms and secret passages, always looking for new discoveries.</p>
+
+                <p>One sunny morning, Emma heard a gentle roar coming from the castle courtyard. When she looked out her window, she saw something amazing – a beautiful dragon with shimmering scales that sparkled in the sunlight! The dragon looked friendly but seemed lost.</p>
+
+                <p>Emma wasn't scared at all. Instead, she smiled and waved at the dragon. "Hello there! Are you lost?" she called out. The dragon nodded sadly. Emma knew just what to do. She grabbed her map of the kingdom and hurried down to help her new friend.</p>
+
+                <p>Together, Emma and the dragon looked at the map. Emma used her clever thinking to figure out where the dragon's home was – a beautiful mountain beyond the forest. The dragon was so happy! Before flying away, the dragon gave Emma a special scale from its tail that glowed with magic.</p>
+
+                <p>"You were so brave and kind, Emma," the dragon said. "Whenever you need help, just hold this scale and I'll come to visit!" Emma waved goodbye as her new friend flew home. She knew that being kind and helpful made her the best kind of hero.</p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="wondertale-generator.html" class="action-btn action-btn-primary">
+                <span>✨</span>
+                <span>Create Another Story</span>
+            </a>
+            <button class="action-btn action-btn-secondary" onclick="window.print()">
+                <span>🖨️</span>
+                <span>Print My Story</span>
+            </button>
+        </div>
+
+        <div style="text-align: center; color: var(--text-light); font-weight: 600; font-size: 16px;">
+            <p>Want to share your adventure?</p>
+            <p style="margin-top: 8px;">Ask a grown-up to help you read it together! 📚</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme Management
+        const COOKIE_NAME = 'wondertale-theme';
+        
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.indexOf(nameEQ) === 0) {
+                    return cookie.substring(nameEQ.length);
+                }
+            }
+            return null;
+        }
+
+        function applyTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+        }
+
+        // Initialize theme
+        const savedTheme = getCookie(COOKIE_NAME) || 'magic-light';
+        applyTheme(savedTheme);
+
+        // In production, this would receive data from the backend
+        // Example: Populate story from URL params or API response
+        /*
+        function loadStory() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const storyId = urlParams.get('id');
+            
+            // Fetch story from backend
+            fetch(`/api/story/${storyId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('storyTitle').textContent = data.title;
+                    document.getElementById('storyContent').innerHTML = data.content;
+                    // Update metadata
+                });
+        }
+        
+        loadStory();
+        */
+    </script>
+</body>
+</html>

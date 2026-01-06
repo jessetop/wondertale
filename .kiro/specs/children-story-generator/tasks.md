@@ -70,11 +70,11 @@ Implementation of a Python Flask web application for generating personalized, ag
     - **Property 11: Story Length Validation**
     - **Validates: Requirements 3.6**
 
-  - [x] 4.6 Write property test for topic-appropriate content generation
+  - [ ] 4.6 Write property test for topic-appropriate content generation
     - **Property 12: Topic-Appropriate Content Generation**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4**
 
-- [ ] 5. Checkpoint - Core story generation functionality
+- [x] 5. Checkpoint - Core story generation functionality
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement image generation service

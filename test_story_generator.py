@@ -64,7 +64,9 @@ class TestStoryMoralInclusion:
                 characters=characters,
                 topic=topic,
                 keywords=clean_keywords,
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             # Generate story
@@ -133,7 +135,9 @@ class TestStoryMoralInclusion:
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             story = generator.generate_story(request)
@@ -292,7 +296,9 @@ class TestCharacterNameInclusion:
                 characters=characters,
                 topic=topic,
                 keywords=clean_keywords,
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             # Generate story
@@ -495,7 +501,9 @@ if __name__ == "__main__":
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             try:
@@ -564,7 +572,9 @@ class TestPronounConsistency:
                 characters=characters,
                 topic=topic,
                 keywords=clean_keywords,
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             # Generate story
@@ -670,7 +680,9 @@ class TestPronounConsistency:
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             story = generator.generate_story(request)
@@ -728,7 +740,9 @@ if __name__ == "__main__":
                 characters=[case["character"]],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             story = generator.generate_story(request)
@@ -783,7 +797,9 @@ if __name__ == "__main__":
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             try:
@@ -1042,7 +1058,9 @@ if __name__ == "__main__":
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             story = generator.generate_story(request)
@@ -1104,7 +1122,9 @@ if __name__ == "__main__":
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             try:
@@ -1181,7 +1201,9 @@ class TestTopicAppropriateContentGeneration:
                 characters=characters,
                 topic=topic,
                 keywords=clean_keywords,
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             # Generate story
@@ -1267,7 +1289,9 @@ class TestTopicAppropriateContentGeneration:
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             story = generator.generate_story(request)
@@ -1325,7 +1349,9 @@ if __name__ == "__main__":
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             story = generator.generate_story(request)
@@ -1393,7 +1419,9 @@ if __name__ == "__main__":
                 characters=case["characters"],
                 topic=case["topic"],
                 keywords=case["keywords"],
-                include_image=False
+                age_group="5-6",
+            story_length="medium",
+            include_image=False
             )
             
             try:
