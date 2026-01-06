@@ -34,10 +34,16 @@ def create_app():
     @app.route('/health')
     def health_check():
         """Health check endpoint for monitoring"""
+        # Check if OpenAI API key is configured
+        openai_configured = bool(os.getenv('OPENAI_API_KEY') and 
+                                os.getenv('OPENAI_API_KEY') != 'your_actual_openai_api_key_here')
+        
         return jsonify({
             'status': 'healthy',
             'service': 'children-story-generator',
-            'version': '1.0.0'
+            'version': '1.0.0',
+            'openai_configured': openai_configured,
+            'environment': os.getenv('FLASK_ENV', 'development')
         }), 200
     
     # Routes
@@ -137,6 +143,90 @@ def create_app():
         # For MVP, we'll redirect to the story creation form
         # In production, this would query the database for the story_id
         return redirect(url_for('index'))
+    
+    @app.route('/tts/generate', methods=['POST'])
+    def generate_tts():
+        """Generate TTS audio for story text - Requirements: 9.1, 9.2, 9.4"""
+        try:
+            from services.tts_service import TTSService
+            
+            # Get request data
+            data = request.get_json()
+            if not data or 'text' not in data:
+                return jsonify({'error': 'Text is required'}), 400
+            
+            text = data.get('text', '').strip()
+            voice = data.get('voice', 'friendly')
+            
+            if not text:
+                return jsonify({'error': 'Text cannot be empty'}), 400
+            
+            # Initialize TTS service
+            tts_service = TTSService()
+            
+            if not tts_service.is_available():
+                return jsonify({
+                    'error': 'TTS service unavailable',
+                    'fallback': True,
+                    'message': 'AI voices are not available right now. Please use your browser\'s built-in voices instead.'
+                }), 503
+            
+            # Generate audio
+            audio_path = tts_service.generate_audio(text, voice)
+            
+            if not audio_path:
+                return jsonify({
+                    'error': 'Failed to generate audio',
+                    'fallback': True,
+                    'message': 'Could not create audio. Please try the browser voices instead.'
+                }), 500
+            
+            # Return audio file
+            from flask import send_file
+            return send_file(
+                audio_path,
+                mimetype='audio/mpeg',
+                as_attachment=False,
+                download_name=f'story_audio_{voice}.mp3'
+            )
+            
+        except Exception as e:
+            print(f"Error in TTS generation: {e}")
+            return jsonify({
+                'error': 'TTS generation failed',
+                'fallback': True,
+                'message': 'Something went wrong. Please try the browser voices instead.'
+            }), 500
+    
+    @app.route('/tts/voices')
+    def get_tts_voices():
+        """Get available TTS voices - Requirements: 9.3"""
+        try:
+            from services.tts_service import TTSService
+            
+            tts_service = TTSService()
+            
+            if not tts_service.is_available():
+                return jsonify({
+                    'available': False,
+                    'voices': [],
+                    'message': 'AI voices are not available. Browser voices will be used instead.'
+                })
+            
+            voices = tts_service.get_voices()
+            return jsonify({
+                'available': True,
+                'voices': voices,
+                'message': 'AI voices are ready!'
+            })
+            
+        except Exception as e:
+            print(f"Error getting TTS voices: {e}")
+            return jsonify({
+                'available': False,
+                'voices': [],
+                'message': 'Could not load AI voices. Browser voices will be used instead.'
+            })
     
     return app
 

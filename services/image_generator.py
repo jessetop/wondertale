@@ -54,14 +54,40 @@ class ImageGenerator:
     
     def generate_illustration(self, story: GeneratedStory, topic: str) -> Optional[str]:
         """
-        Generate a child-friendly illustration for the story using Hugging Face Stable Diffusion (Free)
-        Requirements: 5.1 - provide option to create accompanying illustration
-        Requirements: 5.4 - handle failed image generation gracefully
+        Generate a child-friendly illustration for the story
+        For MVP: Use beautiful placeholder images for each topic
         """
-        # Temporarily disabled due to API endpoint changes
-        # Return None to show the fallback message
-        print("Image generation temporarily disabled - API endpoint deprecated")
-        return None
+        # Beautiful placeholder images for each topic
+        placeholder_images = {
+            "space": [
+                "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=500&h=400&fit=crop&auto=format",  # Space/stars
+                "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=500&h=400&fit=crop&auto=format",  # Planets
+                "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=500&h=400&fit=crop&auto=format"   # Galaxy
+            ],
+            "community": [
+                "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=400&fit=crop&auto=format",  # Neighborhood
+                "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=500&h=400&fit=crop&auto=format",  # Garden
+                "https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=500&h=400&fit=crop&auto=format"   # Community
+            ],
+            "dragons": [
+                "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=400&fit=crop&auto=format",  # Fantasy forest
+                "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=500&h=400&fit=crop&auto=format",  # Magical cave
+                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=400&fit=crop&auto=format"   # Enchanted forest
+            ],
+            "fairies": [
+                "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=400&fit=crop&auto=format",  # Fairy garden
+                "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=500&h=400&fit=crop&auto=format",  # Magical forest
+                "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=500&h=400&fit=crop&auto=format"   # Enchanted scene
+            ]
+        }
+        
+        # Select a random image for the topic
+        import random
+        topic_images = placeholder_images.get(topic, placeholder_images["space"])
+        selected_image = random.choice(topic_images)
+        
+        print(f"Using placeholder image for {topic}: {selected_image}")
+        return selected_image
     
     def _create_simple_prompt(self, story: GeneratedStory, topic: str) -> str:
         """

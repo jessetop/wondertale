@@ -235,6 +235,9 @@
             gap: 12px;
             min-height: 140px;
             justify-content: center;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
         }
 
         .selection-btn:hover {
@@ -282,6 +285,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
         }
 
         .number-btn:hover {
@@ -638,183 +644,255 @@
     </div>
 
     <script>
-        // Theme Management
-        const COOKIE_NAME = 'wondertale-theme';
-        
-        function getCookie(name) {
-            const nameEQ = name + "=";
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i].trim();
-                if (cookie.indexOf(nameEQ) === 0) {
-                    return cookie.substring(nameEQ.length);
-                }
-            }
-            return null;
-        }
-
-        function applyTheme(themeName) {
-            document.documentElement.setAttribute('data-theme', themeName);
-        }
-
-        // Initialize theme
-        const savedTheme = getCookie(COOKIE_NAME) || 'magic-light';
-        applyTheme(savedTheme);
-
-        // Form Logic
-        let currentStep = 1;
-        const totalSteps = 6;
-        const formData = {};
-
-        // Update progress dots
-        function updateProgress() {
-            document.querySelectorAll('.progress-dot').forEach(dot => {
-                const step = parseInt(dot.getAttribute('data-step'));
-                dot.classList.remove('active', 'completed');
-                if (step < currentStep) {
-                    dot.classList.add('completed');
-                } else if (step === currentStep) {
-                    dot.classList.add('active');
-                }
-            });
-        }
-
-        // Show current step
-        function showStep(step) {
-            document.querySelectorAll('.form-group').forEach(group => {
-                group.style.display = 'none';
-            });
-            const currentGroup = document.querySelector(`[data-step="${step}"]`);
-            if (currentGroup) {
-                currentGroup.style.display = 'block';
-            }
-            updateProgress();
-            updateSubmitButton();
-        }
-
-        // Update submit button state
-        function updateSubmitButton() {
-            const submitBtn = document.getElementById('submitBtn');
-            const allFieldsFilled = Object.keys(formData).length === totalSteps;
-            submitBtn.disabled = !allFieldsFilled;
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme Management
+            const COOKIE_NAME = 'wondertale-theme';
             
-            if (currentStep === totalSteps && formData.storyLength) {
-                submitBtn.textContent = 'Create My Story! ✨';
-            } else {
-                submitBtn.textContent = 'Next →';
-            }
-        }
-
-        // Handle name input
-        const nameInput = document.getElementById('childName');
-        nameInput.addEventListener('input', function() {
-            if (this.value.trim().length > 0) {
-                formData.childName = this.value.trim();
-                // Auto-advance after typing name
-                if (currentStep === 1) {
-                    setTimeout(() => {
-                        currentStep = 2;
-                        showStep(currentStep);
-                    }, 500);
+            function getCookie(name) {
+                const nameEQ = name + "=";
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.indexOf(nameEQ) === 0) {
+                        return cookie.substring(nameEQ.length);
+                    }
                 }
-            } else {
-                delete formData.childName;
+                return null;
             }
-            updateSubmitButton();
-        });
 
-        // Handle selection buttons (pronouns, world, challenge, length)
-        document.querySelectorAll('.selection-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const group = this.closest('.form-group');
-                const step = parseInt(group.getAttribute('data-step'));
-                const hiddenInput = group.querySelector('input[type="hidden"]');
-                const value = this.getAttribute('data-value');
-                
-                // Remove active class from siblings
-                group.querySelectorAll('.selection-btn').forEach(b => {
-                    b.classList.remove('active');
+            function applyTheme(themeName) {
+                document.documentElement.setAttribute('data-theme', themeName);
+            }
+
+            // Initialize theme
+            const savedTheme = getCookie(COOKIE_NAME) || 'magic-light';
+            applyTheme(savedTheme);
+
+            // Form Logic
+            let currentStep = 1;
+            const totalSteps = 6;
+            const formData = {};
+
+            // Update progress dots
+            function updateProgress() {
+                document.querySelectorAll('.progress-dot').forEach(dot => {
+                    const stepAttr = dot.getAttribute('data-step');
+                    if (!stepAttr) return;
+                    
+                    const step = parseInt(stepAttr);
+                    if (isNaN(step)) return;
+                    
+                    dot.classList.remove('active', 'completed');
+                    if (step < currentStep) {
+                        dot.classList.add('completed');
+                    } else if (step === currentStep) {
+                        dot.classList.add('active');
+                    }
                 });
+            }
+
+            // Show current step
+            function showStep(step) {
+                document.querySelectorAll('.form-group').forEach(group => {
+                    group.style.display = 'none';
+                });
+                const currentGroup = document.querySelector(`[data-step="${step}"]`);
+                if (currentGroup) {
+                    currentGroup.style.display = 'block';
+                } else {
+                    console.error(`Could not find form group for step ${step}`);
+                }
+                updateProgress();
+                updateSubmitButton();
+            }
+
+            // Update submit button state
+            function updateSubmitButton() {
+                const submitBtn = document.getElementById('submitBtn');
+                if (!submitBtn) return;
                 
-                // Add active class to clicked button
-                this.classList.add('active');
+                const allFieldsFilled = Object.keys(formData).length === totalSteps;
+                submitBtn.disabled = !allFieldsFilled;
                 
-                // Update hidden input and form data
-                hiddenInput.value = value;
-                formData[hiddenInput.id] = value;
-                
-                // Auto-advance to next step after selection
-                if (currentStep < totalSteps) {
+                if (currentStep === totalSteps && formData.storyLength) {
+                    submitBtn.textContent = 'Create My Story! ✨';
+                } else {
+                    submitBtn.textContent = 'Next →';
+                }
+            }
+
+            // Handle name input
+            const nameInput = document.getElementById('childName');
+            if (nameInput) {
+                nameInput.addEventListener('input', function() {
+                    if (this.value.trim().length > 0) {
+                        formData.childName = this.value.trim();
+                        // Auto-advance after typing name
+                        if (currentStep === 1) {
+                            setTimeout(() => {
+                                currentStep = 2;
+                                showStep(currentStep);
+                            }, 500);
+                        }
+                    } else {
+                        delete formData.childName;
+                    }
+                    updateSubmitButton();
+                });
+            }
+
+            // Handle selection buttons (pronouns, world, challenge, length)
+            const selectionButtons = document.querySelectorAll('.selection-btn');
+            console.log('Found selection buttons:', selectionButtons.length);
+            
+            selectionButtons.forEach(btn => {
+                console.log('Attaching listener to selection button:', btn.getAttribute('data-value'));
+                btn.addEventListener('click', function(e) {
+                    console.log('Selection button clicked:', this.getAttribute('data-value'));
+                    e.preventDefault();
+                    
+                    const group = this.closest('.form-group');
+                    if (!group) {
+                        console.error('Could not find form group for selection button');
+                        return;
+                    }
+                    
+                    const stepAttr = group.getAttribute('data-step');
+                    if (!stepAttr) {
+                        console.error('Could not find step attribute for form group');
+                        return;
+                    }
+                    
+                    const step = parseInt(stepAttr);
+                    console.log('Selection button step:', step);
+                    
+                    const hiddenInput = group.querySelector('input[type="hidden"]');
+                    const value = this.getAttribute('data-value');
+                    
+                    if (!hiddenInput) {
+                        console.error('Could not find hidden input for selection button');
+                        return;
+                    }
+                    
+                    if (!value) {
+                        console.error('Could not find data-value for selection button');
+                        return;
+                    }
+                    
+                    // Remove active class from siblings
+                    group.querySelectorAll('.selection-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update hidden input and form data
+                    hiddenInput.value = value;
+                    formData[hiddenInput.id] = value;
+                    console.log('Updated form data:', formData);
+                    
+                    // Auto-advance to next step after selection
+                    if (currentStep < totalSteps) {
+                        setTimeout(() => {
+                            currentStep++;
+                            showStep(currentStep);
+                        }, 300);
+                    } else {
+                        updateSubmitButton();
+                    }
+                });
+            });
+
+            // Handle number buttons (age)
+            const numberButtons = document.querySelectorAll('.number-btn');
+            console.log('Found number buttons:', numberButtons.length);
+            
+            numberButtons.forEach(btn => {
+                console.log('Attaching listener to number button:', btn.getAttribute('data-value'));
+                btn.addEventListener('click', function(e) {
+                    console.log('Number button clicked:', this.getAttribute('data-value'));
+                    e.preventDefault();
+                    
+                    const group = this.closest('.form-group');
+                    if (!group) {
+                        console.error('Could not find form group for number button');
+                        return;
+                    }
+                    
+                    const hiddenInput = group.querySelector('input[type="hidden"]');
+                    const value = this.getAttribute('data-value');
+                    
+                    if (!hiddenInput) {
+                        console.error('Could not find hidden input for number button');
+                        return;
+                    }
+                    
+                    if (!value) {
+                        console.error('Could not find data-value for number button');
+                        return;
+                    }
+                    
+                    console.log('Number button processing value:', value);
+                    
+                    // Remove active class from siblings
+                    group.querySelectorAll('.number-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update hidden input and form data
+                    hiddenInput.value = value;
+                    formData[hiddenInput.id] = value;
+                    console.log('Updated form data:', formData);
+                    
+                    // Auto-advance to next step
                     setTimeout(() => {
                         currentStep++;
                         showStep(currentStep);
                     }, 300);
-                } else {
-                    updateSubmitButton();
-                }
-            });
-        });
-
-        // Handle number buttons (age)
-        document.querySelectorAll('.number-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const group = this.closest('.form-group');
-                const hiddenInput = group.querySelector('input[type="hidden"]');
-                const value = this.getAttribute('data-value');
-                
-                // Remove active class from siblings
-                group.querySelectorAll('.number-btn').forEach(b => {
-                    b.classList.remove('active');
                 });
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Update hidden input and form data
-                hiddenInput.value = value;
-                formData[hiddenInput.id] = value;
-                
-                // Auto-advance to next step
-                setTimeout(() => {
-                    currentStep++;
-                    showStep(currentStep);
-                }, 300);
             });
-        });
 
-        // Handle form submission
-        document.getElementById('storyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // If not all steps complete, just advance
-            if (currentStep < totalSteps || !formData.storyLength) {
-                currentStep++;
-                showStep(currentStep);
-                return;
+            // Handle form submission
+            const storyForm = document.getElementById('storyForm');
+            if (storyForm) {
+                storyForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // If not all steps complete, just advance
+                    if (currentStep < totalSteps || !formData.storyLength) {
+                        currentStep++;
+                        showStep(currentStep);
+                        return;
+                    }
+                    
+                    // All steps complete - submit!
+                    console.log('Story Data:', formData);
+                    
+                    // Hide form, show loading
+                    const storyFormElement = document.querySelector('.story-form');
+                    const loadingState = document.getElementById('loadingState');
+                    
+                    if (storyFormElement) storyFormElement.style.display = 'none';
+                    if (loadingState) loadingState.style.display = 'block';
+                    
+                    // This is where you'd integrate with Kiro's backend
+                    // For now, we'll simulate a delay
+                    setTimeout(() => {
+                        alert('Story generated! (This would integrate with your backend)');
+                        // Redirect to story display page
+                        // window.location.href = 'story-display.html';
+                    }, 2000);
+                });
             }
-            
-            // All steps complete - submit!
-            console.log('Story Data:', formData);
-            
-            // Hide form, show loading
-            document.querySelector('.story-form').style.display = 'none';
-            document.getElementById('loadingState').style.display = 'block';
-            
-            // This is where you'd integrate with Kiro's backend
-            // For now, we'll simulate a delay
-            setTimeout(() => {
-                alert('Story generated! (This would integrate with your backend)');
-                // Redirect to story display page
-                // window.location.href = 'story-display.html';
-            }, 2000);
-        });
 
-        // Initialize
-        showStep(currentStep);
+            // Initialize
+            showStep(currentStep);
+        });
     </script>
 </body>
 </html>

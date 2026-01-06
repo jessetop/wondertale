@@ -130,12 +130,13 @@ Implementation of a Python Flask web application for generating personalized, ag
     - **Property 16: UI Responsiveness**
     - **Validates: Requirements 7.5**
 
-- [ ] 9. Implement text-to-speech functionality
-  - [ ] 9.1 Create browser-based TTS system
-    - Implement StoryReader JavaScript class
-    - Add voice selection with 2-3 child-friendly options
-    - Create playback controls (play, pause, stop)
-    - Add fallback message for unsupported browsers
+- [x] 9. Implement text-to-speech functionality
+  - [x] 9.1 Create AI-powered TTS system with browser fallback
+    - Implement TTSService class with OpenAI TTS integration
+    - Add voice selection with 3 child-friendly AI voices (Friendly, Cheerful, Magical)
+    - Create playback controls (play, pause, stop) for both AI and browser TTS
+    - Add graceful fallback to browser TTS when AI TTS unavailable
+    - Implement audio caching for improved performance
     - _Requirements: 9.1, 9.2, 9.3, 9.5, 9.6_
 
   - [ ] 9.2 Write property test for text-to-speech functionality

@@ -326,6 +326,41 @@
         transition: transform 0.1s ease;
     }
 
+    /* Voice Selection Buttons */
+    .voice-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 20px;
+        background: var(--bg-card);
+        border: 3px solid var(--accent-light);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-dark);
+        min-width: 80px;
+        min-height: 44px;
+    }
+
+    .voice-btn:hover {
+        background: var(--accent-light);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .voice-btn:active {
+        transform: translateY(-1px);
+        transition: transform 0.1s ease;
+    }
+
+    .voice-btn span:first-child {
+        font-size: 24px;
+    }
+
     /* Celebration Message */
     .celebration {
         text-align: center;
@@ -541,6 +576,14 @@
     </div>
 
     <div class="actions">
+        <button id="readAloudBtn" class="action-btn action-btn-primary">
+            <span>🔊</span>
+            <span>Read My Story!</span>
+        </button>
+        <button id="stopReadingBtn" class="action-btn action-btn-secondary" style="display: none;">
+            <span>⏹️</span>
+            <span>Stop Reading</span>
+        </button>
         <a href="{{ url_for('index') }}" class="action-btn action-btn-primary">
             <span>✨</span>
             <span>Create Another Story</span>
@@ -551,9 +594,387 @@
         </button>
     </div>
 
+    <!-- Voice Selection (hidden by default) -->
+    <div id="voiceSelection" style="display: none; text-align: center; margin-bottom: 20px;">
+        <div style="font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--primary);">
+            🎭 Choose a Voice!
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="voice-btn" data-voice="0">
+                <span>👩</span>
+                <span>Friendly</span>
+            </button>
+            <button class="voice-btn" data-voice="1">
+                <span>👨</span>
+                <span>Cheerful</span>
+            </button>
+            <button class="voice-btn" data-voice="2">
+                <span>🌟</span>
+                <span>Magical</span>
+            </button>
+        </div>
+    </div>
+
     <div style="text-align: center; color: var(--text-light); font-weight: 600; font-size: 16px;">
         <p>Want to share your adventure?</p>
         <p style="margin-top: 8px;">Ask a grown-up to help you read it together! 📚</p>
     </div>
 </div>
+
+<script>
+// Enhanced Text-to-Speech Story Reader with AI TTS and Browser Fallback
+class StoryReader {
+    constructor() {
+        this.synth = window.speechSynthesis;
+        this.voices = [];
+        this.currentUtterance = null;
+        this.currentAudio = null;
+        this.isReading = false;
+        this.storyText = '';
+        this.useAITTS = false;
+        this.aiVoices = {};
+        
+        // Get story text
+        const storyContent = document.querySelector('.story-content');
+        if (storyContent) {
+            this.storyText = storyContent.innerText;
+        }
+        
+        // Initialize TTS systems
+        this.initializeTTS();
+        
+        // Setup event listeners
+        this.setupEventListeners();
+    }
+    
+    async initializeTTS() {
+        // First, try to load AI TTS voices
+        try {
+            const response = await fetch('/tts/voices');
+            const data = await response.json();
+            
+            if (data.available && data.voices) {
+                this.useAITTS = true;
+                this.aiVoices = data.voices;
+                this.updateVoiceButtons();
+                console.log('AI TTS voices loaded successfully');
+            } else {
+                console.log('AI TTS not available, falling back to browser TTS');
+                this.initializeBrowserTTS();
+            }
+        } catch (error) {
+            console.log('Failed to load AI TTS, using browser TTS:', error);
+            this.initializeBrowserTTS();
+        }
+    }
+    
+    initializeBrowserTTS() {
+        this.useAITTS = false;
+        this.loadBrowserVoices();
+        this.updateVoiceButtons();
+    }
+    
+    loadBrowserVoices() {
+        this.voices = this.synth.getVoices();
+        
+        // If voices aren't loaded yet, wait for them
+        if (this.voices.length === 0) {
+            this.synth.addEventListener('voiceschanged', () => {
+                this.voices = this.synth.getVoices();
+                this.selectChildFriendlyVoices();
+            });
+        } else {
+            this.selectChildFriendlyVoices();
+        }
+    }
+    
+    selectChildFriendlyVoices() {
+        // Try to find child-friendly voices
+        this.childVoices = [];
+        
+        // Look for female voices (often sound more child-friendly)
+        const femaleVoices = this.voices.filter(voice => 
+            voice.name.toLowerCase().includes('female') || 
+            voice.name.toLowerCase().includes('woman') ||
+            voice.name.toLowerCase().includes('samantha') ||
+            voice.name.toLowerCase().includes('karen') ||
+            voice.name.toLowerCase().includes('susan')
+        );
+        
+        // Look for male voices
+        const maleVoices = this.voices.filter(voice => 
+            voice.name.toLowerCase().includes('male') || 
+            voice.name.toLowerCase().includes('man') ||
+            voice.name.toLowerCase().includes('daniel') ||
+            voice.name.toLowerCase().includes('alex') ||
+            voice.name.toLowerCase().includes('tom')
+        );
+        
+        // Add the best voices we can find
+        if (femaleVoices.length > 0) this.childVoices.push(femaleVoices[0]);
+        if (maleVoices.length > 0) this.childVoices.push(maleVoices[0]);
+        
+        // If we don't have specific voices, use the first few available
+        if (this.childVoices.length < 3) {
+            const defaultVoices = this.voices.slice(0, 3);
+            defaultVoices.forEach(voice => {
+                if (!this.childVoices.includes(voice)) {
+                    this.childVoices.push(voice);
+                }
+            });
+        }
+        
+        // Ensure we have at least one voice
+        if (this.childVoices.length === 0 && this.voices.length > 0) {
+            this.childVoices = [this.voices[0]];
+        }
+    }
+    
+    updateVoiceButtons() {
+        const voiceButtons = document.querySelectorAll('.voice-btn');
+        
+        if (this.useAITTS) {
+            // Update buttons for AI voices
+            const voiceKeys = Object.keys(this.aiVoices);
+            voiceButtons.forEach((btn, index) => {
+                if (index < voiceKeys.length) {
+                    const voiceKey = voiceKeys[index];
+                    const voice = this.aiVoices[voiceKey];
+                    btn.innerHTML = `<span>${voice.emoji}</span><span>${voice.name}</span>`;
+                    btn.setAttribute('data-voice', voiceKey);
+                    btn.title = voice.description;
+                }
+            });
+        } else {
+            // Keep original browser voice labels
+            // The HTML already has the correct structure
+        }
+    }
+    
+    setupEventListeners() {
+        const readBtn = document.getElementById('readAloudBtn');
+        const stopBtn = document.getElementById('stopReadingBtn');
+        const voiceSelection = document.getElementById('voiceSelection');
+        
+        if (readBtn) {
+            readBtn.addEventListener('click', () => {
+                if (!this.isReading) {
+                    this.showVoiceSelection();
+                } else {
+                    this.pauseReading();
+                }
+            });
+        }
+        
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                this.stopReading();
+            });
+        }
+        
+        // Voice selection buttons
+        document.querySelectorAll('.voice-btn').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const voiceId = btn.getAttribute('data-voice') || index.toString();
+                this.startReading(voiceId);
+                voiceSelection.style.display = 'none';
+            });
+        });
+    }
+    
+    showVoiceSelection() {
+        const voiceSelection = document.getElementById('voiceSelection');
+        if (voiceSelection) {
+            voiceSelection.style.display = 'block';
+            voiceSelection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+    
+    async startReading(voiceId = 'friendly') {
+        if (!this.storyText) return;
+        
+        // Stop any current reading
+        this.stopReading();
+        
+        if (this.useAITTS) {
+            await this.startAIReading(voiceId);
+        } else {
+            this.startBrowserReading(parseInt(voiceId) || 0);
+        }
+    }
+    
+    async startAIReading(voiceKey) {
+        try {
+            this.isReading = true;
+            this.updateButtons();
+            
+            // Show loading state
+            const readBtn = document.getElementById('readAloudBtn');
+            if (readBtn) {
+                readBtn.innerHTML = '<span>⏳</span><span>Loading...</span>';
+            }
+            
+            // Generate audio
+            const response = await fetch('/tts/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: this.storyText,
+                    voice: voiceKey
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (errorData.fallback) {
+                    console.log('AI TTS failed, falling back to browser TTS');
+                    this.useAITTS = false;
+                    this.initializeBrowserTTS();
+                    this.startBrowserReading(0);
+                    return;
+                }
+                throw new Error('Failed to generate audio');
+            }
+            
+            // Create audio element and play
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            this.currentAudio = new Audio(audioUrl);
+            
+            this.currentAudio.onplay = () => {
+                this.isReading = true;
+                this.updateButtons();
+            };
+            
+            this.currentAudio.onended = () => {
+                this.isReading = false;
+                this.updateButtons();
+                URL.revokeObjectURL(audioUrl);
+            };
+            
+            this.currentAudio.onerror = () => {
+                console.error('Audio playback error, falling back to browser TTS');
+                this.isReading = false;
+                this.updateButtons();
+                URL.revokeObjectURL(audioUrl);
+                
+                // Fallback to browser TTS
+                this.useAITTS = false;
+                this.initializeBrowserTTS();
+                this.startBrowserReading(0);
+            };
+            
+            await this.currentAudio.play();
+            
+        } catch (error) {
+            console.error('AI TTS error:', error);
+            this.isReading = false;
+            this.updateButtons();
+            
+            // Fallback to browser TTS
+            this.useAITTS = false;
+            this.initializeBrowserTTS();
+            this.startBrowserReading(0);
+        }
+    }
+    
+    startBrowserReading(voiceIndex = 0) {
+        if (!this.synth || !this.storyText) return;
+        
+        // Create new utterance
+        this.currentUtterance = new SpeechSynthesisUtterance(this.storyText);
+        
+        // Set voice if available
+        if (this.childVoices && this.childVoices[voiceIndex]) {
+            this.currentUtterance.voice = this.childVoices[voiceIndex];
+        }
+        
+        // Configure speech settings for children
+        this.currentUtterance.rate = 0.8; // Slightly slower for kids
+        this.currentUtterance.pitch = 1.1; // Slightly higher pitch
+        this.currentUtterance.volume = 0.9;
+        
+        // Event listeners
+        this.currentUtterance.onstart = () => {
+            this.isReading = true;
+            this.updateButtons();
+        };
+        
+        this.currentUtterance.onend = () => {
+            this.isReading = false;
+            this.updateButtons();
+        };
+        
+        this.currentUtterance.onerror = () => {
+            this.isReading = false;
+            this.updateButtons();
+            console.error('Speech synthesis error');
+        };
+        
+        // Start speaking
+        this.synth.speak(this.currentUtterance);
+    }
+    
+    pauseReading() {
+        if (this.useAITTS && this.currentAudio) {
+            if (this.currentAudio.paused) {
+                this.currentAudio.play();
+            } else {
+                this.currentAudio.pause();
+            }
+        } else if (this.synth && this.synth.speaking) {
+            if (this.synth.paused) {
+                this.synth.resume();
+            } else {
+                this.synth.pause();
+            }
+        }
+    }
+    
+    stopReading() {
+        if (this.useAITTS && this.currentAudio) {
+            this.currentAudio.pause();
+            this.currentAudio.currentTime = 0;
+            this.currentAudio = null;
+        } else if (this.synth && this.synth.speaking) {
+            this.synth.cancel();
+        }
+        
+        this.isReading = false;
+        this.updateButtons();
+    }
+    
+    updateButtons() {
+        const readBtn = document.getElementById('readAloudBtn');
+        const stopBtn = document.getElementById('stopReadingBtn');
+        
+        if (this.isReading) {
+            if (readBtn) {
+                readBtn.innerHTML = '<span>⏸️</span><span>Pause</span>';
+                readBtn.style.display = 'inline-flex';
+            }
+            if (stopBtn) {
+                stopBtn.style.display = 'inline-flex';
+            }
+        } else {
+            if (readBtn) {
+                readBtn.innerHTML = '<span>🔊</span><span>Read My Story!</span>';
+                readBtn.style.display = 'inline-flex';
+            }
+            if (stopBtn) {
+                stopBtn.style.display = 'none';
+            }
+        }
+    }
+}
+
+// Initialize story reader when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    new StoryReader();
+});
+</script>
+
 {% endblock %}

@@ -227,6 +227,11 @@ MORAL: [The moral lesson in one clear sentence]"""
         if errors:
             raise ValueError(f"Invalid request: {', '.join(errors)}")
         
+        # Parse adventure items from keywords (do this first, outside try block)
+        magic_tool = request.keywords[0] if len(request.keywords) > 0 else "wand"
+        adventure_pack = request.keywords[1] if len(request.keywords) > 1 else "backpack"  
+        animal_friend = request.keywords[2] if len(request.keywords) > 2 else "wolf"
+        
         # If OpenAI is not available, return a placeholder
         if not self.client:
             return self._generate_placeholder_story(request)
