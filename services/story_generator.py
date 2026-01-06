@@ -49,7 +49,11 @@ class StoryGenerator:
             character_descriptions.append(f"{char.name} (use {char.pronouns} pronouns - {pronoun_info})")
         
         characters_text = ", ".join(character_descriptions)
-        keywords_text = ", ".join(request.keywords)
+        
+        # Parse adventure items from keywords
+        magic_tool = request.keywords[0] if len(request.keywords) > 0 else "wand"
+        adventure_pack = request.keywords[1] if len(request.keywords) > 1 else "backpack"  
+        animal_friend = request.keywords[2] if len(request.keywords) > 2 else "wolf"
         
         # Get target word count range
         min_words, max_words = request.get_target_word_count_range()
@@ -76,16 +80,24 @@ CHARACTERS: {characters_text}
 
 TOPIC: {request.topic} - incorporate themes related to {topic_context}
 
-KEYWORDS: Naturally weave these keywords into the story: {keywords_text}
+ADVENTURE ITEMS: Include these items naturally in the story:
+- Magic Tool: {magic_tool} (a magical item that helps solve problems)
+- Adventure Pack: {adventure_pack} (something the character carries or wears)
+- Animal Friend: {animal_friend} (a loyal companion who helps on the journey)
 
 STORY REQUIREMENTS:
 - Length: {min_words}-{max_words} words (this is {request.story_length} length for ages {request.age_group})
 - Include exactly ONE clear moral or positive lesson
 - Use {vocabulary_level} vocabulary appropriate for ages {request.age_group}
 - Follow a clear beginning, middle, and end structure
+- For ages 3-4: Use VERY SHORT paragraphs (1-2 sentences each) with lots of line breaks
+- For ages 5-6: Use SHORT paragraphs (2-3 sentences each) with clear line breaks
+- For ages 7+: Use paragraphs (2-4 sentences each) with line breaks between paragraphs
+- Add line breaks between paragraphs to make it easier for children to read
 - Maintain positive, uplifting themes throughout
 - Avoid scary, violent, or inappropriate content
 - Make the moral lesson naturally integrated into the narrative
+- Show how the adventure items and animal friend help the characters succeed
 
 VOCABULARY LEVEL: {vocabulary_level}
 {self._get_vocabulary_guidelines(request.age_group)}
@@ -110,10 +122,10 @@ MORAL: [The moral lesson in one clear sentence]"""
     def _get_vocabulary_guidelines(self, age_group: str) -> str:
         """Get specific vocabulary guidelines for age group"""
         guidelines = {
-            "3-4": "- Use 1-3 syllable words\n- Use basic sentence structures (subject-verb-object)\n- Avoid complex grammar",
-            "5-6": "- Use mostly 1-4 syllable words\n- Use compound sentences occasionally\n- Include some descriptive words",
-            "7-8": "- Use varied vocabulary including some 5+ syllable words\n- Use varied sentence structures\n- Include more descriptive and emotional language",
-            "9-10": "- Use advanced vocabulary while keeping themes age-appropriate\n- Use complex sentence structures\n- Include sophisticated concepts explained simply"
+            "3-4": "- Use only simple 1-2 syllable words (cat, dog, run, big, happy, sad, go, see, get, put, help, good, bad, nice, fun)\n- Avoid complex words like 'organized', 'elderly', 'neighborhood', 'discovered', 'realized'\n- Use basic sentence structure: Subject + Verb + Object (Oliver saw Mrs. Rose)\n- Use simple connecting words: and, but, so, then",
+            "5-6": "- Use mostly 1-3 syllable words with some 4-syllable words\n- Use compound sentences occasionally\n- Include some descriptive words but keep them simple\n- Avoid abstract concepts",
+            "7-8": "- Use varied vocabulary including some 5+ syllable words\n- Use varied sentence structures\n- Include more descriptive and emotional language\n- Can introduce some abstract concepts",
+            "9-10": "- Use advanced vocabulary while keeping themes age-appropriate\n- Use complex sentence structures\n- Include sophisticated concepts explained simply\n- Can use more nuanced emotional language"
         }
         return guidelines.get(age_group, guidelines["5-6"])
     
@@ -273,7 +285,10 @@ MORAL: [The moral lesson in one clear sentence]"""
                 age_group=request.age_group,
                 story_length=request.story_length,
                 target_word_range=target_range,
-                image_url=None  # Will be set by image generation service
+                image_url=None,  # Will be set by image generation service
+                magic_tool=magic_tool,
+                adventure_pack=adventure_pack,
+                animal_friend=animal_friend
             )
             
         except Exception as e:
@@ -288,33 +303,31 @@ MORAL: [The moral lesson in one clear sentence]"""
         
         # Get target word count for this age/length combination
         min_words, max_words = request.get_target_word_count_range()
-        target_words = (min_words + max_words) // 2  # Aim for middle of range
+        
+        # Parse adventure items from keywords
+        magic_tool = request.keywords[0] if len(request.keywords) > 0 else "wand"
+        adventure_pack = request.keywords[1] if len(request.keywords) > 1 else "backpack"  
+        animal_friend = request.keywords[2] if len(request.keywords) > 2 else "wolf"
         
         topic_stories = {
-            "space": f"Once upon a time, {names_text} became brave astronauts who traveled to a magical planet made of rainbow crystals. They discovered that the planet's friendly alien inhabitants needed help fixing their broken star-maker machine. Working together with kindness and creativity, they repaired the machine and filled the sky with beautiful twinkling stars. The aliens were so grateful that they gave {names_text} special star badges to remember their adventure. When they returned to Earth, they realized that helping others always makes the universe a brighter place.",
+            "space": f"Once upon a time, {names_text} went to space. They flew to a magic planet with pretty colors.\n\nThey took their {magic_tool} with them. They wore their {adventure_pack} too.\n\nTheir friend was a nice {animal_friend}. The {animal_friend} helped them fly through the stars.\n\nThey met some space friends. The space friends needed help with their star machine.\n\nUsing their {magic_tool}, they helped fix it. Their {animal_friend} friend had good ideas.\n\nThey made the machine work again. Now the sky had lots of pretty stars!\n\nThe space friends were so happy. They gave {names_text} special star stickers.\n\nWhen they came home, they felt good. They learned that helping others makes everyone happy.",
             
-            "community": f"In a cozy neighborhood, {names_text} noticed that their elderly neighbor Mrs. Rose looked sad because her garden was overgrown and she couldn't tend to it anymore. They decided to surprise her by organizing all the neighborhood children to help clean up the garden. Everyone brought tools, planted new flowers, and painted a beautiful welcome sign. When Mrs. Rose saw her garden blooming again, she cried happy tears and invited everyone for lemonade and cookies. {names_text} learned that when communities work together, they can create something wonderful.",
+            "community": f"Oliver lived in a nice town. Oliver saw Mrs. Rose in her yard.\n\nMrs. Rose was sad. Her garden had too many weeds.\n\nShe could not fix it by herself. She needed help.\n\nOliver got his magic {magic_tool}. He put on his special {adventure_pack}.\n\nHe called his {animal_friend} friend to come help. They had a good idea.\n\nThey asked all the kids in town to help. Everyone wanted to help Mrs. Rose!\n\nThe {magic_tool} helped cut the weeds. The {adventure_pack} held all the seeds.\n\nThe {animal_friend} showed them where to plant flowers. It was like a fun game!\n\nWhen Mrs. Rose saw her pretty garden, she was so happy. She gave everyone cookies and juice.\n\nOliver learned something good. When friends work together, they can do anything.",
             
-            "dragons": f"Deep in an enchanted forest, {names_text} met a gentle dragon named Sparkle who had lost the ability to breathe fire. The dragon was very sad because fire-breathing helped him light the magical lanterns that guided forest creatures home at night. {names_text} embarked on a quest to find the legendary Flame Flower that could restore Sparkle's fire. After solving riddles and helping other magical creatures along the way, they found the flower glowing in a hidden cave. When Sparkle ate the flower, his fire returned, and the forest was filled with warm, welcoming light once again.",
+            "dragons": f"In a big forest, {names_text} met a dragon named Sparkle. Sparkle looked very sad.\n\nSparkle could not make fire anymore. This made him feel bad.\n\nHe used his fire to light up lamps. The lamps helped animals find their way home.\n\nThey had their strong {magic_tool}. They wore their safe {adventure_pack}.\n\nTheir {animal_friend} friend came too. {names_text} wanted to help Sparkle.\n\nThey went to look for a magic flower. The flower could give Sparkle his fire back!\n\nTheir {animal_friend} friend found the right path. Their {magic_tool} helped them solve puzzles.\n\nTheir {adventure_pack} kept them safe from thorns. They helped other animals on the way.\n\nThey found the flower in a cave. It was so pretty and bright!\n\nWhen Sparkle ate the flower, his fire came back. The forest had warm light again.\n\nAll the animals cheered. The lamps lit up all the paths. Sparkle was so happy!",
             
-            "fairies": f"In a secret fairy garden behind the old oak tree, {names_text} discovered that all the flowers were wilting because the garden's magic fountain had stopped working. The fairy queen explained that the fountain needed the laughter of kind children to flow again. {names_text} spent the day playing games, telling jokes, and sharing happy stories with all the garden fairies. As their joyful laughter filled the air, the fountain began to sparkle and flow with crystal-clear water. The flowers bloomed more beautifully than ever, and the fairies granted {names_text} the gift of always finding magic in everyday kindness."
+            "fairies": f"Behind a big tree, {names_text} found a fairy garden. But all the flowers looked sick!\n\nThe magic water had stopped working. The fairy queen was very sad.\n\nThey brought their magic {magic_tool}. They had their special {adventure_pack} too.\n\nTheir {animal_friend} friend came with them. The {animal_friend} could talk to all the garden animals!\n\nThe fairy queen told them what was wrong. The water needed happy laughs from nice kids.\n\n{names_text} had a fun idea. They would play games with all the fairies!\n\nThey used their {magic_tool} to make pretty lights. Their {adventure_pack} had treats for everyone.\n\nTheir {animal_friend} friend told funny jokes. All the fairies laughed and giggled!\n\nWhen they all laughed together, something magic happened. The water started to work again!\n\nThe flowers became pretty and bright. The fairies were so happy!\n\nThey gave {names_text} a special gift. They would always find magic when they are kind to others."
         }
         
-        base_content = topic_stories.get(request.topic, f"{names_text} had an amazing adventure and learned that kindness and friendship are the most important things in the world.")
+        base_content = topic_stories.get(request.topic, f"{names_text} had an amazing adventure with their {magic_tool}, {adventure_pack}, and {animal_friend} friend, learning that kindness and friendship are the most important things in the world.")
         
-        # Adjust content length based on target word count
+        # Use the complete story - don't truncate as it breaks the narrative
+        # Only extend if the story is too short
         words = base_content.split()
-        if len(words) > target_words:
-            # Truncate if too long
-            content = " ".join(words[:target_words])
-        elif len(words) < min_words:
+        if len(words) < min_words:
             # Extend if too short
-            extension = f" They smiled and laughed together, sharing their joy with everyone around them. The adventure taught them valuable lessons about friendship, kindness, and helping others."
+            extension = f"\n\nThey smiled and laughed together. They shared their joy with everyone.\n\nThey learned good things. They learned about being friends and helping others.\n\nTheir {magic_tool} helped them be brave. Their {adventure_pack} helped them be ready.\n\nTheir {animal_friend} friend showed them how to be loyal. It was the best day ever!"
             content = base_content + extension
-            # Truncate if still too long
-            words = content.split()
-            if len(words) > max_words:
-                content = " ".join(words[:max_words])
         else:
             content = base_content
         
@@ -328,5 +341,8 @@ MORAL: [The moral lesson in one clear sentence]"""
             age_group=request.age_group,
             story_length=request.story_length,
             target_word_range=target_range,
-            image_url=None
+            image_url=None,
+            magic_tool=magic_tool,
+            adventure_pack=adventure_pack,
+            animal_friend=animal_friend
         )

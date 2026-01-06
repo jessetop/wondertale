@@ -6,7 +6,7 @@ Main application entry point with health check endpoint
 import os
 
 try:
-    from flask import Flask, render_template, request, jsonify
+    from flask import Flask, render_template, request, jsonify, redirect, url_for
     FLASK_AVAILABLE = True
 except ImportError:
     FLASK_AVAILABLE = False
@@ -53,44 +53,90 @@ def create_app():
     
     @app.route('/generate', methods=['POST'])
     def generate_story():
-        """Generate story endpoint (placeholder for now)"""
-        # This will be implemented in later tasks
-        # For now, just show a sample story
-        from models import GeneratedStory, Character
-        from datetime import datetime
-        
-        # Create sample story data for testing
-        sample_story = GeneratedStory(
-            id="sample-123",
-            title="Emma's Amazing Dragon Adventure",
-            content="""Once upon a time, in a magnificent castle high on a hill, there lived a brave young adventurer named Emma. She loved exploring the castle's many rooms and secret passages, always looking for new discoveries.
-
-One sunny morning, Emma heard a gentle roar coming from the castle courtyard. When she looked out her window, she saw something amazing – a beautiful dragon with shimmering scales that sparkled in the sunlight! The dragon looked friendly but seemed lost.
-
-Emma wasn't scared at all. Instead, she smiled and waved at the dragon. "Hello there! Are you lost?" she called out. The dragon nodded sadly. Emma knew just what to do. She grabbed her map of the kingdom and hurried down to help her new friend.
-
-Together, Emma and the dragon looked at the map. Emma used her clever thinking to figure out where the dragon's home was – a beautiful mountain beyond the forest. The dragon was so happy! Before flying away, the dragon gave Emma a special scale from its tail that glowed with magic.
-
-"You were so brave and kind, Emma," the dragon said. "Whenever you need help, just hold this scale and I'll come to visit!" Emma waved goodbye as her new friend flew home. She knew that being kind and helpful made her the best kind of hero.""",
-            moral="Being kind and helpful to others makes you a true hero.",
-            characters=[Character(name="Emma", pronouns="she/her")],
-            topic="dragons",
-            age_group="5-6",
-            story_length="medium",
-            image_url=None,
-            created_at=datetime.now(),
-            word_count=234,
-            target_word_range=(120, 250)
-        )
-        
-        return render_template('story.html', story=sample_story)
+        """Generate story endpoint - Requirements: 1.1, 1.2, 1.3, 1.4"""
+        try:
+            # Import services
+            from services.story_generator import StoryGenerator
+            from services.image_generator import ImageGenerator
+            from models import StoryRequest, Character
+            
+            # Extract form data
+            form_data = request.form
+            
+            # Parse characters
+            characters = []
+            num_characters = int(form_data.get('num_characters', 1))
+            
+            for i in range(1, num_characters + 1):
+                name = form_data.get(f'character_{i}_name', '').strip()
+                pronouns = form_data.get(f'character_{i}_pronouns', '')
+                
+                if name and pronouns:
+                    try:
+                        character = Character(name=name, pronouns=pronouns)
+                        characters.append(character)
+                    except ValueError as e:
+                        return render_template('index.html', error=f"Character {i}: {str(e)}")
+            
+            # Parse adventure items into keywords
+            keywords = []
+            magic_tool = form_data.get('magic_tool', '').strip()
+            adventure_pack = form_data.get('adventure_pack', '').strip()
+            animal_friend = form_data.get('animal_friend', '').strip()
+            
+            if magic_tool:
+                keywords.append(magic_tool)
+            if adventure_pack:
+                keywords.append(adventure_pack)
+            if animal_friend:
+                keywords.append(animal_friend)
+            
+            # Create story request
+            story_request = StoryRequest(
+                characters=characters,
+                topic=form_data.get('topic', ''),
+                keywords=keywords,
+                age_group=form_data.get('age_group', ''),
+                story_length=form_data.get('story_length', ''),
+                include_image=form_data.get('include_image') == 'true'
+            )
+            
+            # Validate request
+            validation_errors = story_request.validate()
+            if validation_errors:
+                error_message = "Please fix these issues: " + "; ".join(validation_errors)
+                return render_template('index.html', error=error_message)
+            
+            # Generate story
+            story_generator = StoryGenerator()
+            generated_story = story_generator.generate_story(story_request)
+            
+            # Generate image if requested
+            if story_request.include_image:
+                image_generator = ImageGenerator()
+                image_url = image_generator.generate_illustration(generated_story, story_request.topic)
+                generated_story.image_url = image_url
+            
+            # Store story (for now, just pass to template)
+            # In a full implementation, we'd store in database
+            
+            return render_template('story.html', story=generated_story)
+            
+        except Exception as e:
+            print(f"Error generating story: {e}")
+            error_message = "Sorry, we couldn't create your story right now. Please try again!"
+            return render_template('index.html', error=error_message)
     
     @app.route('/story/<story_id>')
     def view_story(story_id):
-        """View a specific story (placeholder for now)"""
-        # This will be implemented in later tasks
-        # For now, redirect to sample story
-        return generate_story()
+        """View a specific story - Requirements: 1.3, 1.4"""
+        # In a full implementation, we'd retrieve from database
+        # For now, redirect to create new story since we don't have persistence
+        # This is a placeholder that would be replaced with proper story retrieval
+        
+        # For MVP, we'll redirect to the story creation form
+        # In production, this would query the database for the story_id
+        return redirect(url_for('index'))
     
     return app
 

@@ -634,17 +634,20 @@
     <div class="story-form">
         <h2 class="form-title">Let's Create Your Story!</h2>
 
+        {% if error %}
+        <div style="background: #FEE2E2; color: #DC2626; padding: 20px; border-radius: 12px; margin-bottom: 24px; font-weight: 600; text-align: center;">
+            {{ error }}
+        </div>
+        {% endif %}
+
         <form id="storyForm" method="POST" action="{{ url_for('generate_story') }}">
             <!-- Number of Characters -->
             <div class="form-group">
                 <label class="form-label">How many characters in your story? 👥</label>
-                <span class="form-helper">Pick 1 to 5 characters!</span>
-                <div class="number-grid" style="grid-template-columns: repeat(5, 1fr);">
+                <span class="form-helper">Pick 1 or 2 characters!</span>
+                <div class="number-grid">
                     <button type="button" class="number-btn" data-value="1">1</button>
                     <button type="button" class="number-btn" data-value="2">2</button>
-                    <button type="button" class="number-btn" data-value="3">3</button>
-                    <button type="button" class="number-btn" data-value="4">4</button>
-                    <button type="button" class="number-btn" data-value="5">5</button>
                 </div>
                 <input type="hidden" id="num_characters" name="num_characters" required>
             </div>
@@ -654,7 +657,7 @@
 
             <!-- Age -->
             <div class="form-group">
-                <label class="form-label">How old are you? 🎂</label>
+                <label class="form-label">How old are you? (reading level) 🎂</label>
                 <span class="form-helper">Click your age!</span>
                 <div class="number-grid">
                     <button type="button" class="number-btn" data-value="3-4">3-4</button>
@@ -711,32 +714,96 @@
                 <input type="hidden" id="story_length" name="story_length" required>
             </div>
 
-            <!-- Keywords -->
+            <!-- Adventure Items -->
             <div class="form-group">
-                <label class="form-label">Add some magic words! ✨</label>
-                <span class="form-helper">Type 3 or 5 words that should be in your story</span>
-                <div class="selection-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;">
-                    <button type="button" class="selection-btn" data-value="3">
-                        <span class="selection-icon">3️⃣</span>
-                        <span class="selection-text">3 Keywords</span>
+                <label class="form-label">Pick your Magic Tool! ⚡</label>
+                <span class="form-helper">What magical item will help you on your adventure?</span>
+                <div class="selection-grid">
+                    <button type="button" class="selection-btn" data-value="wand">
+                        <span class="selection-icon">🪄</span>
+                        <span class="selection-text">Magic Wand</span>
                     </button>
-                    <button type="button" class="selection-btn" data-value="5">
-                        <span class="selection-icon">5️⃣</span>
-                        <span class="selection-text">5 Keywords</span>
+                    <button type="button" class="selection-btn" data-value="sword">
+                        <span class="selection-icon">⚔️</span>
+                        <span class="selection-text">Brave Sword</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="bow">
+                        <span class="selection-icon">🏹</span>
+                        <span class="selection-text">Magic Bow</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="staff">
+                        <span class="selection-icon">🔮</span>
+                        <span class="selection-text">Crystal Staff</span>
                     </button>
                 </div>
-                <input type="hidden" id="keyword_count" name="keyword_count" required>
-                <div class="keywords-grid" id="keywordsContainer">
-                    <!-- Keywords will be dynamically generated -->
+                <input type="hidden" id="magic_tool" name="magic_tool" required>
+            </div>
+
+            <!-- Helper Items -->
+            <div class="form-group">
+                <label class="form-label">Pick your Adventure Pack! 🎒</label>
+                <span class="form-helper">What will you carry on your journey?</span>
+                <div class="selection-grid">
+                    <button type="button" class="selection-btn" data-value="backpack">
+                        <span class="selection-icon">🎒</span>
+                        <span class="selection-text">Magic Backpack</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="cape">
+                        <span class="selection-icon">🦸</span>
+                        <span class="selection-text">Flying Cape</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="boots">
+                        <span class="selection-icon">👢</span>
+                        <span class="selection-text">Speed Boots</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="map">
+                        <span class="selection-icon">🗺️</span>
+                        <span class="selection-text">Treasure Map</span>
+                    </button>
                 </div>
+                <input type="hidden" id="adventure_pack" name="adventure_pack" required>
+            </div>
+
+            <!-- Animal Friends -->
+            <div class="form-group">
+                <label class="form-label">Pick your Animal Friend! 🐾</label>
+                <span class="form-helper">Who will be your loyal companion?</span>
+                <div class="selection-grid">
+                    <button type="button" class="selection-btn" data-value="wolf">
+                        <span class="selection-icon">🐺</span>
+                        <span class="selection-text">Brave Wolf</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="parrot">
+                        <span class="selection-icon">🦜</span>
+                        <span class="selection-text">Wise Parrot</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="owl">
+                        <span class="selection-icon">🦉</span>
+                        <span class="selection-text">Smart Owl</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="fox">
+                        <span class="selection-icon">🦊</span>
+                        <span class="selection-text">Clever Fox</span>
+                    </button>
+                </div>
+                <input type="hidden" id="animal_friend" name="animal_friend" required>
             </div>
 
             <!-- Image Option -->
             <div class="form-group">
-                <label class="form-label">
-                    <input type="checkbox" name="include_image" value="true" style="margin-right: 12px; transform: scale(1.5);">
-                    ✨ Add a picture to my story?
-                </label>
+                <label class="form-label">Add a picture to your story? 🎨</label>
+                <span class="form-helper">Pictures make stories even more fun!</span>
+                <div class="selection-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <button type="button" class="selection-btn" data-value="false">
+                        <span class="selection-icon">📖</span>
+                        <span class="selection-text">No</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="true">
+                        <span class="selection-icon">🎨</span>
+                        <span class="selection-text">Yes</span>
+                    </button>
+                </div>
+                <input type="hidden" id="include_image" name="include_image" value="false" required>
             </div>
 
             <button type="submit" class="submit-btn">
@@ -763,56 +830,63 @@
     // Generate character input fields
     function generateCharacterFields(count) {
         const container = document.getElementById('charactersContainer');
-        container.innerHTML = '';
         
-        for (let i = 1; i <= count; i++) {
-            const characterDiv = document.createElement('div');
-            characterDiv.className = 'form-group';
-            characterDiv.innerHTML = `
-                <label class="form-label">Character ${i} Details ${i === 1 ? '✨' : '🌟'}</label>
-                <span class="form-helper">${i === 1 ? 'The main hero of the story!' : `Character ${i} in your adventure!`}</span>
-                
-                <input type="text" name="character_${i}_name" placeholder="Character ${i} name..." required 
-                       style="margin-bottom: 16px;">
-                
-                <div class="selection-grid">
-                    <button type="button" class="selection-btn" data-value="he/him" data-character="${i}">
-                        <span class="selection-icon">👦</span>
-                        <span class="selection-text">he/him</span>
-                    </button>
-                    <button type="button" class="selection-btn" data-value="she/her" data-character="${i}">
-                        <span class="selection-icon">👧</span>
-                        <span class="selection-text">she/her</span>
-                    </button>
-                    <button type="button" class="selection-btn" data-value="they/them" data-character="${i}">
-                        <span class="selection-icon">🌈</span>
-                        <span class="selection-text">they/them</span>
-                    </button>
-                </div>
-                <input type="hidden" name="character_${i}_pronouns" required>
-            `;
-            container.appendChild(characterDiv);
-        }
+        // Fade out existing content
+        container.style.opacity = '0.5';
+        container.style.transform = 'translateY(-10px)';
         
-        // Re-attach event listeners for new character pronoun buttons
-        attachCharacterListeners();
+        setTimeout(() => {
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= count; i++) {
+                const characterDiv = document.createElement('div');
+                characterDiv.className = 'form-group';
+                characterDiv.style.opacity = '0';
+                characterDiv.style.transform = 'translateY(20px)';
+                characterDiv.innerHTML = `
+                    <label class="form-label">Character ${i} Details ${i === 1 ? '✨' : '🌟'}</label>
+                    <span class="form-helper">${i === 1 ? 'The main hero of the story!' : `Character ${i} in your adventure!`}</span>
+                    
+                    <input type="text" name="character_${i}_name" placeholder="Character ${i} name..." required 
+                           style="margin-bottom: 16px;" maxlength="50">
+                    
+                    <div class="selection-grid">
+                        <button type="button" class="selection-btn" data-value="he/him" data-character="${i}">
+                            <span class="selection-icon">👦</span>
+                            <span class="selection-text">he/him</span>
+                        </button>
+                        <button type="button" class="selection-btn" data-value="she/her" data-character="${i}">
+                            <span class="selection-icon">👧</span>
+                            <span class="selection-text">she/her</span>
+                        </button>
+                        <button type="button" class="selection-btn" data-value="they/them" data-character="${i}">
+                            <span class="selection-icon">🌈</span>
+                            <span class="selection-text">they/them</span>
+                        </button>
+                    </div>
+                    <input type="hidden" name="character_${i}_pronouns" required>
+                `;
+                container.appendChild(characterDiv);
+                
+                // Animate in each character field
+                setTimeout(() => {
+                    characterDiv.style.transition = 'all 0.3s ease';
+                    characterDiv.style.opacity = '1';
+                    characterDiv.style.transform = 'translateY(0)';
+                }, i * 100);
+            }
+            
+            // Fade in container
+            container.style.transition = 'all 0.3s ease';
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+            
+            // Re-attach event listeners for new character pronoun buttons
+            attachCharacterListeners();
+        }, 150);
     }
 
-    // Generate keyword input fields
-    function generateKeywordFields(count) {
-        const container = document.getElementById('keywordsContainer');
-        container.innerHTML = '';
-        
-        for (let i = 1; i <= count; i++) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'keyword-input';
-            input.name = `keyword${i}`;
-            input.placeholder = `Magic word ${i}...`;
-            input.required = true;
-            container.appendChild(input);
-        }
-    }
+
 
     // Attach event listeners for character pronoun selection
     function attachCharacterListeners() {
@@ -840,39 +914,48 @@
     }
 
     // Handle number of characters selection
-    document.querySelectorAll('#num_characters').forEach(input => {
-        const group = input.closest('.form-group');
-        group.querySelectorAll('.number-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const value = parseInt(this.getAttribute('data-value'));
-                
-                // Remove active class from siblings
-                group.querySelectorAll('.number-btn').forEach(b => {
-                    b.classList.remove('active');
-                });
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Update hidden input
-                input.value = value;
-                
-                // Generate character fields
-                generateCharacterFields(value);
+    const numCharactersInput = document.getElementById('num_characters');
+    const numCharactersGroup = numCharactersInput.closest('.form-group');
+    numCharactersGroup.querySelectorAll('.number-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const value = parseInt(this.getAttribute('data-value'));
+            
+            // Remove active class from siblings
+            numCharactersGroup.querySelectorAll('.number-btn').forEach(b => {
+                b.classList.remove('active');
             });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Update hidden input
+            numCharactersInput.value = value;
+            
+            // Generate character fields with animation
+            generateCharacterFields(value);
+            
+            // Add visual feedback
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
         });
     });
 
-    // Handle keyword count selection
-    document.querySelectorAll('#keyword_count').forEach(input => {
+    // Handle item selections (magic tool, adventure pack, animal friend, image option)
+    const itemSelectors = ['magic_tool', 'adventure_pack', 'animal_friend', 'include_image'];
+    
+    itemSelectors.forEach(selectorId => {
+        const input = document.getElementById(selectorId);
         const group = input.closest('.form-group');
+        
         group.querySelectorAll('.selection-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                const value = parseInt(this.getAttribute('data-value'));
+                const value = this.getAttribute('data-value');
                 
                 // Remove active class from siblings
                 group.querySelectorAll('.selection-btn').forEach(b => {
@@ -885,8 +968,11 @@
                 // Update hidden input
                 input.value = value;
                 
-                // Generate keyword fields
-                generateKeywordFields(value);
+                // Add visual feedback
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
             });
         });
     });
@@ -947,9 +1033,158 @@
 
     // Handle form submission
     document.getElementById('storyForm').addEventListener('submit', function(e) {
+        // Validate form before submission
+        if (!validateForm()) {
+            e.preventDefault();
+            return false;
+        }
+        
         // Show loading state
         document.querySelector('.story-form').style.display = 'none';
         document.getElementById('loadingState').style.display = 'block';
     });
+    
+    // Form validation function
+    function validateForm() {
+        const errors = [];
+        
+        // Check number of characters
+        const numCharacters = document.getElementById('num_characters').value;
+        if (!numCharacters) {
+            errors.push('Please select the number of characters');
+        }
+        
+        // Check character details
+        if (numCharacters) {
+            const count = parseInt(numCharacters);
+            for (let i = 1; i <= count; i++) {
+                const name = document.querySelector(`input[name="character_${i}_name"]`);
+                const pronouns = document.querySelector(`input[name="character_${i}_pronouns"]`);
+                
+                if (!name || !name.value.trim()) {
+                    errors.push(`Please enter a name for Character ${i}`);
+                }
+                
+                if (!pronouns || !pronouns.value) {
+                    errors.push(`Please select pronouns for Character ${i}`);
+                }
+                
+                // Validate character name contains only letters and spaces
+                if (name && name.value.trim()) {
+                    const namePattern = /^[A-Za-z\s]+$/;
+                    if (!namePattern.test(name.value.trim())) {
+                        errors.push(`Character ${i} name can only contain letters and spaces`);
+                    }
+                }
+            }
+        }
+        
+        // Check age group
+        const ageGroup = document.getElementById('age_group').value;
+        if (!ageGroup) {
+            errors.push('Please select your age group');
+        }
+        
+        // Check topic
+        const topic = document.getElementById('topic').value;
+        if (!topic) {
+            errors.push('Please choose a story topic');
+        }
+        
+        // Check story length
+        const storyLength = document.getElementById('story_length').value;
+        if (!storyLength) {
+            errors.push('Please select a story length');
+        }
+        
+        // Check items
+        const magicTool = document.getElementById('magic_tool').value;
+        if (!magicTool) {
+            errors.push('Please pick your Magic Tool');
+        }
+        
+        const adventurePack = document.getElementById('adventure_pack').value;
+        if (!adventurePack) {
+            errors.push('Please pick your Adventure Pack');
+        }
+        
+        const animalFriend = document.getElementById('animal_friend').value;
+        if (!animalFriend) {
+            errors.push('Please pick your Animal Friend');
+        }
+        
+        // Display errors if any
+        if (errors.length > 0) {
+            displayFormErrors(errors);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Display form validation errors
+    function displayFormErrors(errors) {
+        // Remove existing error display
+        const existingError = document.querySelector('.form-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Create error display
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'form-error';
+        errorDiv.style.cssText = `
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid #FECACA;
+        `;
+        
+        const errorTitle = document.createElement('div');
+        errorTitle.style.cssText = 'font-size: 18px; margin-bottom: 12px;';
+        errorTitle.textContent = 'Please fix these issues:';
+        
+        const errorList = document.createElement('ul');
+        errorList.style.cssText = 'text-align: left; margin: 0; padding-left: 20px;';
+        
+        errors.forEach(error => {
+            const listItem = document.createElement('li');
+            listItem.textContent = error;
+            listItem.style.marginBottom = '4px';
+            errorList.appendChild(listItem);
+        });
+        
+        errorDiv.appendChild(errorTitle);
+        errorDiv.appendChild(errorList);
+        
+        // Insert error display at the top of the form
+        const formTitle = document.querySelector('.form-title');
+        formTitle.parentNode.insertBefore(errorDiv, formTitle.nextSibling);
+        
+        // Scroll to error
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Add shake animation to form
+        const form = document.querySelector('.story-form');
+        form.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+            form.style.animation = '';
+        }, 500);
+    }
+    
+    // Add shake animation CSS
+    const shakeStyle = document.createElement('style');
+    shakeStyle.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(shakeStyle);
 </script>
 {% endblock %}

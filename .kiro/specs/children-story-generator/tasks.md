@@ -113,14 +113,14 @@ Implementation of a Python Flask web application for generating personalized, ag
     - **Property 17: Responsive Design Validation**
     - **Validates: Requirements 7.7**
 
-- [ ] 8. Implement Flask routes and form handling
-  - [ ] 8.1 Create main application routes
+- [-] 8. Implement Flask routes and form handling
+  - [x] 8.1 Create main application routes
     - Implement GET / route for story creation form
     - Create POST /generate route for story generation
     - Add GET /story/<id> route for displaying stories
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 8.2 Add JavaScript for dynamic form behavior
+  - [x] 8.2 Add JavaScript for dynamic form behavior
     - Implement character count dropdown functionality
     - Add form validation and error display
     - Create loading animations during story generation

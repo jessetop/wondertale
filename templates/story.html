@@ -459,9 +459,67 @@
             </div>
         </div>
 
+        <!-- Adventure Kit Section -->
+        {% if story.magic_tool or story.adventure_pack or story.animal_friend %}
+        <div style="background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); color: white; padding: 24px; border-radius: 20px; margin-bottom: 32px; text-align: center;">
+            <div style="font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 16px;">
+                🎒 Your Adventure Kit 🎒
+            </div>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                {% if story.magic_tool %}
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 32px;">
+                        {% if story.magic_tool == 'wand' %}🪄
+                        {% elif story.magic_tool == 'sword' %}⚔️
+                        {% elif story.magic_tool == 'bow' %}🏹
+                        {% elif story.magic_tool == 'staff' %}🔮
+                        {% else %}✨
+                        {% endif %}
+                    </div>
+                    <div style="font-weight: 700; font-size: 14px;">{{ story.magic_tool.replace('_', ' ').title() }}</div>
+                </div>
+                {% endif %}
+                
+                {% if story.adventure_pack %}
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 32px;">
+                        {% if story.adventure_pack == 'backpack' %}🎒
+                        {% elif story.adventure_pack == 'cape' %}🦸
+                        {% elif story.adventure_pack == 'boots' %}👢
+                        {% elif story.adventure_pack == 'map' %}🗺️
+                        {% else %}🎒
+                        {% endif %}
+                    </div>
+                    <div style="font-weight: 700; font-size: 14px;">{{ story.adventure_pack.replace('_', ' ').title() }}</div>
+                </div>
+                {% endif %}
+                
+                {% if story.animal_friend %}
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 32px;">
+                        {% if story.animal_friend == 'wolf' %}🐺
+                        {% elif story.animal_friend == 'parrot' %}🦜
+                        {% elif story.animal_friend == 'owl' %}🦉
+                        {% elif story.animal_friend == 'fox' %}🦊
+                        {% else %}🐾
+                        {% endif %}
+                    </div>
+                    <div style="font-weight: 700; font-size: 14px;">{{ story.animal_friend.replace('_', ' ').title() }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Story image if available -->
         {% if story.image_url %}
         <img src="{{ story.image_url }}" alt="Story illustration" class="story-image">
+        {% else %}
+        <div style="text-align: center; padding: 32px; background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); border-radius: 20px; margin: 32px auto; max-width: 500px; color: white;">
+            <div style="font-size: 64px; margin-bottom: 16px;">🎨</div>
+            <div style="font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 8px;">Use Your Imagination!</div>
+            <div style="font-size: 16px; font-weight: 600; opacity: 0.9;">Picture this amazing adventure in your mind as you read!</div>
+        </div>
         {% endif %}
 
         <!-- Story content -->

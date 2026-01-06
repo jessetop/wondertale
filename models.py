@@ -52,8 +52,8 @@ class StoryRequest:
         # Validate characters
         if not self.characters:
             errors.append("At least one character is required")
-        elif len(self.characters) > 5:
-            errors.append("Maximum 5 characters allowed")
+        elif len(self.characters) > 2:
+            errors.append("Maximum 2 characters allowed")
         
         # Validate each character
         for i, character in enumerate(self.characters):
@@ -78,9 +78,9 @@ class StoryRequest:
         if self.story_length not in valid_lengths:
             errors.append(f"Invalid story length: '{self.story_length}'. Must be one of: {', '.join(valid_lengths)}")
         
-        # Validate keywords count (must be exactly 3 or 5)
-        if len(self.keywords) not in [3, 5]:
-            errors.append(f"Invalid keyword count: {len(self.keywords)}. Must provide exactly 3 or 5 keywords")
+        # Validate keywords count (must be exactly 3 for the three item categories)
+        if len(self.keywords) != 3:
+            errors.append(f"Invalid item count: {len(self.keywords)}. Must provide exactly 3 items (magic tool, adventure pack, animal friend)")
         
         # Validate keywords are not empty
         for i, keyword in enumerate(self.keywords):
@@ -120,13 +120,20 @@ class GeneratedStory:
     created_at: datetime
     word_count: int
     target_word_range: tuple[int, int]
+    # Adventure items
+    magic_tool: Optional[str] = None
+    adventure_pack: Optional[str] = None
+    animal_friend: Optional[str] = None
     
     @classmethod
     def create(cls, title: str, content: str, moral: str, 
                characters: List[Character], topic: str, 
                age_group: str, story_length: str,
                target_word_range: tuple[int, int],
-               image_url: Optional[str] = None) -> 'GeneratedStory':
+               image_url: Optional[str] = None,
+               magic_tool: Optional[str] = None,
+               adventure_pack: Optional[str] = None,
+               animal_friend: Optional[str] = None) -> 'GeneratedStory':
         """Create a new GeneratedStory with auto-generated metadata."""
         import uuid
         
@@ -142,5 +149,8 @@ class GeneratedStory:
             image_url=image_url,
             created_at=datetime.now(),
             word_count=len(content.split()) if content else 0,
-            target_word_range=target_word_range
+            target_word_range=target_word_range,
+            magic_tool=magic_tool,
+            adventure_pack=adventure_pack,
+            animal_friend=animal_friend
         )

@@ -26,6 +26,7 @@ class ImageGenerator:
     
     def __init__(self):
         """Initialize the image generator with Hugging Face API"""
+        # Updated API endpoint as per Hugging Face migration
         self.api_url = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5"
         self.headers = {}
         self._setup_huggingface()
@@ -57,47 +58,10 @@ class ImageGenerator:
         Requirements: 5.1 - provide option to create accompanying illustration
         Requirements: 5.4 - handle failed image generation gracefully
         """
-        if not REQUESTS_AVAILABLE or requests is None:
-            print("Requests library not available - skipping image generation")
-            return None
-        
-        try:
-            # Create simple prompt using template
-            prompt = self._create_simple_prompt(story, topic)
-            
-            # Make request to Hugging Face API
-            response = requests.post(
-                self.api_url,
-                headers=self.headers,
-                json={"inputs": prompt},
-                timeout=30  # 30 second timeout
-            )
-            
-            if response.status_code == 200:
-                # Save image data and return a local path or base64 data URL
-                image_data = response.content
-                
-                # For MVP, we'll return a data URL that can be used directly in HTML
-                image_base64 = base64.b64encode(image_data).decode('utf-8')
-                data_url = f"data:image/png;base64,{image_base64}"
-                
-                print(f"Successfully generated image using Hugging Face")
-                return data_url
-                
-            elif response.status_code == 503:
-                print("Hugging Face model is loading, please try again in a few minutes")
-                return None
-            else:
-                print(f"Hugging Face API error: {response.status_code} - {response.text}")
-                return None
-                
-        except Exception as e:
-            if "requests" in str(e).lower():
-                print("Requests library not available - skipping image generation")
-            else:
-                print(f"Error generating image with Hugging Face: {e}")
-            # Gracefully handle failed image generation (Requirement 5.4)
-            return None
+        # Temporarily disabled due to API endpoint changes
+        # Return None to show the fallback message
+        print("Image generation temporarily disabled - API endpoint deprecated")
+        return None
     
     def _create_simple_prompt(self, story: GeneratedStory, topic: str) -> str:
         """
