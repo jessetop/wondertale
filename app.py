@@ -46,6 +46,38 @@ def create_app():
             'environment': os.getenv('FLASK_ENV', 'development')
         }), 200
     
+    @app.route('/debug')
+    def debug_info():
+        """Debug endpoint for troubleshooting (remove in production)"""
+        def check_openai_available():
+            """Check if OpenAI package is available"""
+            try:
+                import openai
+                return True
+            except ImportError:
+                return False
+        
+        # Only show debug info in development or if specifically enabled
+        if os.getenv('FLASK_ENV') != 'production' or os.getenv('DEBUG_ENABLED') == 'true':
+            openai_key = os.getenv('OPENAI_API_KEY', 'NOT_SET')
+            return jsonify({
+                'environment_variables': {
+                    'FLASK_ENV': os.getenv('FLASK_ENV', 'NOT_SET'),
+                    'OPENAI_API_KEY_SET': 'YES' if openai_key and openai_key != 'NOT_SET' and openai_key != 'your_actual_openai_api_key_here' else 'NO',
+                    'OPENAI_API_KEY_LENGTH': len(openai_key) if openai_key != 'NOT_SET' else 0,
+                    'FLASK_SECRET_KEY_SET': 'YES' if os.getenv('FLASK_SECRET_KEY') else 'NO',
+                    'MAX_STORY_LENGTH': os.getenv('MAX_STORY_LENGTH', 'NOT_SET'),
+                    'PORT': os.getenv('PORT', 'NOT_SET')
+                },
+                'python_packages': {
+                    'flask_available': FLASK_AVAILABLE,
+                    'openai_available': check_openai_available(),
+                    'dotenv_loaded': True  # If we get here, dotenv worked
+                }
+            }), 200
+        else:
+            return jsonify({'error': 'Debug endpoint disabled in production'}), 403
+    
     # Routes
     @app.route('/')
     def landing():
@@ -113,23 +145,50 @@ def create_app():
                 error_message = "Please fix these issues: " + "; ".join(validation_errors)
                 return render_template('index.html', error=error_message)
             
+            # Debug: Check OpenAI configuration
+            openai_key = os.getenv('OPENAI_API_KEY')
+            if not openai_key or openai_key == 'your_actual_openai_api_key_here':
+                print("ERROR: OpenAI API key not configured properly")
+                error_message = "Story generation is not configured. Please contact support."
+                return render_template('index.html', error=error_message)
+            
+            print(f"DEBUG: Generating story for {len(characters)} characters, topic: {story_request.topic}")
+            
             # Generate story
             story_generator = StoryGenerator()
             generated_story = story_generator.generate_story(story_request)
             
+            print(f"DEBUG: Story generated successfully, title: {generated_story.title}")
+            
             # Generate image if requested
             if story_request.include_image:
-                image_generator = ImageGenerator()
-                image_url = image_generator.generate_illustration(generated_story, story_request.topic)
-                generated_story.image_url = image_url
+                try:
+                    image_generator = ImageGenerator()
+                    image_url = image_generator.generate_illustration(generated_story, story_request.topic)
+                    generated_story.image_url = image_url
+                    print(f"DEBUG: Image generated successfully")
+                except Exception as img_error:
+                    print(f"WARNING: Image generation failed: {img_error}")
+                    # Continue without image - don't fail the whole request
             
             # Store story (for now, just pass to template)
             # In a full implementation, we'd store in database
             
             return render_template('story.html', story=generated_story)
             
+        except ImportError as e:
+            print(f"ERROR: Import failed: {e}")
+            error_message = "Service temporarily unavailable. Please try again later."
+            return render_template('index.html', error=error_message)
+        except ValueError as e:
+            print(f"ERROR: Validation error: {e}")
+            error_message = f"Invalid input: {str(e)}"
+            return render_template('index.html', error=error_message)
         except Exception as e:
-            print(f"Error generating story: {e}")
+            print(f"ERROR: Unexpected error generating story: {e}")
+            print(f"ERROR TYPE: {type(e).__name__}")
+            import traceback
+            print(f"ERROR TRACEBACK: {traceback.format_exc()}")
             error_message = "Sorry, we couldn't create your story right now. Please try again!"
             return render_template('index.html', error=error_message)
     
