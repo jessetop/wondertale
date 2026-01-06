@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A web application that generates age-appropriate stories for children (ages 3-8) with customizable elements including the child's name, topic selection, keywords, and optional story illustrations. The system emphasizes safety, simplicity, and educational value through moral lessons embedded in each story.
+A web application that generates age-appropriate stories for children (ages 3-10) with customizable elements including the child's age, story length preference, character names, topic selection, keywords, and optional story illustrations. The system emphasizes safety, simplicity, and educational value through moral lessons embedded in each story.
 
 ## Glossary
 
@@ -11,10 +11,12 @@ A web application that generates age-appropriate stories for children (ages 3-8)
 - **Story_Template**: Pre-defined story structures that incorporate user inputs
 - **Moral_Component**: Educational lesson or positive value embedded in each story
 - **Topic_Category**: Pre-defined themes (space, community, dragons, fairies)
-- **Child_User**: The intended reader of the generated story (ages 3-8)
+- **Child_User**: The intended reader of the generated story (ages 3-10)
 - **Parent_User**: Adult who operates the interface on behalf of the child
 - **Story_Character**: A child character in the story (1-5 characters supported)
 - **Character_Pronouns**: Preferred pronouns for each story character (he/him, she/her, they/them)
+- **Age_Group**: The target age of the child reader (3-4, 5-6, 7-8, 9-10)
+- **Story_Length**: The desired length of the story (short, medium, long)
 
 ## Requirements
 
@@ -24,29 +26,33 @@ A web application that generates age-appropriate stories for children (ages 3-8)
 
 #### Acceptance Criteria
 
-1. WHEN a user visits the story creation page, THE Story_Generator SHALL display a dropdown to select number of characters (1-5)
-2. WHEN a user selects number of characters, THE Story_Generator SHALL display input fields for each character's name and pronouns
-3. WHEN entering character information, THE Story_Generator SHALL provide pronoun options: he/him, she/her, and they/them
-4. WHEN a user selects a topic, THE Story_Generator SHALL provide exactly four options: space, community, dragons, and fairies
-5. WHEN a user enters keywords, THE Story_Generator SHALL accept either 3 or 5 keywords as input
-6. WHEN invalid input is provided, THE Story_Generator SHALL display clear error messages and prevent story generation
-7. THE Story_Generator SHALL validate that character names contain only letters and spaces
+1. WHEN a user visits the story creation page, THE Story_Generator SHALL display a dropdown to select child age group (3-4, 5-6, 7-8, 9-10)
+2. WHEN a user visits the story creation page, THE Story_Generator SHALL display a dropdown to select story length (short, medium, long)
+3. WHEN a user visits the story creation page, THE Story_Generator SHALL display a dropdown to select number of characters (1-5)
+4. WHEN a user selects number of characters, THE Story_Generator SHALL display input fields for each character's name and pronouns
+5. WHEN entering character information, THE Story_Generator SHALL provide pronoun options: he/him, she/her, and they/them
+6. WHEN a user selects a topic, THE Story_Generator SHALL provide exactly four options: space, community, dragons, and fairies
+7. WHEN a user enters keywords, THE Story_Generator SHALL accept either 3 or 5 keywords as input
+8. WHEN invalid input is provided, THE Story_Generator SHALL display clear error messages and prevent story generation
+9. THE Story_Generator SHALL validate that character names contain only letters and spaces
 
 ### Requirement 2: Age-Appropriate Content Generation
 
-**User Story:** As a parent, I want the generated stories to be appropriate for children ages 3-8, so that the content is safe and suitable for young readers.
+**User Story:** As a parent, I want the generated stories to be appropriate for my child's specific age, so that the content uses suitable vocabulary and complexity.
 
 #### Acceptance Criteria
 
-1. WHEN generating story content, THE Content_Filter SHALL ensure all vocabulary is appropriate for ages 3-8
-2. WHEN creating story elements, THE Story_Generator SHALL avoid scary, violent, or inappropriate themes
-3. WHEN incorporating user keywords, THE Content_Filter SHALL validate keywords are child-appropriate before inclusion
-4. THE Story_Generator SHALL use simple sentence structures suitable for early readers
-5. WHEN generating any content, THE Story_Generator SHALL ensure positive, uplifting themes throughout
+1. WHEN generating story content for ages 3-4, THE Content_Filter SHALL use simple vocabulary with 1-3 syllable words and basic sentence structures
+2. WHEN generating story content for ages 5-6, THE Content_Filter SHALL use elementary vocabulary with some 4-syllable words and compound sentences
+3. WHEN generating story content for ages 7-8, THE Content_Filter SHALL use intermediate vocabulary with varied sentence structures
+4. WHEN generating story content for ages 9-10, THE Content_Filter SHALL use advanced vocabulary while maintaining age-appropriate themes
+5. WHEN creating story elements, THE Story_Generator SHALL avoid scary, violent, or inappropriate themes for all age groups
+6. WHEN incorporating user keywords, THE Content_Filter SHALL validate keywords are child-appropriate before inclusion
+7. WHEN generating any content, THE Story_Generator SHALL ensure positive, uplifting themes throughout
 
-### Requirement 3: Story Structure and Moral Integration
+### Requirement 3: Story Structure and Length Management
 
-**User Story:** As a parent, I want each story to include a positive lesson or moral, so that my child learns valuable life lessons while being entertained.
+**User Story:** As a parent, I want each story to include a positive lesson and be the right length for my child's attention span, so that my child stays engaged while learning valuable life lessons.
 
 #### Acceptance Criteria
 
@@ -55,7 +61,18 @@ A web application that generates age-appropriate stories for children (ages 3-8)
 3. THE Story_Generator SHALL ensure stories follow a clear beginning, middle, and end structure
 4. WHEN incorporating multiple characters, THE Story_Generator SHALL make all entered characters protagonists or key characters in the story
 5. WHEN using character pronouns, THE Story_Generator SHALL consistently use the selected pronouns throughout the story
-6. THE Story_Generator SHALL keep story length appropriate for children's books (200-400 words)
+6. WHEN "short" length is selected for ages 3-4, THE Story_Generator SHALL create stories of 20-60 words
+7. WHEN "medium" length is selected for ages 3-4, THE Story_Generator SHALL create stories of 60-120 words
+8. WHEN "long" length is selected for ages 3-4, THE Story_Generator SHALL create stories of 120-180 words
+9. WHEN "short" length is selected for ages 5-6, THE Story_Generator SHALL create stories of 50-120 words
+10. WHEN "medium" length is selected for ages 5-6, THE Story_Generator SHALL create stories of 120-250 words
+11. WHEN "long" length is selected for ages 5-6, THE Story_Generator SHALL create stories of 250-400 words
+12. WHEN "short" length is selected for ages 7-8, THE Story_Generator SHALL create stories of 100-250 words
+13. WHEN "medium" length is selected for ages 7-8, THE Story_Generator SHALL create stories of 250-400 words
+14. WHEN "long" length is selected for ages 7-8, THE Story_Generator SHALL create stories of 400-500 words
+15. WHEN "short" length is selected for ages 9-10, THE Story_Generator SHALL create stories of 150-300 words
+16. WHEN "medium" length is selected for ages 9-10, THE Story_Generator SHALL create stories of 300-450 words
+17. WHEN "long" length is selected for ages 9-10, THE Story_Generator SHALL create stories of 450-500 words
 
 ### Requirement 4: Topic-Based Story Customization
 
@@ -79,7 +96,7 @@ A web application that generates age-appropriate stories for children (ages 3-8)
 2. WHEN generating images, THE Story_Generator SHALL ensure all visual content is child-appropriate and matches the story theme
 3. WHEN creating illustrations, THE Story_Generator SHALL incorporate key story elements and the selected topic
 4. IF image generation fails, THEN THE Story_Generator SHALL display the story without an image and show an appropriate message
-5. THE Story_Generator SHALL generate images that are colorful and appealing to children ages 3-8
+5. THE Story_Generator SHALL generate images that are colorful and appealing to children ages 3-10
 
 ### Requirement 6: Fast and Cost-Effective Deployment
 
@@ -102,7 +119,7 @@ A web application that generates age-appropriate stories for children (ages 3-8)
 1. WHEN users visit the website, THE Story_Generator SHALL display large, colorful buttons and interface elements suitable for tablet use
 2. THE Story_Generator SHALL use touch-friendly controls with minimum 44px touch targets for all interactive elements
 3. WHEN displaying forms, THE Story_Generator SHALL use large text, simple icons, and minimal text input to accommodate young children
-4. THE Story_Generator SHALL provide visual feedback with animations and colors that appeal to children ages 3-8
+4. THE Story_Generator SHALL provide visual feedback with animations and colors that appeal to children ages 3-10
 5. WHEN children interact with the interface, THE Story_Generator SHALL respond immediately with clear visual confirmation
 6. THE Story_Generator SHALL use simple, picture-based navigation where possible instead of text-only buttons
 7. THE Story_Generator SHALL be fully responsive and optimized for tablet screen sizes (768px and larger)

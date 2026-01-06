@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Python Flask web application that generates personalized, age-appropriate stories for children ages 3-8. The system uses AI for story generation and optional image creation, with a child-friendly tablet interface optimized for touch interaction. The application prioritizes simplicity, safety, and rapid deployment.
+A Python Flask web application that generates personalized, age-appropriate stories for children ages 3-10. The system uses AI for story generation and optional image creation, with a child-friendly tablet interface optimized for touch interaction. The application adapts vocabulary complexity and story length based on the child's age group and selected story length preference, with all stories capped at 500 words maximum for optimal tablet reading experience. The application prioritizes simplicity, safety, and rapid deployment.
 
 ## Architecture
 
@@ -72,8 +72,8 @@ services/
 ```
 
 **Key Routes:**
-- `GET /` - Story creation form
-- `POST /generate` - Generate story with optional image
+- `GET /` - Story creation form with age group and length selection
+- `POST /generate` - Generate story with age-appropriate vocabulary and length
 - `GET /story/<story_id>` - Display generated story
 - `POST /tts` - Text-to-speech endpoint
 
@@ -83,7 +83,8 @@ services/
 ```python
 class StoryGenerator:
     def generate_story(self, characters: List[Character], 
-                      topic: str, keywords: List[str]) -> Story:
+                      topic: str, keywords: List[str],
+                      age_group: str, story_length: str) -> Story:
         """Generate age-appropriate story with moral lesson"""
         
 class Character:
@@ -95,15 +96,19 @@ class Story:
     content: str
     moral: str
     word_count: int
+    age_group: str
+    story_length: str
 ```
 
 **Story Generation Process:**
-1. Validate and sanitize all inputs
-2. Create age-appropriate prompt with characters and topic
-3. Include moral lesson requirement in prompt
-4. Generate story using OpenAI GPT-4
-5. Validate output for appropriateness and length
-6. Return structured story object
+1. Validate and sanitize all inputs including age group and story length
+2. Determine target word count based on age group and length selection
+3. Select vocabulary complexity level based on age group
+4. Create age-appropriate prompt with characters, topic, and complexity requirements
+5. Include moral lesson requirement in prompt
+6. Generate story using OpenAI GPT-4 with length and vocabulary constraints
+7. Validate output for appropriateness, length, and vocabulary level
+8. Return structured story object
 
 ### 3. Image Generation Service
 
@@ -130,15 +135,20 @@ class ContentFilter:
     def validate_keywords(self, keywords: List[str]) -> bool:
         """Ensure keywords are child-appropriate"""
         
-    def validate_story_content(self, content: str) -> bool:
-        """Verify story meets safety standards"""
+    def validate_story_content(self, content: str, age_group: str) -> bool:
+        """Verify story meets safety and vocabulary standards for age group"""
+        
+    def get_vocabulary_level(self, age_group: str) -> str:
+        """Return vocabulary complexity level for age group"""
 ```
 
 **Filtering Rules:**
-- Vocabulary appropriate for ages 3-8
-- No violent, scary, or inappropriate themes
+- **Ages 3-4**: Simple vocabulary (1-3 syllables), basic sentence structures
+- **Ages 5-6**: Elementary vocabulary (some 4-syllable words), compound sentences  
+- **Ages 7-8**: Intermediate vocabulary, varied sentence structures
+- **Ages 9-10**: Advanced vocabulary while maintaining age-appropriate themes
+- No violent, scary, or inappropriate themes for all age groups
 - Positive, uplifting content only
-- Simple sentence structures
 
 ## Data Models
 
@@ -161,10 +171,15 @@ class StoryRequest:
     characters: List[Character]
     topic: str  # "space", "community", "dragons", "fairies"
     keywords: List[str]  # 3 or 5 keywords
+    age_group: str  # "3-4", "5-6", "7-8", "9-10"
+    story_length: str  # "short", "medium", "long"
     include_image: bool = False
     
     def validate(self) -> List[str]:
         """Return list of validation errors"""
+        
+    def get_target_word_count_range(self) -> tuple[int, int]:
+        """Return (min_words, max_words) based on age_group and story_length"""
 ```
 
 ### Generated Story Model
@@ -177,9 +192,12 @@ class GeneratedStory:
     moral: str
     characters: List[Character]
     topic: str
+    age_group: str
+    story_length: str
     image_url: Optional[str]
     created_at: datetime
     word_count: int
+    target_word_range: tuple[int, int]
 ```
 
 ## User Interface Design
@@ -198,6 +216,10 @@ class GeneratedStory:
 ┌─────────────────────────────────────┐
 │  🌟 Create Your Story! 🌟          │
 ├─────────────────────────────────────┤
+│  Child's Age: [3-4▼] [5-6] [7-8] [9-10] │
+│                                     │
+│  Story Length: [Short▼] [Medium] [Long] │
+│                                     │
 │  How many characters? [1▼] [2] [3]  │
 │                                     │
 │  Character 1:                       │
@@ -401,29 +423,29 @@ logging.basicConfig(
 
 *A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
 
-### Property 1: Character Input Field Generation
-*For any* number of characters selected (1-5), the system should display exactly that number of name and pronoun input field pairs
-**Validates: Requirements 1.2**
+### Property 1: Age Group and Story Length Input Validation
+*For any* age group selection (3-4, 5-6, 7-8, 9-10) and story length selection (short, medium, long), the system should accept valid combinations and display appropriate input fields
+**Validates: Requirements 1.1, 1.2**
 
 ### Property 2: Keyword Count Validation
 *For any* keyword input, the system should accept it if and only if it contains exactly 3 or 5 keywords
-**Validates: Requirements 1.5**
+**Validates: Requirements 1.7**
 
 ### Property 3: Input Validation Error Handling
-*For any* invalid input (empty names, invalid characters, wrong keyword count), the system should display clear error messages and prevent story generation
-**Validates: Requirements 1.6**
+*For any* invalid input (empty names, invalid characters, wrong keyword count, missing age/length selection), the system should display clear error messages and prevent story generation
+**Validates: Requirements 1.8**
 
 ### Property 4: Character Name Validation
 *For any* character name input, the system should accept it if and only if it contains only letters and spaces
-**Validates: Requirements 1.7**
+**Validates: Requirements 1.9**
 
-### Property 5: Comprehensive Content Safety
-*For any* generated story, it should use age-appropriate vocabulary (3-8 years), avoid scary/violent themes, use simple sentence structures, and maintain positive themes throughout
-**Validates: Requirements 2.1, 2.2, 2.4, 2.5**
+### Property 5: Age-Appropriate Vocabulary Generation
+*For any* selected age group, the generated story should use vocabulary complexity appropriate to that age group (simple for 3-4, elementary for 5-6, intermediate for 7-8, advanced for 9-10)
+**Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
 ### Property 6: Keyword Content Filtering
 *For any* set of user keywords, inappropriate keywords should be filtered out before story generation
-**Validates: Requirements 2.3**
+**Validates: Requirements 2.6**
 
 ### Property 7: Story Moral Inclusion
 *For any* generated story, it should contain exactly one identifiable moral or lesson
@@ -435,15 +457,15 @@ logging.basicConfig(
 
 ### Property 9: Character Name Inclusion
 *For any* set of input characters, all character names should appear prominently in the generated story
-**Validates: Requirements 3.4, 8.4**
+**Validates: Requirements 3.4**
 
 ### Property 10: Pronoun Consistency
 *For any* character with selected pronouns, those pronouns should be used consistently throughout the generated story
 **Validates: Requirements 3.5**
 
-### Property 11: Story Length Validation
-*For any* generated story, the word count should be between 200-400 words
-**Validates: Requirements 3.6**
+### Property 11: Story Length Validation by Age and Length Selection
+*For any* combination of age group and story length selection, the generated story word count should fall within the specified range for that combination
+**Validates: Requirements 3.6-3.17**
 
 ### Property 12: Topic-Appropriate Content Generation
 *For any* selected topic (space, community, dragons, fairies), the generated story should contain relevant keywords and themes appropriate to that topic

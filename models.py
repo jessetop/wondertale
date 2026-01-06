@@ -41,6 +41,8 @@ class StoryRequest:
     characters: List[Character]
     topic: str
     keywords: List[str]
+    age_group: str
+    story_length: str
     include_image: bool = False
     
     def validate(self) -> List[str]:
@@ -66,6 +68,16 @@ class StoryRequest:
         if self.topic not in valid_topics:
             errors.append(f"Invalid topic: '{self.topic}'. Must be one of: {', '.join(valid_topics)}")
         
+        # Validate age group
+        valid_age_groups = {"3-4", "5-6", "7-8", "9-10"}
+        if self.age_group not in valid_age_groups:
+            errors.append(f"Invalid age group: '{self.age_group}'. Must be one of: {', '.join(valid_age_groups)}")
+        
+        # Validate story length
+        valid_lengths = {"short", "medium", "long"}
+        if self.story_length not in valid_lengths:
+            errors.append(f"Invalid story length: '{self.story_length}'. Must be one of: {', '.join(valid_lengths)}")
+        
         # Validate keywords count (must be exactly 3 or 5)
         if len(self.keywords) not in [3, 5]:
             errors.append(f"Invalid keyword count: {len(self.keywords)}. Must provide exactly 3 or 5 keywords")
@@ -80,6 +92,17 @@ class StoryRequest:
     def is_valid(self) -> bool:
         """Check if the story request is valid."""
         return len(self.validate()) == 0
+    
+    def get_target_word_count_range(self) -> tuple[int, int]:
+        """Return (min_words, max_words) based on age_group and story_length."""
+        word_count_ranges = {
+            "3-4": {"short": (20, 60), "medium": (60, 120), "long": (120, 180)},
+            "5-6": {"short": (50, 120), "medium": (120, 250), "long": (250, 400)},
+            "7-8": {"short": (100, 250), "medium": (250, 400), "long": (400, 500)},
+            "9-10": {"short": (150, 300), "medium": (300, 450), "long": (450, 500)}
+        }
+        
+        return word_count_ranges.get(self.age_group, {}).get(self.story_length, (100, 300))
 
 
 @dataclass
@@ -91,13 +114,18 @@ class GeneratedStory:
     moral: str
     characters: List[Character]
     topic: str
+    age_group: str
+    story_length: str
     image_url: Optional[str]
     created_at: datetime
     word_count: int
+    target_word_range: tuple[int, int]
     
     @classmethod
     def create(cls, title: str, content: str, moral: str, 
                characters: List[Character], topic: str, 
+               age_group: str, story_length: str,
+               target_word_range: tuple[int, int],
                image_url: Optional[str] = None) -> 'GeneratedStory':
         """Create a new GeneratedStory with auto-generated metadata."""
         import uuid
@@ -109,7 +137,10 @@ class GeneratedStory:
             moral=moral,
             characters=characters,
             topic=topic,
+            age_group=age_group,
+            story_length=story_length,
             image_url=image_url,
             created_at=datetime.now(),
-            word_count=len(content.split()) if content else 0
+            word_count=len(content.split()) if content else 0,
+            target_word_range=target_word_range
         )

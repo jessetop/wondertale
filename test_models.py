@@ -18,6 +18,7 @@ except ImportError:
     print("Warning: hypothesis not available, skipping property tests")
 
 from models import Character, StoryRequest
+from services.content_filter import ContentFilter
 
 
 class TestCharacterNameValidation:
@@ -438,3 +439,161 @@ if __name__ == "__main__":
             print("✗ Invalid topic did not produce error")
         
         print("\nProperty-based tests completed!")
+
+
+class TestComprehensiveContentSafety:
+    """Property tests for comprehensive content safety - Property 5"""
+    
+    @given(st.text(min_size=10, max_size=500))
+    def test_safe_content_passes_validation(self, content):
+        """
+        Feature: children-story-generator, Property 5: Comprehensive Content Safety
+        For any generated story, it should use age-appropriate vocabulary, avoid scary/violent themes, 
+        use simple sentence structures, and maintain positive themes throughout
+        Validates: Requirements 2.1, 2.2, 2.4, 2.5
+        """
+        content_filter = ContentFilter()
+        
+        # Create safe content by replacing inappropriate words
+        safe_content = content
+        for inappropriate in content_filter.inappropriate_keywords:
+            safe_content = safe_content.replace(inappropriate, "happy")
+        
+        # Add positive words to ensure positive themes
+        safe_content = f"The happy children had a wonderful adventure. {safe_content} They smiled and laughed together."
+        
+        # Remove complex patterns
+        import re
+        for pattern in content_filter.complex_sentence_patterns:
+            safe_content = re.sub(pattern, "nice", safe_content, flags=re.IGNORECASE)
+        
+        # Test that safe content passes all validations
+        assert content_filter.validate_story_content(safe_content) == True
+        assert content_filter.validate_age_appropriate_vocabulary(safe_content) == True
+        assert content_filter.get_content_safety_score(safe_content) > 0.5
+    
+    def test_inappropriate_content_fails_validation(self):
+        """
+        Feature: children-story-generator, Property 5: Comprehensive Content Safety
+        Content with inappropriate themes should fail validation
+        Validates: Requirements 2.1, 2.2, 2.4, 2.5
+        """
+        content_filter = ContentFilter()
+        
+        # Test various types of inappropriate content
+        inappropriate_contents = [
+            "The scary monster attacked the children with violence",
+            "The dragon killed everyone with blood everywhere",
+            "The children were afraid and cried because of the nightmare",
+            "However, nevertheless, the sophisticated circumstances were problematic",  # Complex sentences
+            "The supercalifragilisticexpialidocious monster was extraordinarily frightening",  # Complex words
+            "Everyone was sad and angry and hated each other"  # No positive themes
+        ]
+        
+        for content in inappropriate_contents:
+            assert content_filter.validate_story_content(content) == False
+            assert content_filter.get_content_safety_score(content) < 0.5
+    
+    @given(st.lists(st.sampled_from(["happy", "joy", "smile", "laugh", "love", "friend", "help", "kind", "nice", "good"]), min_size=1, max_size=5))
+    def test_positive_themes_requirement(self, positive_words):
+        """
+        Feature: children-story-generator, Property 5: Comprehensive Content Safety
+        Content with positive themes should pass validation
+        Validates: Requirements 2.5
+        """
+        content_filter = ContentFilter()
+        
+        # Create content with positive words
+        content = f"The children were {' and '.join(positive_words)}. They had a great time playing together."
+        
+        assert content_filter.validate_story_content(content) == True
+        assert content_filter.get_content_safety_score(content) > 0.5
+    
+    @given(st.lists(st.text(alphabet=st.characters(min_codepoint=97, max_codepoint=122), min_size=1, max_size=8), min_size=5, max_size=20))
+    def test_age_appropriate_vocabulary_validation(self, simple_words):
+        """
+        Feature: children-story-generator, Property 5: Comprehensive Content Safety
+        Content with age-appropriate vocabulary should pass validation
+        Validates: Requirements 2.1
+        """
+        content_filter = ContentFilter()
+        
+        # Create content with simple words
+        content = f"The happy children played with {' and '.join(simple_words)}. They had fun together."
+        
+        # Should pass age-appropriate vocabulary check
+        assert content_filter.validate_age_appropriate_vocabulary(content) == True
+
+
+class TestKeywordContentFiltering:
+    """Property tests for keyword content filtering - Property 6"""
+    
+    @given(st.lists(st.sampled_from(["happy", "joy", "smile", "play", "friend", "love", "help", "kind", "nice", "good", "fun", "adventure", "magic", "rainbow", "sunshine"]), min_size=1, max_size=10))
+    def test_appropriate_keywords_pass_validation(self, safe_keywords):
+        """
+        Feature: children-story-generator, Property 6: Keyword Content Filtering
+        For any set of appropriate user keywords, they should pass validation
+        Validates: Requirements 2.3
+        """
+        content_filter = ContentFilter()
+        
+        assert content_filter.validate_keywords(safe_keywords) == True
+        
+        # Test filtering - should return all keywords
+        filtered = content_filter.filter_inappropriate_keywords(safe_keywords)
+        assert len(filtered) == len(safe_keywords)
+        assert set(filtered) == set(safe_keywords)
+    
+    @given(st.lists(st.sampled_from(["scary", "violent", "death", "kill", "hurt", "blood", "weapon", "gun", "knife", "fight", "angry", "hate", "evil", "monster"]), min_size=1, max_size=5))
+    def test_inappropriate_keywords_fail_validation(self, inappropriate_keywords):
+        """
+        Feature: children-story-generator, Property 6: Keyword Content Filtering
+        For any set of inappropriate user keywords, they should fail validation
+        Validates: Requirements 2.3
+        """
+        content_filter = ContentFilter()
+        
+        assert content_filter.validate_keywords(inappropriate_keywords) == False
+        
+        # Test filtering - should return empty list
+        filtered = content_filter.filter_inappropriate_keywords(inappropriate_keywords)
+        assert len(filtered) == 0
+    
+    def test_mixed_keywords_filtering(self):
+        """
+        Feature: children-story-generator, Property 6: Keyword Content Filtering
+        Mixed appropriate and inappropriate keywords should be filtered correctly
+        Validates: Requirements 2.3
+        """
+        content_filter = ContentFilter()
+        
+        mixed_keywords = ["happy", "scary", "play", "violent", "friend", "death", "love"]
+        expected_safe = ["happy", "play", "friend", "love"]
+        
+        # Should fail validation due to inappropriate keywords
+        assert content_filter.validate_keywords(mixed_keywords) == False
+        
+        # Should filter out inappropriate keywords
+        filtered = content_filter.filter_inappropriate_keywords(mixed_keywords)
+        assert set(filtered) == set(expected_safe)
+    
+    @given(st.lists(st.text().filter(lambda x: x.strip() and x.lower().strip() not in {"scary", "violent", "death", "kill", "hurt", "blood", "weapon", "gun", "knife", "fight", "angry", "hate"}), min_size=1, max_size=5))
+    def test_unknown_keywords_pass_by_default(self, unknown_keywords):
+        """
+        Feature: children-story-generator, Property 6: Keyword Content Filtering
+        Unknown keywords that aren't explicitly inappropriate should pass validation
+        Validates: Requirements 2.3
+        """
+        content_filter = ContentFilter()
+        
+        # Filter out any keywords that might contain inappropriate substrings
+        clean_keywords = []
+        for keyword in unknown_keywords:
+            keyword_clean = keyword.lower().strip()
+            if keyword_clean and not any(inappropriate in keyword_clean for inappropriate in content_filter.inappropriate_keywords):
+                clean_keywords.append(keyword.strip())
+        
+        if clean_keywords:  # Only test if we have clean keywords
+            assert content_filter.validate_keywords(clean_keywords) == True
+            filtered = content_filter.filter_inappropriate_keywords(clean_keywords)
+            assert len(filtered) == len(clean_keywords)
