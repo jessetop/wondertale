@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Your Story - Children's Story Generator{% endblock %}
+
+{% block content %}
+<div class="story-display-container">
+    <div class="story-controls">
+        <button id="read-aloud-btn" class="control-btn">🔊 Read Aloud</button>
+        <button id="print-btn" class="control-btn">📄 Print</button>
+        <button id="save-btn" class="control-btn">💾 Save</button>
+    </div>
+    
+    {% if story.image_url %}
+    <div class="story-image">
+        <img src="{{ story.image_url }}" alt="Story illustration" />
+    </div>
+    {% endif %}
+    
+    <div class="story-content">
+        <h2 class="story-title">{{ story.title }}</h2>
+        <div class="story-text">
+            {{ story.content | safe }}
+        </div>
+        
+        {% if story.moral %}
+        <div class="story-moral">
+            <h3>What We Learned:</h3>
+            <p>{{ story.moral }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="story-actions">
+        <a href="/" class="create-another-btn">🎭 Create Another Story!</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Text-to-speech functionality will be implemented in later tasks
+    document.getElementById('read-aloud-btn').addEventListener('click', function() {
+        alert('Text-to-speech functionality coming soon!');
+    });
+    
+    document.getElementById('print-btn').addEventListener('click', function() {
+        window.print();
+    });
+    
+    document.getElementById('save-btn').addEventListener('click', function() {
+        alert('Save functionality coming soon!');
+    });
+</script>
+{% endblock %}

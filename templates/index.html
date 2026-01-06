@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Create Your Story - Children's Story Generator{% endblock %}
+
+{% block content %}
+<div class="story-form-container">
+    <h2>Create Your Amazing Story!</h2>
+    
+    <form id="story-form" method="POST" action="/generate">
+        <!-- Character selection will be implemented in later tasks -->
+        <div class="form-group">
+            <label for="characters">How many characters?</label>
+            <select id="characters" name="character_count">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        
+        <!-- Character inputs will be dynamically generated -->
+        <div id="character-inputs"></div>
+        
+        <!-- Topic selection -->
+        <div class="form-group">
+            <label>Pick a topic:</label>
+            <div class="topic-buttons">
+                <button type="button" class="topic-btn" data-topic="space">🚀 Space</button>
+                <button type="button" class="topic-btn" data-topic="community">🏘️ Community</button>
+                <button type="button" class="topic-btn" data-topic="dragons">🐉 Dragons</button>
+                <button type="button" class="topic-btn" data-topic="fairies">🧚 Fairies</button>
+            </div>
+            <input type="hidden" id="selected-topic" name="topic" required>
+        </div>
+        
+        <!-- Keywords -->
+        <div class="form-group">
+            <label>Keywords (pick 3 or 5):</label>
+            <div class="keywords-container">
+                <input type="text" name="keyword1" placeholder="Keyword 1">
+                <input type="text" name="keyword2" placeholder="Keyword 2">
+                <input type="text" name="keyword3" placeholder="Keyword 3">
+                <input type="text" name="keyword4" placeholder="Keyword 4 (optional)">
+                <input type="text" name="keyword5" placeholder="Keyword 5 (optional)">
+            </div>
+        </div>
+        
+        <!-- Image option -->
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="include_image" value="true">
+                ✨ Add Picture?
+            </label>
+        </div>
+        
+        <!-- Submit button -->
+        <button type="submit" class="create-story-btn">🎨 CREATE STORY! 🎨</button>
+    </form>
+</div>
+{% endblock %}
