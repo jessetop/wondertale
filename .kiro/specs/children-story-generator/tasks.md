@@ -77,14 +77,14 @@ Implementation of a Python Flask web application for generating personalized, ag
 - [x] 5. Checkpoint - Core story generation functionality
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement image generation service
-  - [ ] 6.1 Create ImageGenerator class with DALL-E integration
+- [x] 6. Implement image generation service
+  - [x] 6.1 Create ImageGenerator class with DALL-E integration
     - Set up DALL-E API client for child-safe image generation
     - Implement image prompt creation from story content
     - Add error handling for failed image generation
     - _Requirements: 5.1, 5.4_
 
-  - [ ] 6.2 Write property test for image generation error handling
+  - [x] 6.2 Write property test for image generation error handling
     - **Property 13: Image Generation Error Handling**
     - **Validates: Requirements 5.4**
 

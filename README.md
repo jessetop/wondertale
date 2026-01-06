@@ -35,7 +35,7 @@ A web application that generates personalized, age-appropriate stories for child
 
 ## Environment Variables
 
-- `OPENAI_API_KEY`: Your OpenAI API key for story and image generation
+- `HUGGINGFACE_API_TOKEN`: Optional Hugging Face API token for image generation (free tier available without token)
 - `FLASK_SECRET_KEY`: Secret key for Flask sessions
 - `FLASK_ENV`: Environment (development/production)
 - `MAX_STORY_LENGTH`: Maximum story length in words (default: 400)
@@ -84,7 +84,7 @@ A web application that generates personalized, age-appropriate stories for child
 
 - **Backend**: Python 3.11+ with Flask
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **AI Services**: OpenAI GPT-4 for stories, DALL-E 3 for images
+- **AI Services**: OpenAI GPT-4 for stories, Hugging Face Stable Diffusion for images (free)
 - **Deployment**: Railway.app or Render.com
 - **Styling**: CSS Grid/Flexbox for responsive design
 
