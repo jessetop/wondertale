@@ -4,6 +4,7 @@ Main application entry point with health check endpoint
 """
 
 import os
+import time
 
 try:
     from flask import Flask, render_template, request, jsonify, redirect, url_for
@@ -153,12 +154,14 @@ def create_app():
                 return render_template('index.html', error=error_message)
             
             print(f"DEBUG: Generating story for {len(characters)} characters, topic: {story_request.topic}")
+            start_time = time.time()
             
             # Generate story
             story_generator = StoryGenerator()
             generated_story = story_generator.generate_story(story_request)
             
-            print(f"DEBUG: Story generated successfully, title: {generated_story.title}")
+            generation_time = time.time() - start_time
+            print(f"DEBUG: Story generated successfully in {generation_time:.2f}s, title: {generated_story.title}")
             
             # Generate image if requested
             if story_request.include_image:

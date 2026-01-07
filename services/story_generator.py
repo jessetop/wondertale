@@ -36,7 +36,11 @@ class StoryGenerator:
             
         api_key = os.getenv('OPENAI_API_KEY')
         if api_key:
-            self.client = OpenAI(api_key=api_key)
+            # Configure client with timeout to prevent Railway worker timeouts
+            self.client = OpenAI(
+                api_key=api_key,
+                timeout=25.0  # 25 seconds timeout (Railway default worker timeout is 30s)
+            )
         else:
             print("Warning: OPENAI_API_KEY not found in environment variables")
     
@@ -240,19 +244,33 @@ MORAL: [The moral lesson in one clear sentence]"""
             # Create the prompt
             prompt = self._create_story_prompt(request)
             
-            # Generate story using OpenAI GPT-4
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {
-                        "role": "system", 
-                        "content": "You are a children's story writer who creates age-appropriate, educational, and entertaining stories for children ages 3-8. Always follow the formatting instructions exactly."
-                    },
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=800,
-                temperature=0.7
-            )
+            # Generate story using OpenAI GPT-4 with retry logic
+            max_retries = 2
+            for attempt in range(max_retries + 1):
+                try:
+                    print(f"DEBUG: OpenAI API call attempt {attempt + 1}/{max_retries + 1}")
+                    response = self.client.chat.completions.create(
+                        model="gpt-4",
+                        messages=[
+                            {
+                                "role": "system", 
+                                "content": "You are a children's story writer who creates age-appropriate, educational, and entertaining stories for children ages 3-8. Always follow the formatting instructions exactly."
+                            },
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=800,
+                        temperature=0.7
+                    )
+                    break  # Success, exit retry loop
+                    
+                except Exception as api_error:
+                    print(f"DEBUG: OpenAI API attempt {attempt + 1} failed: {api_error}")
+                    if attempt == max_retries:
+                        # Last attempt failed, re-raise the error
+                        raise api_error
+                    # Wait briefly before retry
+                    import time
+                    time.sleep(1)
             
             # Extract the story content
             story_text = response.choices[0].message.content
@@ -263,6 +281,7 @@ MORAL: [The moral lesson in one clear sentence]"""
                 # If validation fails, try once more with a more specific prompt
                 retry_prompt = prompt + "\n\nIMPORTANT: Ensure the story is between 200-400 words and includes all character names prominently."
                 
+                print("DEBUG: Story validation failed, retrying with specific prompt")
                 retry_response = self.client.chat.completions.create(
                     model="gpt-4",
                     messages=[

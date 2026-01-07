@@ -5,6 +5,9 @@ builder = "NIXPACKS"
 healthcheckPath = "/health"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
+# Increase worker timeout to handle OpenAI API calls
+healthcheckTimeout = 300
+startCommand = "gunicorn --bind 0.0.0.0:$PORT --timeout 60 --workers 2 --worker-class sync app:app"
 
 [env]
 FLASK_ENV = "production"
