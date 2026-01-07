@@ -562,27 +562,44 @@
                     {% endif %}
                 {% endfor %}
             {% else %}
-                <!-- Content might be one block, try to split by sentences for better readability -->
-                {% set sentences = story.content.split('. ') %}
+                <!-- Content is one block, clean up punctuation and create paragraph breaks -->
+                {% set content_clean = story.content.strip() %}
+                
+                <!-- Fix common punctuation issues -->
+                {% set content_clean = content_clean.replace(' .', '.') %}
+                {% set content_clean = content_clean.replace(' !', '!') %}
+                {% set content_clean = content_clean.replace(' ?', '?') %}
+                {% set content_clean = content_clean.replace('  ', ' ') %}
+                
+                <!-- Fix missing spaces after punctuation (simple cases) -->
+                {% for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' %}
+                    {% set content_clean = content_clean.replace('.' + letter, '. ' + letter) %}
+                    {% set content_clean = content_clean.replace('!' + letter, '! ' + letter) %}
+                    {% set content_clean = content_clean.replace('?' + letter, '? ' + letter) %}
+                {% endfor %}
+                
+                <!-- Split at sentence boundaries -->
+                {% set working_text = content_clean %}
+                {% set working_text = working_text.replace('. ', '.<SPLIT>') %}
+                {% set working_text = working_text.replace('! ', '!<SPLIT>') %}
+                {% set working_text = working_text.replace('? ', '?<SPLIT>') %}
+                
+                {% set sentences = working_text.split('<SPLIT>') %}
                 {% if sentences|length > 3 %}
-                    <!-- Group sentences into paragraphs for better readability -->
+                    <!-- Group sentences into paragraphs -->
                     {% set paragraph_size = 3 if story.age_group in ['3-4', '5-6'] else 4 %}
                     {% for i in range(0, sentences|length, paragraph_size) %}
                         {% set paragraph_sentences = sentences[i:i+paragraph_size] %}
                         {% if paragraph_sentences %}
-                            <p>
-                                {% for sentence in paragraph_sentences %}
-                                    {% if sentence.strip() %}
-                                        {{ sentence.strip() }}{% if not loop.last and not sentence.endswith('.') %}.{% endif %}{% if not loop.last %} {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                                {% if not paragraph_sentences[-1].endswith('.') %}.{% endif %}
-                            </p>
+                            {% set paragraph_text = ' '.join(paragraph_sentences).strip() %}
+                            {% if paragraph_text %}
+                                <p>{{ paragraph_text }}</p>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    <!-- Short content, display as single paragraph -->
-                    <p>{{ story.content.strip() }}</p>
+                    <!-- Short content, display as single paragraph with cleaned punctuation -->
+                    <p>{{ content_clean }}</p>
                 {% endif %}
             {% endif %}
         </div>

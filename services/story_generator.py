@@ -98,6 +98,8 @@ STORY REQUIREMENTS:
 - For ages 5-6: Use SHORT paragraphs (2-3 sentences each) with clear line breaks
 - For ages 7+: Use paragraphs (2-4 sentences each) with line breaks between paragraphs
 - Add line breaks between paragraphs to make it easier for children to read
+- IMPORTANT: Use proper punctuation with spaces after periods, exclamation marks, and question marks
+- Ensure each sentence ends with proper punctuation followed by a space before the next sentence
 - Maintain positive, uplifting themes throughout
 - Avoid scary, violent, or inappropriate content
 - Make the moral lesson naturally integrated into the narrative
