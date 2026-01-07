@@ -133,7 +133,7 @@
         gap: 20px;
     }
 
-    .back-btn {
+    .home-btn {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -150,10 +150,10 @@
         text-decoration: none;
     }
 
-    .back-btn:hover {
+    .home-btn:hover {
         border-color: var(--primary);
         color: var(--primary);
-        transform: translateX(-4px);
+        transform: translateY(-2px);
     }
 
     .logo {
@@ -540,11 +540,9 @@
 <div class="wizard-container">
     <div class="wizard-header">
         <div class="header-left">
-            {% if back_url %}
-            <a href="{{ back_url }}" class="back-btn">
-                ← Back
+            <a href="{{ url_for('landing') }}" class="home-btn">
+                🏠 Home
             </a>
-            {% endif %}
             <div class="logo">WonderTale</div>
         </div>
         

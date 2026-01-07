@@ -1,7 +1,6 @@
 {% extends "wizard/base_wizard.html" %}
 
 {% set current_step = 4 %}
-{% set back_url = url_for('wizard_world') %}
 
 {% block title %}Story Length - WonderTale Wizard{% endblock %}
 
@@ -26,7 +25,7 @@
     </div>
 
     <div class="wizard-nav">
-        <a href="{{ back_url }}" class="nav-btn nav-btn-secondary">
+        <a href="{{ url_for('wizard_world') }}" class="nav-btn nav-btn-secondary">
             ← Previous
         </a>
         <button type="button" id="nextBtn" class="nav-btn nav-btn-primary" disabled>

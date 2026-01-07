@@ -706,6 +706,7 @@
         {% endif %}
     </div>
 
+    <!-- First row of actions -->
     <div class="actions">
         <button id="readAloudBtn" class="action-btn action-btn-primary">
             <span>🔊</span>
@@ -715,10 +716,6 @@
             <span>⏹️</span>
             <span>Stop Reading</span>
         </button>
-        <a href="{% if came_from_wizard %}{{ url_for('wizard_characters') }}?clear=true{% else %}{{ url_for('index') }}{% endif %}" class="action-btn action-btn-primary">
-            <span>✨</span>
-            <span>Create Another Story</span>
-        </a>
         <form method="POST" action="{{ url_for('print_story_post') }}" target="_blank" style="display: inline;">
             <input type="hidden" name="title" value="{{ story.title }}">
             <input type="hidden" name="content" value="{{ story.content }}">
@@ -734,11 +731,23 @@
             <input type="hidden" name="character_{{ loop.index }}_name" value="{{ character.name }}">
             <input type="hidden" name="character_{{ loop.index }}_pronouns" value="{{ character.pronouns }}">
             {% endfor %}
-            <button type="submit" class="action-btn action-btn-secondary">
+            <button type="submit" class="action-btn action-btn-primary">
                 <span>🖨️</span>
                 <span>Print My Story</span>
             </button>
         </form>
+    </div>
+
+    <!-- Second row of actions -->
+    <div class="actions">
+        <a href="{{ url_for('landing') }}" class="action-btn action-btn-secondary">
+            <span>🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="{% if came_from_wizard %}{{ url_for('wizard_characters') }}?clear=true{% else %}{{ url_for('index') }}{% endif %}" class="action-btn action-btn-primary">
+            <span>✨</span>
+            <span>Create Another Story</span>
+        </a>
     </div>
 
     <!-- Voice Selection (hidden by default) -->
