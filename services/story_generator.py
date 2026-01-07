@@ -104,7 +104,7 @@ ADVENTURE ITEMS: Include these items naturally in the story:
 
 STORY REQUIREMENTS:
 - MINIMUM LENGTH: Write at least {min_words} words (aim for {max_words} words for a {request.story_length} story)
-- Include exactly ONE clear moral or positive lesson
+- Include exactly ONE clear moral or positive lesson that is age-appropriate and easy to understand
 - Use {vocabulary_level} vocabulary appropriate for ages {request.age_group}
 - Follow a clear beginning, middle, and end structure
 - FORMATTING: {age_formatting}
@@ -116,13 +116,28 @@ STORY REQUIREMENTS:
 - Make the moral lesson naturally integrated into the narrative
 - Show how the adventure items and animal friend help the characters succeed
 
+MORAL/LESSON GUIDELINES:
+Create a simple, positive lesson that children can understand and apply. Choose from these types of age-appropriate lessons:
+- Being kind to others makes everyone happy
+- Sharing with friends is fun
+- It's okay to ask for help when you need it
+- Everyone is special in their own way
+- Trying your best is what matters most
+- Being brave means doing the right thing
+- Friends help each other
+- It's important to be honest
+- Taking care of others feels good
+- Learning new things is exciting
+- Being patient helps us succeed
+- Everyone deserves to be treated nicely
+
 VOCABULARY LEVEL: {vocabulary_level}
 {self._get_vocabulary_guidelines(request.age_group)}
 
 Please format the response as:
 TITLE: [Story Title]
 STORY: [The complete story - at least {min_words} words]
-MORAL: [The moral lesson in one clear sentence]"""
+MORAL: [A simple, positive lesson in one clear sentence that children can understand]"""
 
         return prompt
     
@@ -208,7 +223,7 @@ MORAL: [The moral lesson in one clear sentence]"""
                         break
                 
                 if not moral:
-                    moral = "Always be kind and help others."
+                    moral = "Being kind to others makes everyone happy."
         
         return title.strip(), story.strip(), moral.strip()
     
@@ -410,7 +425,7 @@ MORAL: [Moral lesson]"""
             return GeneratedStory.create(
                 title=title or "Your Amazing Adventure",
                 content=content,
-                moral=moral or "Always be kind and help others.",
+                moral=moral or "Being kind to others makes everyone happy.",
                 characters=request.characters,
                 topic=request.topic,
                 age_group=request.age_group,
@@ -466,7 +481,7 @@ MORAL: [Moral lesson]"""
         return GeneratedStory.create(
             title=f"{names_text}'s Amazing {request.topic.title()} Adventure",
             content=content,
-            moral="Helping others and working together makes the world a better place.",
+            moral="Friends help each other and that makes everything better.",
             characters=request.characters,
             topic=request.topic,
             age_group=request.age_group,
