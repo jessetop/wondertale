@@ -262,6 +262,49 @@ def create_app():
         # In production, this would query the database for the story_id
         return redirect(url_for('index'))
     
+    @app.route('/print')
+    def print_story():
+        """Print-friendly version of the last generated story"""
+        # For now, we'll need to pass story data via session or URL params
+        # In a full implementation, this would retrieve from database
+        # This is a temporary solution for the MVP
+        return render_template('print.html', message="Print functionality requires story persistence to be implemented")
+    
+    @app.route('/print-story', methods=['POST'])
+    def print_story_post():
+        """Generate a print-friendly version of a story"""
+        try:
+            # Get the story data from the form (passed from story page)
+            story_data = {
+                'title': request.form.get('title', ''),
+                'content': request.form.get('content', ''),
+                'moral': request.form.get('moral', ''),
+                'topic': request.form.get('topic', ''),
+                'age_group': request.form.get('age_group', ''),
+                'story_length': request.form.get('story_length', ''),
+                'word_count': request.form.get('word_count', '0'),
+                'magic_tool': request.form.get('magic_tool', ''),
+                'adventure_pack': request.form.get('adventure_pack', ''),
+                'animal_friend': request.form.get('animal_friend', ''),
+                'characters': []
+            }
+            
+            # Parse character data
+            i = 1
+            while request.form.get(f'character_{i}_name'):
+                character = {
+                    'name': request.form.get(f'character_{i}_name', ''),
+                    'pronouns': request.form.get(f'character_{i}_pronouns', '')
+                }
+                story_data['characters'].append(character)
+                i += 1
+            
+            return render_template('print.html', story=story_data)
+            
+        except Exception as e:
+            print(f"Error generating print version: {e}")
+            return render_template('print.html', error="Could not generate print version")
+    
     @app.route('/tts/generate', methods=['POST'])
     def generate_tts():
         """Generate TTS audio for story text - Requirements: 9.1, 9.2, 9.4"""

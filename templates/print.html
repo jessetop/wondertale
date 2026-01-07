@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block title %}Print - {{ story.title }} - WonderTale{% endblock %}
+
+{% block styles %}
+<style>
+    /* Print-optimized styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Times New Roman', serif;
+        font-size: 14pt;
+        line-height: 1.4;
+        color: #000;
+        background: white;
+        max-width: 8.5in;
+        margin: 0 auto;
+        padding: 0.5in;
+    }
+
+    /* Hide elements that shouldn't print */
+    .no-print {
+        display: none !important;
+    }
+
+    /* Header */
+    .print-header {
+        text-align: center;
+        margin-bottom: 15pt;
+        border-bottom: 2pt solid #333;
+        padding-bottom: 8pt;
+    }
+
+    .print-logo {
+        font-family: 'Arial', sans-serif;
+        font-size: 24pt;
+        font-weight: bold;
+        color: #6B46C1;
+        margin-bottom: 5pt;
+    }
+
+    .print-tagline {
+        font-size: 10pt;
+        color: #666;
+        font-style: italic;
+    }
+
+    /* Story content */
+    .print-story {
+        margin-bottom: 15pt;
+    }
+
+    .print-title {
+        font-family: 'Arial', sans-serif;
+        font-size: 20pt;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 12pt;
+        color: #333;
+    }
+
+    .print-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10pt;
+        color: #666;
+        margin-bottom: 12pt;
+        padding-bottom: 6pt;
+        border-bottom: 1pt solid #ccc;
+    }
+
+    .print-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 3pt;
+    }
+
+    .print-icon {
+        font-size: 12pt;
+    }
+
+    /* Story elements section */
+    .print-elements {
+        background: #f8f9fa;
+        border: 1pt solid #ddd;
+        border-radius: 5pt;
+        padding: 8pt;
+        margin-bottom: 12pt;
+        text-align: center;
+    }
+
+    .print-elements-title {
+        font-family: 'Arial', sans-serif;
+        font-size: 12pt;
+        font-weight: bold;
+        margin-bottom: 8pt;
+        color: #333;
+    }
+
+    .print-elements-grid {
+        display: flex;
+        justify-content: center;
+        gap: 15pt;
+        flex-wrap: wrap;
+    }
+
+    .print-element {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3pt;
+        min-width: 60pt;
+    }
+
+    .print-element-icon {
+        font-size: 16pt;
+    }
+
+    .print-element-name {
+        font-size: 9pt;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* Story content */
+    .print-content {
+        font-size: 14pt;
+        line-height: 1.5;
+        text-align: justify;
+        margin-bottom: 15pt;
+    }
+
+    .print-content p {
+        margin-bottom: 10pt;
+        text-indent: 20pt;
+    }
+
+    .print-content p:first-child {
+        text-indent: 0;
+    }
+
+    /* Moral section */
+    .print-moral {
+        background: #f0f0f0;
+        border: 1pt solid #ccc;
+        border-radius: 5pt;
+        padding: 10pt;
+        text-align: center;
+        margin-bottom: 15pt;
+    }
+
+    .print-moral-label {
+        font-family: 'Arial', sans-serif;
+        font-size: 12pt;
+        font-weight: bold;
+        margin-bottom: 5pt;
+        color: #333;
+    }
+
+    .print-moral-text {
+        font-size: 13pt;
+        font-weight: bold;
+        font-style: italic;
+        color: #555;
+    }
+
+    /* Footer */
+    .print-footer {
+        text-align: center;
+        font-size: 10pt;
+        color: #666;
+        border-top: 1pt solid #ccc;
+        padding-top: 10pt;
+        margin-top: 20pt;
+    }
+
+    /* Print button */
+    .print-button {
+        background: #6B46C1;
+        color: white;
+        border: none;
+        padding: 12pt 24pt;
+        font-size: 14pt;
+        font-weight: bold;
+        border-radius: 5pt;
+        cursor: pointer;
+        margin: 20pt auto;
+        display: block;
+    }
+
+    .print-button:hover {
+        background: #553C9A;
+    }
+
+    /* Print media query - hide button and optimize for printing */
+    @media print {
+        body {
+            padding: 0.25in;
+            font-size: 12pt;
+        }
+        
+        .print-button {
+            display: none !important;
+        }
+        
+        .no-print {
+            display: none !important;
+        }
+        
+        .print-header {
+            margin-bottom: 10pt;
+        }
+        
+        .print-title {
+            font-size: 18pt;
+            margin-bottom: 8pt;
+        }
+        
+        .print-content {
+            font-size: 12pt;
+            line-height: 1.4;
+        }
+        
+        .print-content p {
+            margin-bottom: 6pt;
+        }
+        
+        .print-elements {
+            margin-bottom: 8pt;
+            padding: 6pt;
+        }
+        
+        .print-moral {
+            margin-bottom: 8pt;
+            padding: 6pt;
+        }
+        
+        /* Allow content to flow naturally across pages if needed */
+    }
+
+    /* Error message styling */
+    .error-message {
+        text-align: center;
+        color: #dc3545;
+        font-size: 16pt;
+        margin: 40pt 0;
+        padding: 20pt;
+        border: 2pt solid #dc3545;
+        border-radius: 5pt;
+        background: #f8d7da;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if error %}
+    <div class="error-message">
+        <h2>Print Error</h2>
+        <p>{{ error }}</p>
+        <p><a href="javascript:history.back()">Go Back</a></p>
+    </div>
+{% elif story %}
+    <div class="print-header">
+        <div class="print-logo">WonderTale</div>
+        <div class="print-tagline">Adventure starts with your name</div>
+    </div>
+
+    <div class="print-story">
+        <h1 class="print-title">{{ story.title }}</h1>
+        
+        <!-- Story metadata -->
+        <div class="print-meta">
+            <div class="print-meta-item">
+                <span class="print-icon">
+                    {% if story.topic == 'space' %}🚀
+                    {% elif story.topic == 'community' %}🏘️
+                    {% elif story.topic == 'dragons' %}🐉
+                    {% elif story.topic == 'fairies' %}🧚
+                    {% elif story.topic == 'pirates' %}🏴‍☠️
+                    {% elif story.topic == 'outdoors' %}🏕️
+                    {% elif story.topic == 'underwater' %}🌊
+                    {% elif story.topic == 'castle' %}🏰
+                    {% else %}🌟
+                    {% endif %}
+                </span>
+                <span>
+                    {% if story.topic == 'space' %}Outer Space
+                    {% elif story.topic == 'community' %}Community
+                    {% elif story.topic == 'dragons' %}Dragon Land
+                    {% elif story.topic == 'fairies' %}Fairy Garden
+                    {% elif story.topic == 'pirates' %}Pirate Adventure
+                    {% elif story.topic == 'outdoors' %}Great Outdoors
+                    {% elif story.topic == 'underwater' %}Underwater World
+                    {% elif story.topic == 'castle' %}Medieval Castle
+                    {% else %}{{ story.topic.title() }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="print-meta-item">
+                <span class="print-icon">🎂</span>
+                <span>Age {{ story.age_group }}</span>
+            </div>
+            <div class="print-meta-item">
+                <span class="print-icon">📖</span>
+                <span>{{ story.story_length.title() }} ({{ story.word_count }} words)</span>
+            </div>
+        </div>
+
+        <!-- Story Elements -->
+        {% if story.magic_tool or story.adventure_pack or story.animal_friend %}
+        <div class="print-elements">
+            <div class="print-elements-title">✨ Story Elements ✨</div>
+            <div class="print-elements-grid">
+                <!-- World Theme -->
+                <div class="print-element">
+                    <div class="print-element-icon">
+                        {% if story.topic == 'space' %}🚀
+                        {% elif story.topic == 'community' %}🏘️
+                        {% elif story.topic == 'dragons' %}🐉
+                        {% elif story.topic == 'fairies' %}🧚
+                        {% elif story.topic == 'pirates' %}🏴‍☠️
+                        {% elif story.topic == 'outdoors' %}🏕️
+                        {% elif story.topic == 'underwater' %}🌊
+                        {% elif story.topic == 'castle' %}🏰
+                        {% else %}🌟
+                        {% endif %}
+                    </div>
+                    <div class="print-element-name">
+                        {% if story.topic == 'space' %}Outer Space
+                        {% elif story.topic == 'community' %}Community
+                        {% elif story.topic == 'dragons' %}Dragon Land
+                        {% elif story.topic == 'fairies' %}Fairy Garden
+                        {% elif story.topic == 'pirates' %}Pirate Adventure
+                        {% elif story.topic == 'outdoors' %}Great Outdoors
+                        {% elif story.topic == 'underwater' %}Underwater World
+                        {% elif story.topic == 'castle' %}Medieval Castle
+                        {% else %}{{ story.topic.title() }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Magic Tool -->
+                {% if story.magic_tool %}
+                <div class="print-element">
+                    <div class="print-element-icon">
+                        {% if story.magic_tool == 'wand' %}🪄
+                        {% elif story.magic_tool == 'sword' %}⚔️
+                        {% elif story.magic_tool == 'bow' %}🏹
+                        {% elif story.magic_tool == 'staff' %}🦯
+                        {% elif story.magic_tool == 'shield' %}🛡️
+                        {% elif story.magic_tool == 'hammer' %}🔨
+                        {% elif story.magic_tool == 'ring' %}💍
+                        {% elif story.magic_tool == 'orb' %}🔮
+                        {% else %}✨
+                        {% endif %}
+                    </div>
+                    <div class="print-element-name">
+                        {% if story.magic_tool == 'wand' %}Magic Wand
+                        {% elif story.magic_tool == 'sword' %}Brave Sword
+                        {% elif story.magic_tool == 'bow' %}Magic Bow
+                        {% elif story.magic_tool == 'staff' %}Crystal Staff
+                        {% elif story.magic_tool == 'shield' %}Power Shield
+                        {% elif story.magic_tool == 'hammer' %}Thunder Hammer
+                        {% elif story.magic_tool == 'ring' %}Magic Ring
+                        {% elif story.magic_tool == 'orb' %}Power Orb
+                        {% else %}{{ story.magic_tool.replace('_', ' ').title() }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Adventure Pack -->
+                {% if story.adventure_pack %}
+                <div class="print-element">
+                    <div class="print-element-icon">
+                        {% if story.adventure_pack == 'backpack' %}🎒
+                        {% elif story.adventure_pack == 'cape' %}🦸
+                        {% elif story.adventure_pack == 'boots' %}👢
+                        {% elif story.adventure_pack == 'map' %}🗺️
+                        {% elif story.adventure_pack == 'rope' %}🪢
+                        {% elif story.adventure_pack == 'compass' %}🧭
+                        {% elif story.adventure_pack == 'lantern' %}🏮
+                        {% elif story.adventure_pack == 'pouch' %}👝
+                        {% else %}🎒
+                        {% endif %}
+                    </div>
+                    <div class="print-element-name">
+                        {% if story.adventure_pack == 'backpack' %}Magic Backpack
+                        {% elif story.adventure_pack == 'cape' %}Flying Cape
+                        {% elif story.adventure_pack == 'boots' %}Speed Boots
+                        {% elif story.adventure_pack == 'map' %}Treasure Map
+                        {% elif story.adventure_pack == 'rope' %}Magic Rope
+                        {% elif story.adventure_pack == 'compass' %}Golden Compass
+                        {% elif story.adventure_pack == 'lantern' %}Glowing Lantern
+                        {% elif story.adventure_pack == 'pouch' %}Magic Pouch
+                        {% else %}{{ story.adventure_pack.replace('_', ' ').title() }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Animal Friend -->
+                {% if story.animal_friend %}
+                <div class="print-element">
+                    <div class="print-element-icon">
+                        {% if story.animal_friend == 'wolf' %}🐺
+                        {% elif story.animal_friend == 'parrot' %}🦜
+                        {% elif story.animal_friend == 'owl' %}🦉
+                        {% elif story.animal_friend == 'fox' %}🦊
+                        {% elif story.animal_friend == 'dragon' %}🐉
+                        {% elif story.animal_friend == 'unicorn' %}🦄
+                        {% elif story.animal_friend == 'eagle' %}🦅
+                        {% elif story.animal_friend == 'cat' %}🐱
+                        {% else %}🐾
+                        {% endif %}
+                    </div>
+                    <div class="print-element-name">
+                        {% if story.animal_friend == 'wolf' %}Brave Wolf
+                        {% elif story.animal_friend == 'parrot' %}Wise Parrot
+                        {% elif story.animal_friend == 'owl' %}Smart Owl
+                        {% elif story.animal_friend == 'fox' %}Clever Fox
+                        {% elif story.animal_friend == 'dragon' %}Baby Dragon
+                        {% elif story.animal_friend == 'unicorn' %}Magic Unicorn
+                        {% elif story.animal_friend == 'eagle' %}Golden Eagle
+                        {% elif story.animal_friend == 'cat' %}Magic Cat
+                        {% else %}{{ story.animal_friend.replace('_', ' ').title() }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Story content -->
+        <div class="print-content">
+            {% set paragraphs = story.content.split('\n\n') %}
+            {% if paragraphs|length > 1 %}
+                <!-- Content has proper paragraph breaks -->
+                {% for paragraph in paragraphs %}
+                    {% if paragraph.strip() %}
+                        <p>{{ paragraph.strip() }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <!-- Content is one block, clean up punctuation and create paragraph breaks -->
+                {% set content_clean = story.content.strip() %}
+                
+                <!-- Fix common punctuation issues -->
+                {% set content_clean = content_clean.replace(' .', '.') %}
+                {% set content_clean = content_clean.replace(' !', '!') %}
+                {% set content_clean = content_clean.replace(' ?', '?') %}
+                {% set content_clean = content_clean.replace('  ', ' ') %}
+                
+                <!-- Fix missing spaces after punctuation (simple cases) -->
+                {% for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' %}
+                    {% set content_clean = content_clean.replace('.' + letter, '. ' + letter) %}
+                    {% set content_clean = content_clean.replace('!' + letter, '! ' + letter) %}
+                    {% set content_clean = content_clean.replace('?' + letter, '? ' + letter) %}
+                {% endfor %}
+                
+                <!-- Split at sentence boundaries -->
+                {% set working_text = content_clean %}
+                {% set working_text = working_text.replace('. ', '.<SPLIT>') %}
+                {% set working_text = working_text.replace('! ', '!<SPLIT>') %}
+                {% set working_text = working_text.replace('? ', '?<SPLIT>') %}
+                
+                {% set sentences = working_text.split('<SPLIT>') %}
+                {% if sentences|length > 3 %}
+                    <!-- Group sentences into paragraphs -->
+                    {% set paragraph_size = 3 if story.age_group in ['3-4', '5-6'] else 4 %}
+                    {% for i in range(0, sentences|length, paragraph_size) %}
+                        {% set paragraph_sentences = sentences[i:i+paragraph_size] %}
+                        {% if paragraph_sentences %}
+                            {% set paragraph_text = ' '.join(paragraph_sentences).strip() %}
+                            {% if paragraph_text %}
+                                <p>{{ paragraph_text }}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <!-- Short content, display as single paragraph with cleaned punctuation -->
+                    <p>{{ content_clean }}</p>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Story moral -->
+        {% if story.moral %}
+        <div class="print-moral">
+            <div class="print-moral-label">✨ The Lesson ✨</div>
+            <div class="print-moral-text">{{ story.moral }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="print-footer">
+        <p>Created with WonderTale - Adventure starts with your name</p>
+        <p>Characters: {% for character in story.characters %}{{ character.name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    </div>
+
+    <!-- Print button (hidden when printing) -->
+    <button class="print-button no-print" onclick="window.print()">
+        🖨️ Print This Story
+    </button>
+
+{% else %}
+    <div class="error-message">
+        <h2>No Story Found</h2>
+        <p>No story data was provided for printing.</p>
+        <p><a href="{{ url_for('index') }}">Create a New Story</a></p>
+    </div>
+{% endif %}
+{% endblock %}

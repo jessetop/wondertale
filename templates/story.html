@@ -719,10 +719,26 @@
             <span>✨</span>
             <span>Create Another Story</span>
         </a>
-        <button class="action-btn action-btn-secondary" onclick="window.print()">
-            <span>🖨️</span>
-            <span>Print My Story</span>
-        </button>
+        <form method="POST" action="{{ url_for('print_story_post') }}" target="_blank" style="display: inline;">
+            <input type="hidden" name="title" value="{{ story.title }}">
+            <input type="hidden" name="content" value="{{ story.content }}">
+            <input type="hidden" name="moral" value="{{ story.moral }}">
+            <input type="hidden" name="topic" value="{{ story.topic }}">
+            <input type="hidden" name="age_group" value="{{ story.age_group }}">
+            <input type="hidden" name="story_length" value="{{ story.story_length }}">
+            <input type="hidden" name="word_count" value="{{ story.word_count }}">
+            <input type="hidden" name="magic_tool" value="{{ story.magic_tool }}">
+            <input type="hidden" name="adventure_pack" value="{{ story.adventure_pack }}">
+            <input type="hidden" name="animal_friend" value="{{ story.animal_friend }}">
+            {% for character in story.characters %}
+            <input type="hidden" name="character_{{ loop.index }}_name" value="{{ character.name }}">
+            <input type="hidden" name="character_{{ loop.index }}_pronouns" value="{{ character.pronouns }}">
+            {% endfor %}
+            <button type="submit" class="action-btn action-btn-secondary">
+                <span>🖨️</span>
+                <span>Print My Story</span>
+            </button>
+        </form>
     </div>
 
     <!-- Voice Selection (hidden by default) -->
