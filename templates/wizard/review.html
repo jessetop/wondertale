@@ -1,0 +1,365 @@
+{% extends "wizard/base_wizard.html" %}
+
+{% set current_step = 8 %}
+{% set back_url = url_for('wizard_animal_friend') %}
+
+{% block title %}Review - WonderTale Wizard{% endblock %}
+
+{% block wizard_content %}
+<h1 class="step-title">Ready for your adventure? ✨</h1>
+<p class="step-subtitle">Let's review your story details!</p>
+
+<div id="reviewContent">
+    <!-- Content will be populated by JavaScript -->
+</div>
+
+<form id="reviewForm" method="POST" action="{{ url_for('generate_story') }}" style="display: none;">
+    <!-- Hidden inputs will be populated by JavaScript -->
+</form>
+
+<div class="wizard-nav">
+    <a href="{{ back_url }}" class="nav-btn nav-btn-secondary">
+        ← Previous
+    </a>
+    <button type="button" id="createBtn" class="nav-btn nav-btn-primary" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); font-size: 24px; padding: 24px 48px;">
+        Create My Story! ✨
+    </button>
+</div>
+
+<!-- Loading State (hidden by default) -->
+<div class="loading" id="loadingState" style="display: none; text-align: center; padding: 60px 24px;">
+    <div style="width: 80px; height: 80px; border: 8px solid var(--accent-light); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 24px;"></div>
+    <div style="font-family: 'Fredoka', sans-serif; font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 12px;">Creating your magical story...</div>
+    <div style="font-size: 18px; color: var(--text-light); font-weight: 600;">✨ This will only take a moment! ✨</div>
+</div>
+
+<style>
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.review-section {
+    background: var(--bg-main);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 3px solid var(--accent-light);
+}
+
+.review-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.review-content {
+    font-size: 16px;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.character-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 2px solid var(--accent-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.character-icon {
+    font-size: 32px;
+}
+
+.character-info {
+    flex: 1;
+}
+
+.character-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.character-pronouns {
+    font-size: 14px;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.item-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 2px solid var(--accent-light);
+}
+
+.item-icon {
+    font-size: 24px;
+}
+
+.item-name {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+</style>
+{% endblock %}
+
+{% block wizard_scripts %}
+<script>
+// Get wizard data from sessionStorage
+function getWizardData(key) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    return wizardData[key];
+}
+
+// Icon mappings
+const pronounIcons = {
+    'he/him': '👦',
+    'she/her': '👧',
+    'they/them': '🌈'
+};
+
+const topicIcons = {
+    'space': '🚀',
+    'community': '🏘️',
+    'dragons': '🐉',
+    'fairies': '🧚',
+    'pirates': '🏴‍☠️',
+    'outdoors': '🏕️',
+    'underwater': '🌊',
+    'castle': '🏰'
+};
+
+const topicNames = {
+    'space': 'Outer Space',
+    'community': 'Community',
+    'dragons': 'Dragon Land',
+    'fairies': 'Fairy Garden',
+    'pirates': 'Pirate Adventure',
+    'outdoors': 'Great Outdoors',
+    'underwater': 'Underwater World',
+    'castle': 'Medieval Castle'
+};
+
+const lengthNames = {
+    'short': 'Short (Quick & Sweet)',
+    'medium': 'Medium (Just Right)',
+    'long': 'Long (Epic Adventure)'
+};
+
+const ageNames = {
+    '3-4': '3-4<br><small>Little Reader</small>',
+    '5-6': '5-6<br><small>Growing Reader</small>',
+    '7-8': '7-8<br><small>Big Reader</small>',
+    '9-10': '9-10<br><small>Super Reader</small>'
+};
+
+const itemIcons = {
+    'wand': '🪄',
+    'sword': '⚔️',
+    'bow': '🏹',
+    'staff': '🦯',
+    'shield': '🛡️',
+    'hammer': '🔨',
+    'ring': '💍',
+    'orb': '🔮',
+    'backpack': '🎒',
+    'cape': '🦸',
+    'boots': '👢',
+    'map': '🗺️',
+    'rope': '🪢',
+    'compass': '🧭',
+    'lantern': '🏮',
+    'pouch': '👝',
+    'wolf': '🐺',
+    'parrot': '🦜',
+    'owl': '🦉',
+    'fox': '🦊',
+    'dragon': '🐉',
+    'unicorn': '🦄',
+    'eagle': '🦅',
+    'cat': '🐱'
+};
+
+const itemNames = {
+    'wand': 'Magic Wand',
+    'sword': 'Brave Sword',
+    'bow': 'Magic Bow',
+    'staff': 'Crystal Staff',
+    'shield': 'Power Shield',
+    'hammer': 'Thunder Hammer',
+    'ring': 'Magic Ring',
+    'orb': 'Power Orb',
+    'backpack': 'Magic Backpack',
+    'cape': 'Flying Cape',
+    'boots': 'Speed Boots',
+    'map': 'Treasure Map',
+    'rope': 'Magic Rope',
+    'compass': 'Golden Compass',
+    'lantern': 'Glowing Lantern',
+    'pouch': 'Magic Pouch',
+    'wolf': 'Brave Wolf',
+    'parrot': 'Wise Parrot',
+    'owl': 'Smart Owl',
+    'fox': 'Clever Fox',
+    'dragon': 'Baby Dragon',
+    'unicorn': 'Magic Unicorn',
+    'eagle': 'Golden Eagle',
+    'cat': 'Magic Cat'
+};
+
+function populateReview() {
+    const reviewContent = document.getElementById('reviewContent');
+    const characters = getWizardData('characters');
+    const numCharacters = getWizardData('num_characters');
+    const ageGroup = getWizardData('age_group');
+    const topic = getWizardData('topic');
+    const storyLength = getWizardData('story_length');
+    const magicTool = getWizardData('magic_tool');
+    const adventurePack = getWizardData('adventure_pack');
+    const animalFriend = getWizardData('animal_friend');
+
+    let html = '';
+
+    // Characters section
+    if (characters && numCharacters) {
+        html += `
+            <div class="review-section">
+                <div class="review-title">
+                    👥 Your Characters
+                </div>
+                <div class="review-content">
+        `;
+        
+        for (let i = 1; i <= numCharacters; i++) {
+            const char = characters[i];
+            if (char) {
+                html += `
+                    <div class="character-card">
+                        <div class="character-icon">${pronounIcons[char.pronouns] || '🌟'}</div>
+                        <div class="character-info">
+                            <div class="character-name">${char.name}</div>
+                            <div class="character-pronouns">${char.pronouns}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        html += `
+                </div>
+            </div>
+        `;
+    }
+
+    // Story details section
+    html += `
+        <div class="review-section">
+            <div class="review-title">
+                📖 Story Details
+            </div>
+            <div class="review-content">
+                <div class="item-display">
+                    <div class="item-icon">🎂</div>
+                    <div class="item-name">Age: <span style="display: inline-block;">${ageNames[ageGroup] || ageGroup}</span></div>
+                </div>
+                <div class="item-display">
+                    <div class="item-icon">${topicIcons[topic] || '🌟'}</div>
+                    <div class="item-name">World: ${topicNames[topic] || topic}</div>
+                </div>
+                <div class="item-display">
+                    <div class="item-icon">📖</div>
+                    <div class="item-name">Length: ${lengthNames[storyLength] || storyLength}</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Adventure gear section
+    html += `
+        <div class="review-section">
+            <div class="review-title">
+                ⚡ Adventure Gear
+            </div>
+            <div class="review-content">
+                <div class="item-display">
+                    <div class="item-icon">${itemIcons[magicTool] || '✨'}</div>
+                    <div class="item-name">Magic Tool: ${itemNames[magicTool] || magicTool}</div>
+                </div>
+                <div class="item-display">
+                    <div class="item-icon">${itemIcons[adventurePack] || '🎒'}</div>
+                    <div class="item-name">Adventure Pack: ${itemNames[adventurePack] || adventurePack}</div>
+                </div>
+                <div class="item-display">
+                    <div class="item-icon">${itemIcons[animalFriend] || '🐾'}</div>
+                    <div class="item-name">Animal Friend: ${itemNames[animalFriend] || animalFriend}</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    reviewContent.innerHTML = html;
+}
+
+function populateForm() {
+    const form = document.getElementById('reviewForm');
+    const characters = getWizardData('characters');
+    const numCharacters = getWizardData('num_characters');
+    
+    let formHTML = `
+        <input type="hidden" name="num_characters" value="${numCharacters}">
+        <input type="hidden" name="age_group" value="${getWizardData('age_group')}">
+        <input type="hidden" name="topic" value="${getWizardData('topic')}">
+        <input type="hidden" name="story_length" value="${getWizardData('story_length')}">
+        <input type="hidden" name="magic_tool" value="${getWizardData('magic_tool')}">
+        <input type="hidden" name="adventure_pack" value="${getWizardData('adventure_pack')}">
+        <input type="hidden" name="animal_friend" value="${getWizardData('animal_friend')}">
+        <input type="hidden" name="include_image" value="false">
+    `;
+    
+    // Add character data
+    if (characters && numCharacters) {
+        for (let i = 1; i <= numCharacters; i++) {
+            const char = characters[i];
+            if (char) {
+                formHTML += `
+                    <input type="hidden" name="character_${i}_name" value="${char.name}">
+                    <input type="hidden" name="character_${i}_pronouns" value="${char.pronouns}">
+                `;
+            }
+        }
+    }
+    
+    form.innerHTML = formHTML;
+}
+
+// Handle create button
+document.getElementById('createBtn').addEventListener('click', function() {
+    // Show loading state
+    document.querySelector('.wizard-content').style.display = 'none';
+    document.getElementById('loadingState').style.display = 'block';
+    
+    // Submit form
+    document.getElementById('reviewForm').submit();
+});
+
+// Load and display review data
+window.addEventListener('load', function() {
+    populateReview();
+    populateForm();
+});
+</script>
+{% endblock %}

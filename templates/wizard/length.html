@@ -1,0 +1,104 @@
+{% extends "wizard/base_wizard.html" %}
+
+{% set current_step = 4 %}
+{% set back_url = url_for('wizard_world') %}
+
+{% block title %}Story Length - WonderTale Wizard{% endblock %}
+
+{% block wizard_content %}
+<h1 class="step-title">How long should your story be? 📖</h1>
+<p class="step-subtitle">Pick the perfect length for your adventure!</p>
+
+<form id="lengthForm">
+    <div class="selection-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 600px; margin: 0 auto 40px;">
+        <button type="button" class="selection-btn" data-value="short">
+            <span class="selection-icon">📄</span>
+            <span class="selection-text">Short<br><small style="opacity: 0.8;">Quick & sweet</small></span>
+        </button>
+        <button type="button" class="selection-btn" data-value="medium">
+            <span class="selection-icon">📃</span>
+            <span class="selection-text">Medium<br><small style="opacity: 0.8;">Just right</small></span>
+        </button>
+        <button type="button" class="selection-btn" data-value="long">
+            <span class="selection-icon">📜</span>
+            <span class="selection-text">Long<br><small style="opacity: 0.8;">Epic adventure</small></span>
+        </button>
+    </div>
+
+    <div class="wizard-nav">
+        <a href="{{ back_url }}" class="nav-btn nav-btn-secondary">
+            ← Previous
+        </a>
+        <button type="button" id="nextBtn" class="nav-btn nav-btn-primary" disabled>
+            Next Step →
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block wizard_scripts %}
+<script>
+// Store wizard data in sessionStorage
+function saveWizardData(key, value) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    wizardData[key] = value;
+    sessionStorage.setItem('wizardData', JSON.stringify(wizardData));
+}
+
+function getWizardData(key) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    return wizardData[key];
+}
+
+let selectedLength = null;
+
+// Handle length selection
+document.querySelectorAll('.selection-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const value = this.getAttribute('data-value');
+        
+        // Remove active class from siblings
+        document.querySelectorAll('.selection-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        selectedLength = value;
+        saveWizardData('story_length', value);
+        
+        // Enable next button
+        document.getElementById('nextBtn').disabled = false;
+        
+        // Add visual feedback
+        this.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            this.style.transform = '';
+        }, 200);
+    });
+});
+
+// Handle next button
+document.getElementById('nextBtn').addEventListener('click', function() {
+    if (this.disabled) return;
+    
+    // Navigate to next step
+    window.location.href = '{{ url_for("wizard_magic_tool") }}';
+});
+
+// Load existing data if returning to this step
+window.addEventListener('load', function() {
+    const existingLength = getWizardData('story_length');
+    
+    if (existingLength) {
+        const lengthBtn = document.querySelector(`[data-value="${existingLength}"]`);
+        if (lengthBtn) {
+            lengthBtn.click();
+        }
+    }
+});
+</script>
+{% endblock %}

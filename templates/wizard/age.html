@@ -1,0 +1,108 @@
+{% extends "wizard/base_wizard.html" %}
+
+{% set current_step = 2 %}
+{% set back_url = url_for('wizard_characters') %}
+
+{% block title %}Age - WonderTale Wizard{% endblock %}
+
+{% block wizard_content %}
+<h1 class="step-title">How old are you? 🎂</h1>
+<p class="step-subtitle">This helps us write the perfect story for you!</p>
+
+<form id="ageForm">
+    <div class="number-grid" style="max-width: 500px; margin: 0 auto 40px;">
+        <button type="button" class="number-btn" data-value="3-4">
+            <div style="font-size: 24px; margin-bottom: 4px;">3-4</div>
+            <div style="font-size: 12px; opacity: 0.8;">Little Reader</div>
+        </button>
+        <button type="button" class="number-btn" data-value="5-6">
+            <div style="font-size: 24px; margin-bottom: 4px;">5-6</div>
+            <div style="font-size: 12px; opacity: 0.8;">Growing Reader</div>
+        </button>
+        <button type="button" class="number-btn" data-value="7-8">
+            <div style="font-size: 24px; margin-bottom: 4px;">7-8</div>
+            <div style="font-size: 12px; opacity: 0.8;">Big Reader</div>
+        </button>
+        <button type="button" class="number-btn" data-value="9-10">
+            <div style="font-size: 24px; margin-bottom: 4px;">9-10</div>
+            <div style="font-size: 12px; opacity: 0.8;">Super Reader</div>
+        </button>
+    </div>
+
+    <div class="wizard-nav">
+        <a href="{{ back_url }}" class="nav-btn nav-btn-secondary">
+            ← Previous
+        </a>
+        <button type="button" id="nextBtn" class="nav-btn nav-btn-primary" disabled>
+            Next Step →
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block wizard_scripts %}
+<script>
+// Store wizard data in sessionStorage
+function saveWizardData(key, value) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    wizardData[key] = value;
+    sessionStorage.setItem('wizardData', JSON.stringify(wizardData));
+}
+
+function getWizardData(key) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    return wizardData[key];
+}
+
+let selectedAge = null;
+
+// Handle age selection
+document.querySelectorAll('.number-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const value = this.getAttribute('data-value');
+        
+        // Remove active class from siblings
+        document.querySelectorAll('.number-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        selectedAge = value;
+        saveWizardData('age_group', value);
+        
+        // Enable next button
+        document.getElementById('nextBtn').disabled = false;
+        
+        // Add visual feedback
+        this.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            this.style.transform = '';
+        }, 200);
+    });
+});
+
+// Handle next button
+document.getElementById('nextBtn').addEventListener('click', function() {
+    if (this.disabled) return;
+    
+    // Navigate to next step
+    window.location.href = '{{ url_for("wizard_world") }}';
+});
+
+// Load existing data if returning to this step
+window.addEventListener('load', function() {
+    const existingAge = getWizardData('age_group');
+    
+    if (existingAge) {
+        const ageBtn = document.querySelector(`[data-value="${existingAge}"]`);
+        if (ageBtn) {
+            ageBtn.click();
+        }
+    }
+});
+</script>
+{% endblock %}

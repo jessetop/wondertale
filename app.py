@@ -90,6 +90,52 @@ def create_app():
         """Story creation form"""
         return render_template('index.html')
     
+    # New wizard routes
+    @app.route('/wizard')
+    def wizard_start():
+        """Start the story creation wizard"""
+        return redirect(url_for('wizard_characters'))
+    
+    @app.route('/wizard/characters')
+    def wizard_characters():
+        """Step 1: Character setup"""
+        return render_template('wizard/characters.html')
+    
+    @app.route('/wizard/age')
+    def wizard_age():
+        """Step 2: Age selection"""
+        return render_template('wizard/age.html')
+    
+    @app.route('/wizard/world')
+    def wizard_world():
+        """Step 3: Story world/topic"""
+        return render_template('wizard/world.html')
+    
+    @app.route('/wizard/length')
+    def wizard_length():
+        """Step 4: Story length"""
+        return render_template('wizard/length.html')
+    
+    @app.route('/wizard/magic-tool')
+    def wizard_magic_tool():
+        """Step 5: Magic tool selection"""
+        return render_template('wizard/magic_tool.html')
+    
+    @app.route('/wizard/adventure-pack')
+    def wizard_adventure_pack():
+        """Step 6: Adventure pack selection"""
+        return render_template('wizard/adventure_pack.html')
+    
+    @app.route('/wizard/animal-friend')
+    def wizard_animal_friend():
+        """Step 7: Animal friend selection"""
+        return render_template('wizard/animal_friend.html')
+    
+    @app.route('/wizard/review')
+    def wizard_review():
+        """Final: Review and generate"""
+        return render_template('wizard/review.html')
+    
     @app.route('/generate', methods=['POST'])
     def generate_story():
         """Generate story endpoint - Requirements: 1.1, 1.2, 1.3, 1.4"""

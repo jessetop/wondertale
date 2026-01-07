@@ -455,10 +455,10 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 24px;
+        padding: 12px 20px;
         background: var(--bg-card);
         color: var(--text-dark);
-        border: 2px solid var(--text-light);
+        border: 2px solid var(--accent-light);
         border-radius: 12px;
         font-family: 'Nunito', sans-serif;
         font-size: 16px;
@@ -466,7 +466,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
-        margin-bottom: 24px;
+        min-height: 44px; /* Ensure minimum touch target */
     }
 
     .back-btn:hover {
@@ -477,6 +477,15 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+        header > div {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        header > div > div:last-child {
+            display: none; /* Hide spacer on mobile */
+        }
+        
         .story-form {
             padding: 32px 24px;
         }
@@ -623,13 +632,17 @@
 {% block content %}
 <div class="container">
     <header>
-        <div class="logo">WonderTale</div>
-        <p class="header-subtitle">Adventure starts with your name</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 20px;">
+            <a href="{{ url_for('landing') }}" class="back-btn">
+                ← Back to Home
+            </a>
+            <div style="text-align: center; flex: 1;">
+                <div class="logo">WonderTale</div>
+                <p class="header-subtitle">Adventure starts with your name</p>
+            </div>
+            <div style="width: 140px;"></div> <!-- Spacer for balance -->
+        </div>
     </header>
-
-    <a href="{{ url_for('landing') }}" class="back-btn">
-        ← Back to Home
-    </a>
 
     <div class="story-form">
         <h2 class="form-title">Let's Create Your Story!</h2>
@@ -689,6 +702,22 @@
                         <span class="selection-icon">🧚</span>
                         <span class="selection-text">Fairies</span>
                     </button>
+                    <button type="button" class="selection-btn" data-value="pirates">
+                        <span class="selection-icon">🏴‍☠️</span>
+                        <span class="selection-text">Pirates</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="outdoors">
+                        <span class="selection-icon">🏕️</span>
+                        <span class="selection-text">Outdoors</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="underwater">
+                        <span class="selection-icon">🌊</span>
+                        <span class="selection-text">Underwater</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="castle">
+                        <span class="selection-icon">🏰</span>
+                        <span class="selection-text">Castle</span>
+                    </button>
                 </div>
                 <input type="hidden" id="topic" name="topic" required>
             </div>
@@ -732,8 +761,24 @@
                         <span class="selection-text">Magic Bow</span>
                     </button>
                     <button type="button" class="selection-btn" data-value="staff">
-                        <span class="selection-icon">🔮</span>
+                        <span class="selection-icon">🦯</span>
                         <span class="selection-text">Crystal Staff</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="shield">
+                        <span class="selection-icon">🛡️</span>
+                        <span class="selection-text">Power Shield</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="hammer">
+                        <span class="selection-icon">🔨</span>
+                        <span class="selection-text">Thunder Hammer</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="ring">
+                        <span class="selection-icon">💍</span>
+                        <span class="selection-text">Magic Ring</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="orb">
+                        <span class="selection-icon">🔮</span>
+                        <span class="selection-text">Power Orb</span>
                     </button>
                 </div>
                 <input type="hidden" id="magic_tool" name="magic_tool" required>
@@ -760,6 +805,22 @@
                         <span class="selection-icon">🗺️</span>
                         <span class="selection-text">Treasure Map</span>
                     </button>
+                    <button type="button" class="selection-btn" data-value="rope">
+                        <span class="selection-icon">🪢</span>
+                        <span class="selection-text">Magic Rope</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="compass">
+                        <span class="selection-icon">🧭</span>
+                        <span class="selection-text">Golden Compass</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="lantern">
+                        <span class="selection-icon">🏮</span>
+                        <span class="selection-text">Glowing Lantern</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="pouch">
+                        <span class="selection-icon">👝</span>
+                        <span class="selection-text">Magic Pouch</span>
+                    </button>
                 </div>
                 <input type="hidden" id="adventure_pack" name="adventure_pack" required>
             </div>
@@ -784,6 +845,22 @@
                     <button type="button" class="selection-btn" data-value="fox">
                         <span class="selection-icon">🦊</span>
                         <span class="selection-text">Clever Fox</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="dragon">
+                        <span class="selection-icon">🐉</span>
+                        <span class="selection-text">Baby Dragon</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="unicorn">
+                        <span class="selection-icon">🦄</span>
+                        <span class="selection-text">Magic Unicorn</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="eagle">
+                        <span class="selection-icon">🦅</span>
+                        <span class="selection-text">Golden Eagle</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="cat">
+                        <span class="selection-icon">🐱</span>
+                        <span class="selection-text">Magic Cat</span>
                     </button>
                 </div>
                 <input type="hidden" id="animal_friend" name="animal_friend" required>

@@ -1,0 +1,288 @@
+{% extends "wizard/base_wizard.html" %}
+
+{% set current_step = 1 %}
+{% set back_url = url_for('landing') %}
+
+{% block title %}Characters - WonderTale Wizard{% endblock %}
+
+{% block wizard_content %}
+<h1 class="step-title">Who's in your story? 👥</h1>
+<p class="step-subtitle">Let's create the heroes of your adventure!</p>
+
+<form id="charactersForm">
+    <!-- Number of Characters -->
+    <div class="form-section">
+        <h3 style="font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 16px; text-align: center;">
+            How many characters? 🌟
+        </h3>
+        <div class="number-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 300px; margin: 0 auto 40px;">
+            <button type="button" class="number-btn" data-value="1">1</button>
+            <button type="button" class="number-btn" data-value="2">2</button>
+        </div>
+    </div>
+
+    <!-- Character Details (dynamically generated) -->
+    <div id="charactersContainer"></div>
+
+    <div class="wizard-nav">
+        <div></div> <!-- Empty div for spacing -->
+        <button type="button" id="nextBtn" class="nav-btn nav-btn-primary" disabled>
+            Next Step →
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block wizard_scripts %}
+<script>
+// Store wizard data in sessionStorage
+function saveWizardData(key, value) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    wizardData[key] = value;
+    sessionStorage.setItem('wizardData', JSON.stringify(wizardData));
+}
+
+function getWizardData(key) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    return wizardData[key];
+}
+
+let selectedCharacterCount = 0;
+let characterData = {};
+
+// Generate character input fields
+function generateCharacterFields(count) {
+    const container = document.getElementById('charactersContainer');
+    
+    // Fade out existing content
+    container.style.opacity = '0.5';
+    container.style.transform = 'translateY(-10px)';
+    
+    setTimeout(() => {
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= count; i++) {
+            const characterDiv = document.createElement('div');
+            characterDiv.className = 'character-section';
+            characterDiv.style.cssText = `
+                margin-bottom: 40px;
+                padding: 32px;
+                background: var(--bg-main);
+                border-radius: 20px;
+                border: 3px solid var(--accent-light);
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.3s ease;
+            `;
+            
+            characterDiv.innerHTML = `
+                <h3 style="font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 20px; text-align: center;">
+                    Character ${i} ${i === 1 ? '✨' : '🌟'}
+                </h3>
+                <p style="font-size: 16px; color: var(--text-light); margin-bottom: 20px; text-align: center; font-weight: 600;">
+                    ${i === 1 ? 'The main hero of your story!' : `Character ${i} in your adventure!`}
+                </p>
+                
+                <input type="text" 
+                       id="character_${i}_name" 
+                       placeholder="Enter ${i === 1 ? 'hero' : 'character'} name..." 
+                       maxlength="50"
+                       style="margin-bottom: 24px;">
+                
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <span style="font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-dark);">
+                        Choose pronouns:
+                    </span>
+                </div>
+                
+                <div class="selection-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <button type="button" class="selection-btn" data-value="he/him" data-character="${i}">
+                        <span class="selection-icon">👦</span>
+                        <span class="selection-text">he/him</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="she/her" data-character="${i}">
+                        <span class="selection-icon">👧</span>
+                        <span class="selection-text">she/her</span>
+                    </button>
+                    <button type="button" class="selection-btn" data-value="they/them" data-character="${i}">
+                        <span class="selection-icon">🌈</span>
+                        <span class="selection-text">they/them</span>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(characterDiv);
+            
+            // Animate in each character field
+            setTimeout(() => {
+                characterDiv.style.opacity = '1';
+                characterDiv.style.transform = 'translateY(0)';
+            }, i * 100);
+        }
+        
+        // Fade in container
+        container.style.transition = 'all 0.3s ease';
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+        
+        // Attach event listeners
+        attachCharacterListeners();
+        attachNameListeners();
+        
+    }, 150);
+}
+
+// Handle character count selection
+document.querySelectorAll('.number-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const value = parseInt(this.getAttribute('data-value'));
+        
+        // Remove active class from siblings
+        document.querySelectorAll('.number-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        selectedCharacterCount = value;
+        saveWizardData('num_characters', value);
+        
+        // Generate character fields
+        generateCharacterFields(value);
+        
+        // Check if we can enable next button
+        checkFormCompletion();
+    });
+});
+
+// Attach event listeners for character pronoun selection
+function attachCharacterListeners() {
+    document.querySelectorAll('.selection-btn[data-character]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const characterNum = this.getAttribute('data-character');
+            const value = this.getAttribute('data-value');
+            const characterSection = this.closest('.character-section');
+            
+            // Remove active class from siblings in this character section
+            characterSection.querySelectorAll('.selection-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Store data
+            if (!characterData[characterNum]) {
+                characterData[characterNum] = {};
+            }
+            characterData[characterNum].pronouns = value;
+            
+            // Check if we can enable next button
+            checkFormCompletion();
+        });
+    });
+}
+
+// Attach event listeners for name inputs
+function attachNameListeners() {
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('input', function() {
+            const characterNum = this.id.split('_')[1];
+            const value = this.value.trim();
+            
+            // Store data
+            if (!characterData[characterNum]) {
+                characterData[characterNum] = {};
+            }
+            characterData[characterNum].name = value;
+            
+            // Check if we can enable next button
+            checkFormCompletion();
+        });
+    });
+}
+
+// Check if form is complete
+function checkFormCompletion() {
+    const nextBtn = document.getElementById('nextBtn');
+    
+    if (selectedCharacterCount === 0) {
+        nextBtn.disabled = true;
+        return;
+    }
+    
+    let isComplete = true;
+    
+    for (let i = 1; i <= selectedCharacterCount; i++) {
+        const charData = characterData[i];
+        if (!charData || !charData.name || !charData.pronouns) {
+            isComplete = false;
+            break;
+        }
+        
+        // Validate name contains only letters and spaces
+        const namePattern = /^[A-Za-z\s]+$/;
+        if (!namePattern.test(charData.name)) {
+            isComplete = false;
+            break;
+        }
+    }
+    
+    nextBtn.disabled = !isComplete;
+}
+
+// Handle next button
+document.getElementById('nextBtn').addEventListener('click', function() {
+    if (this.disabled) return;
+    
+    // Save all character data
+    saveWizardData('characters', characterData);
+    
+    // Navigate to next step
+    window.location.href = '{{ url_for("wizard_age") }}';
+});
+
+// Load existing data if returning to this step
+window.addEventListener('load', function() {
+    const existingCount = getWizardData('num_characters');
+    const existingCharacters = getWizardData('characters');
+    
+    if (existingCount) {
+        // Select the number button
+        document.querySelector(`[data-value="${existingCount}"]`).click();
+        
+        // Wait for fields to generate, then populate them
+        setTimeout(() => {
+            if (existingCharacters) {
+                Object.keys(existingCharacters).forEach(charNum => {
+                    const charData = existingCharacters[charNum];
+                    
+                    // Set name
+                    const nameInput = document.getElementById(`character_${charNum}_name`);
+                    if (nameInput && charData.name) {
+                        nameInput.value = charData.name;
+                        characterData[charNum] = characterData[charNum] || {};
+                        characterData[charNum].name = charData.name;
+                    }
+                    
+                    // Set pronouns
+                    if (charData.pronouns) {
+                        const pronounBtn = document.querySelector(`[data-character="${charNum}"][data-value="${charData.pronouns}"]`);
+                        if (pronounBtn) {
+                            pronounBtn.click();
+                        }
+                    }
+                });
+                
+                checkFormCompletion();
+            }
+        }, 500);
+    }
+});
+</script>
+{% endblock %}

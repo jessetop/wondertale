@@ -1,0 +1,114 @@
+{% extends "wizard/base_wizard.html" %}
+
+{% set current_step = 7 %}
+{% set back_url = url_for('wizard_adventure_pack') %}
+
+{% block title %}Animal Friend - WonderTale Wizard{% endblock %}
+
+{% block wizard_content %}
+<h1 class="step-title">Pick your Animal Friend! 🐾</h1>
+<p class="step-subtitle">Who will be your loyal companion?</p>
+
+<div class="selection-grid">
+    <button type="button" class="selection-btn" data-value="wolf">
+        <span class="selection-icon">🐺</span>
+        <span class="selection-text">Brave Wolf</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="parrot">
+        <span class="selection-icon">🦜</span>
+        <span class="selection-text">Wise Parrot</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="owl">
+        <span class="selection-icon">🦉</span>
+        <span class="selection-text">Smart Owl</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="fox">
+        <span class="selection-icon">🦊</span>
+        <span class="selection-text">Clever Fox</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="dragon">
+        <span class="selection-icon">🐉</span>
+        <span class="selection-text">Baby Dragon</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="unicorn">
+        <span class="selection-icon">🦄</span>
+        <span class="selection-text">Magic Unicorn</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="eagle">
+        <span class="selection-icon">🦅</span>
+        <span class="selection-text">Golden Eagle</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="cat">
+        <span class="selection-icon">🐱</span>
+        <span class="selection-text">Magic Cat</span>
+    </button>
+</div>
+
+<div class="wizard-nav">
+    <a href="{{ back_url }}" class="nav-btn nav-btn-secondary">
+        ← Previous
+    </a>
+    <button type="button" id="nextBtn" class="nav-btn nav-btn-primary" disabled>
+        Next →
+    </button>
+</div>
+{% endblock %}
+
+{% block wizard_scripts %}
+<script>
+// Get wizard data from sessionStorage
+function getWizardData(key) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    return wizardData[key];
+}
+
+// Save wizard data to sessionStorage
+function saveWizardData(key, value) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    wizardData[key] = value;
+    sessionStorage.setItem('wizardData', JSON.stringify(wizardData));
+}
+
+// Handle selection
+let selectedValue = null;
+
+document.querySelectorAll('.selection-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.selection-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Store selection
+        selectedValue = this.getAttribute('data-value');
+        saveWizardData('animal_friend', selectedValue);
+        
+        // Enable next button
+        document.getElementById('nextBtn').disabled = false;
+    });
+});
+
+// Handle next button
+document.getElementById('nextBtn').addEventListener('click', function() {
+    if (selectedValue) {
+        window.location.href = '{{ url_for("wizard_review") }}';
+    }
+});
+
+// Load existing selection
+window.addEventListener('load', function() {
+    const existingValue = getWizardData('animal_friend');
+    if (existingValue) {
+        const btn = document.querySelector(`[data-value="${existingValue}"]`);
+        if (btn) {
+            btn.classList.add('active');
+            selectedValue = existingValue;
+            document.getElementById('nextBtn').disabled = false;
+        }
+    }
+});
+</script>
+{% endblock %}

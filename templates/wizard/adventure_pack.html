@@ -1,0 +1,114 @@
+{% extends "wizard/base_wizard.html" %}
+
+{% set current_step = 6 %}
+{% set back_url = url_for('wizard_magic_tool') %}
+
+{% block title %}Adventure Pack - WonderTale Wizard{% endblock %}
+
+{% block wizard_content %}
+<h1 class="step-title">Pick your Adventure Pack! 🎒</h1>
+<p class="step-subtitle">What will you carry on your journey?</p>
+
+<div class="selection-grid">
+    <button type="button" class="selection-btn" data-value="backpack">
+        <span class="selection-icon">🎒</span>
+        <span class="selection-text">Magic Backpack</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="cape">
+        <span class="selection-icon">🦸</span>
+        <span class="selection-text">Flying Cape</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="boots">
+        <span class="selection-icon">👢</span>
+        <span class="selection-text">Speed Boots</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="map">
+        <span class="selection-icon">🗺️</span>
+        <span class="selection-text">Treasure Map</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="rope">
+        <span class="selection-icon">🪢</span>
+        <span class="selection-text">Magic Rope</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="compass">
+        <span class="selection-icon">🧭</span>
+        <span class="selection-text">Golden Compass</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="lantern">
+        <span class="selection-icon">🏮</span>
+        <span class="selection-text">Glowing Lantern</span>
+    </button>
+    <button type="button" class="selection-btn" data-value="pouch">
+        <span class="selection-icon">👝</span>
+        <span class="selection-text">Magic Pouch</span>
+    </button>
+</div>
+
+<div class="wizard-nav">
+    <a href="{{ back_url }}" class="nav-btn nav-btn-secondary">
+        ← Previous
+    </a>
+    <button type="button" id="nextBtn" class="nav-btn nav-btn-primary" disabled>
+        Next →
+    </button>
+</div>
+{% endblock %}
+
+{% block wizard_scripts %}
+<script>
+// Get wizard data from sessionStorage
+function getWizardData(key) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    return wizardData[key];
+}
+
+// Save wizard data to sessionStorage
+function saveWizardData(key, value) {
+    let wizardData = JSON.parse(sessionStorage.getItem('wizardData') || '{}');
+    wizardData[key] = value;
+    sessionStorage.setItem('wizardData', JSON.stringify(wizardData));
+}
+
+// Handle selection
+let selectedValue = null;
+
+document.querySelectorAll('.selection-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.selection-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        this.classList.add('active');
+        
+        // Store selection
+        selectedValue = this.getAttribute('data-value');
+        saveWizardData('adventure_pack', selectedValue);
+        
+        // Enable next button
+        document.getElementById('nextBtn').disabled = false;
+    });
+});
+
+// Handle next button
+document.getElementById('nextBtn').addEventListener('click', function() {
+    if (selectedValue) {
+        window.location.href = '{{ url_for("wizard_animal_friend") }}';
+    }
+});
+
+// Load existing selection
+window.addEventListener('load', function() {
+    const existingValue = getWizardData('adventure_pack');
+    if (existingValue) {
+        const btn = document.querySelector(`[data-value="${existingValue}"]`);
+        if (btn) {
+            btn.classList.add('active');
+            selectedValue = existingValue;
+            document.getElementById('nextBtn').disabled = false;
+        }
+    }
+});
+</script>
+{% endblock %}

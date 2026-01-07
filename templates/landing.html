@@ -723,7 +723,14 @@
             <p class="hero-description">
                 Every child deserves to be the hero of their own story. WonderTale creates safe, personalized adventures that spark imagination and build a love for reading—one magical tale at a time.
             </p>
-            <a href="{{ url_for('index') }}" class="cta-button">Create Your Story</a>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 32px;">
+                <a href="{{ url_for('wizard_characters') }}" class="cta-button" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);">
+                    ✨ Easy Wizard (Recommended)
+                </a>
+                <a href="{{ url_for('index') }}" class="cta-button" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                    📝 All-in-One Form
+                </a>
+            </div>
         </div>
     </section>
 
@@ -808,7 +815,14 @@
     <section class="hero" style="padding-top: 40px;">
         <div class="container">
             <h2 style="font-size: 42px; margin-bottom: 32px; font-family: 'Fredoka', sans-serif;">Ready to Start Your Adventure?</h2>
-            <a href="{{ url_for('index') }}" class="cta-button">Create Your Story Now</a>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="{{ url_for('wizard_characters') }}" class="cta-button" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);">
+                    ✨ Easy Step-by-Step Wizard
+                </a>
+                <a href="{{ url_for('index') }}" class="cta-button" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                    📝 Quick All-in-One Form
+                </a>
+            </div>
         </div>
     </section>
 </main>
