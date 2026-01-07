@@ -139,6 +139,13 @@ def create_app():
     @app.route('/generate', methods=['POST'])
     def generate_story():
         """Generate story endpoint - Requirements: 1.1, 1.2, 1.3, 1.4"""
+        
+        # Check if this is a request for the loading page
+        if request.form.get('show_loading') == 'true':
+            # Return loading page that will auto-submit to actual generation
+            form_data = dict(request.form)
+            return render_template('loading.html', form_data=form_data)
+        
         try:
             # Import services
             from services.story_generator import StoryGenerator
@@ -147,6 +154,9 @@ def create_app():
             
             # Extract form data
             form_data = request.form
+            
+            # Detect if this came from the wizard (wizard sends a hidden field)
+            came_from_wizard = form_data.get('source') == 'wizard'
             
             # Parse characters
             characters = []
@@ -223,7 +233,7 @@ def create_app():
             # Store story (for now, just pass to template)
             # In a full implementation, we'd store in database
             
-            return render_template('story.html', story=generated_story)
+            return render_template('story.html', story=generated_story, came_from_wizard=came_from_wizard)
             
         except ImportError as e:
             print(f"ERROR: Import failed: {e}")

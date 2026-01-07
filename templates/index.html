@@ -360,6 +360,28 @@
         opacity: 0;
     }
 
+    /* Age formatting styles */
+    .age-number {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 4px;
+    }
+
+    .age-type {
+        font-size: 12px;
+        opacity: 0.8;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .number-btn {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
     /* Touch feedback */
     .number-btn:active {
         transform: scale(1.05);
@@ -654,6 +676,9 @@
         {% endif %}
 
         <form id="storyForm" method="POST" action="{{ url_for('generate_story') }}">
+            <!-- Hidden field to identify source -->
+            <input type="hidden" name="source" value="single">
+            
             <!-- Number of Characters -->
             <div class="form-group">
                 <label class="form-label">How many characters in your story? 👥</label>
@@ -674,20 +699,20 @@
                 <span class="form-helper">Click your age!</span>
                 <div class="number-grid">
                     <button type="button" class="number-btn" data-value="3-4">
-                        <div style="font-size: 24px; margin-bottom: 4px; display: block;">3-4</div>
-                        <div style="font-size: 12px; opacity: 0.8; display: block;">Little Reader</div>
+                        <div class="age-number">3-4</div>
+                        <div class="age-type">Little Reader</div>
                     </button>
                     <button type="button" class="number-btn" data-value="5-6">
-                        <div style="font-size: 24px; margin-bottom: 4px; display: block;">5-6</div>
-                        <div style="font-size: 12px; opacity: 0.8; display: block;">Growing Reader</div>
+                        <div class="age-number">5-6</div>
+                        <div class="age-type">Growing Reader</div>
                     </button>
                     <button type="button" class="number-btn" data-value="7-8">
-                        <div style="font-size: 24px; margin-bottom: 4px; display: block;">7-8</div>
-                        <div style="font-size: 12px; opacity: 0.8; display: block;">Big Reader</div>
+                        <div class="age-number">7-8</div>
+                        <div class="age-type">Big Reader</div>
                     </button>
                     <button type="button" class="number-btn" data-value="9-10">
-                        <div style="font-size: 24px; margin-bottom: 4px; display: block;">9-10</div>
-                        <div style="font-size: 12px; opacity: 0.8; display: block;">Super Reader</div>
+                        <div class="age-number">9-10</div>
+                        <div class="age-type">Super Reader</div>
                     </button>
                 </div>
                 <input type="hidden" id="age_group" name="age_group" required>

@@ -36,13 +36,23 @@ class StoryGenerator:
             
         api_key = os.getenv('OPENAI_API_KEY')
         if api_key:
-            # Configure client with timeout to prevent Railway worker timeouts
+            # Configure client with longer timeout for story generation
             self.client = OpenAI(
                 api_key=api_key,
-                timeout=25.0  # 25 seconds timeout (Railway default worker timeout is 30s)
+                timeout=120.0  # 2 minutes timeout for story generation
             )
         else:
             print("Warning: OPENAI_API_KEY not found in environment variables")
+    
+    def _get_age_specific_formatting(self, age_group: str) -> str:
+        """Get age-specific formatting instructions"""
+        formatting_instructions = {
+            "3-4": "Use VERY SHORT paragraphs (1-2 sentences each) with lots of line breaks",
+            "5-6": "Use SHORT paragraphs (2-3 sentences each) with clear line breaks", 
+            "7-8": "Use paragraphs (2-4 sentences each) with line breaks between paragraphs",
+            "9-10": "Use paragraphs (2-4 sentences each) with line breaks between paragraphs"
+        }
+        return formatting_instructions.get(age_group, formatting_instructions["5-6"])
     
     def _create_story_prompt(self, request: StoryRequest) -> str:
         """Create a detailed prompt for story generation"""
@@ -75,6 +85,9 @@ class StoryGenerator:
         
         topic_context = topic_contexts.get(request.topic, request.topic)
         
+        # Get age-specific formatting instructions
+        age_formatting = self._get_age_specific_formatting(request.age_group)
+        
         prompt = f"""Write a children's story for ages {request.age_group} with the following requirements:
 
 CHARACTERS: {characters_text}
@@ -90,14 +103,11 @@ ADVENTURE ITEMS: Include these items naturally in the story:
 - Animal Friend: {animal_friend} (a loyal companion who helps on the journey)
 
 STORY REQUIREMENTS:
-- CRITICAL: Write EXACTLY {min_words}-{max_words} words (this is {request.story_length} length for ages {request.age_group})
-- WORD COUNT IS MANDATORY: Count your words carefully and ensure you meet the target
+- MINIMUM LENGTH: Write at least {min_words} words (aim for {max_words} words for a {request.story_length} story)
 - Include exactly ONE clear moral or positive lesson
 - Use {vocabulary_level} vocabulary appropriate for ages {request.age_group}
 - Follow a clear beginning, middle, and end structure
-- For ages 3-4: Use VERY SHORT paragraphs (1-2 sentences each) with lots of line breaks
-- For ages 5-6: Use SHORT paragraphs (2-3 sentences each) with clear line breaks
-- For ages 7+: Use paragraphs (2-4 sentences each) with line breaks between paragraphs
+- FORMATTING: {age_formatting}
 - Add line breaks between paragraphs to make it easier for children to read
 - IMPORTANT: Use proper punctuation with spaces after periods, exclamation marks, and question marks
 - Ensure each sentence ends with proper punctuation followed by a space before the next sentence
@@ -109,11 +119,9 @@ STORY REQUIREMENTS:
 VOCABULARY LEVEL: {vocabulary_level}
 {self._get_vocabulary_guidelines(request.age_group)}
 
-WORD COUNT REMINDER: Your story must be between {min_words} and {max_words} words. This is non-negotiable.
-
 Please format the response as:
 TITLE: [Story Title]
-STORY: [The complete story - {min_words} to {max_words} words]
+STORY: [The complete story - at least {min_words} words]
 MORAL: [The moral lesson in one clear sentence]"""
 
         return prompt
@@ -205,24 +213,22 @@ MORAL: [The moral lesson in one clear sentence]"""
         return title.strip(), story.strip(), moral.strip()
     
     def _validate_story_content(self, story: str, request: StoryRequest) -> bool:
-        """Validate that the generated story meets requirements"""
+        """Validate that the generated story meets basic requirements"""
         if not story:
             print("DEBUG: Story validation failed - empty story")
             return False
         
-        # Check word count against target range
+        # Check word count - just ensure it meets minimum
         word_count = len(story.split())
         min_words, max_words = request.get_target_word_count_range()
         
-        # Allow some flexibility (±15% of range, but minimum 80% of target)
-        flexibility = int((max_words - min_words) * 0.15)
-        flexible_min = max(min_words - flexibility, int(min_words * 0.8))
-        flexible_max = max_words + flexibility
+        # Be more lenient - just check minimum with some flexibility
+        minimum_acceptable = int(min_words * 0.7)  # Accept 70% of minimum
         
-        print(f"DEBUG: Story validation - Word count: {word_count}, Target: {min_words}-{max_words}, Flexible: {flexible_min}-{flexible_max}")
+        print(f"DEBUG: Story validation - Word count: {word_count}, Minimum: {min_words}, Acceptable: {minimum_acceptable}")
         
-        if word_count < flexible_min or word_count > flexible_max:
-            print(f"DEBUG: Story validation failed - word count {word_count} outside range {flexible_min}-{flexible_max}")
+        if word_count < minimum_acceptable:
+            print(f"DEBUG: Story validation failed - word count {word_count} below minimum {minimum_acceptable}")
             return False
         
         # Check that all character names appear in the story
@@ -255,92 +261,152 @@ MORAL: [The moral lesson in one clear sentence]"""
             # Create the prompt
             prompt = self._create_story_prompt(request)
             
+            # Log the full prompt for debugging
+            print("=" * 80)
+            print("DEBUG: FULL OPENAI PROMPT BEING SENT:")
+            print("=" * 80)
+            print(prompt)
+            print("=" * 80)
+            
             # Generate story using OpenAI GPT-4 with retry logic
-            max_retries = 2
+            max_retries = 3  # Increased retries for better reliability
             for attempt in range(max_retries + 1):
                 try:
                     print(f"DEBUG: OpenAI API call attempt {attempt + 1}/{max_retries + 1}")
+                    
+                    # Log the system message too
+                    system_message = "You are a children's story writer who creates age-appropriate, educational, and entertaining stories for children ages 3-10. Always follow the formatting instructions exactly and meet the specified word count requirements."
+                    print(f"DEBUG: System message: {system_message}")
+                    
+                    # Adjust timeout based on attempt (longer timeout for retries)
+                    print(f"DEBUG: Using client timeout: 120s for all attempts")
+                    
                     response = self.client.chat.completions.create(
                         model="gpt-4",
                         messages=[
                             {
                                 "role": "system", 
-                                "content": "You are a children's story writer who creates age-appropriate, educational, and entertaining stories for children ages 3-10. Always follow the formatting instructions exactly and meet the specified word count requirements."
+                                "content": system_message
                             },
                             {"role": "user", "content": prompt}
                         ],
                         max_tokens=1000,  # Increased for longer stories
                         temperature=0.7
                     )
+                    
+                    # Log the raw response
+                    raw_response = response.choices[0].message.content
+                    print("=" * 80)
+                    print("DEBUG: RAW OPENAI RESPONSE:")
+                    print("=" * 80)
+                    print(raw_response)
+                    print("=" * 80)
+                    
                     break  # Success, exit retry loop
                     
                 except Exception as api_error:
-                    print(f"DEBUG: OpenAI API attempt {attempt + 1} failed: {api_error}")
+                    error_msg = str(api_error).lower()
+                    if "timeout" in error_msg or "timed out" in error_msg:
+                        print(f"DEBUG: OpenAI API attempt {attempt + 1} timed out: {api_error}")
+                    else:
+                        print(f"DEBUG: OpenAI API attempt {attempt + 1} failed: {api_error}")
+                    
                     if attempt == max_retries:
                         # Last attempt failed, re-raise the error
+                        print(f"DEBUG: All {max_retries + 1} attempts failed, giving up")
                         raise api_error
-                    # Wait briefly before retry
-                    import time
-                    time.sleep(1)
+                    
+                    # Wait longer between retries for timeouts
+                    if "timeout" in error_msg or "timed out" in error_msg:
+                        wait_time = 5 + (attempt * 5)  # 5s, 10s, 15s
+                        print(f"DEBUG: Waiting {wait_time}s before retry due to timeout...")
+                        import time
+                        time.sleep(wait_time)
+                    else:
+                        # Wait briefly before retry for other errors
+                        import time
+                        time.sleep(2)
             
             # Extract the story content
             story_text = response.choices[0].message.content
             title, content, moral = self._parse_story_response(story_text)
             
+            # Log parsed results
+            word_count = len(content.split()) if content else 0
+            min_words, max_words = request.get_target_word_count_range()
+            print(f"DEBUG: Parsed story - Title: '{title}', Word count: {word_count}, Target: {min_words}-{max_words}")
+            
             # Validate the generated content
             if not self._validate_story_content(content, request):
-                # If validation fails, try up to 2 more times with increasingly specific prompts
+                # Simple retry with emphasis on minimum length
                 min_words, max_words = request.get_target_word_count_range()
                 
-                for retry_attempt in range(2):
-                    print(f"DEBUG: Story validation failed, retry attempt {retry_attempt + 1}/2")
-                    
-                    if retry_attempt == 0:
-                        retry_prompt = prompt + f"\n\nCRITICAL: The previous story was too short. You MUST write between {min_words} and {max_words} words. Count each word carefully."
-                    else:
-                        retry_prompt = f"""URGENT: Write a children's story that is EXACTLY {min_words} to {max_words} words.
+                print(f"DEBUG: Story too short, retrying with emphasis on minimum {min_words} words")
+                
+                retry_prompt = f"""Write a children's story that is at least {min_words} words long.
 
 CHARACTERS: {', '.join([char.name for char in request.characters])}
 TOPIC: {request.topic}
 ITEMS: {magic_tool}, {adventure_pack}, {animal_friend}
 AGE: {request.age_group}
 
-Write a complete story with beginning, middle, and end. Count your words as you write. The story MUST be {min_words}-{max_words} words long.
+Write a complete story with beginning, middle, and end. Make sure it's at least {min_words} words. Tell a full adventure story, not just a summary.
 
 Format:
 TITLE: [Title]
-STORY: [Story of {min_words}-{max_words} words]
+STORY: [Complete story of at least {min_words} words]
 MORAL: [Moral lesson]"""
-                    
-                    retry_response = self.client.chat.completions.create(
-                        model="gpt-4",
-                        messages=[
-                            {
-                                "role": "system", 
-                                "content": f"You are a children's story writer. You MUST write stories with exactly {min_words}-{max_words} words. Count every word carefully."
-                            },
-                            {"role": "user", "content": retry_prompt}
-                        ],
-                        max_tokens=1000,  # Increased for longer stories
-                        temperature=0.6
-                    )
-                    
-                    retry_text = retry_response.choices[0].message.content
-                    title, content, moral = self._parse_story_response(retry_text)
-                    
-                    # Check if this retry worked
-                    if self._validate_story_content(content, request):
-                        print(f"DEBUG: Retry attempt {retry_attempt + 1} succeeded")
-                        break
-                    else:
-                        print(f"DEBUG: Retry attempt {retry_attempt + 1} failed")
                 
-                # If all retries failed, log the final word count
+                # Log the retry prompt
+                print("=" * 80)
+                print("DEBUG: RETRY PROMPT BEING SENT:")
+                print("=" * 80)
+                print(retry_prompt)
+                print("=" * 80)
+                
+                retry_system_message = f"You are a children's story writer. Write complete, detailed stories that are at least {min_words} words long. Don't write summaries - write full stories with dialogue, action, and detail."
+                print(f"DEBUG: Retry system message: {retry_system_message}")
+                
+                retry_response = self.client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {
+                            "role": "system", 
+                            "content": retry_system_message
+                        },
+                        {"role": "user", "content": retry_prompt}
+                    ],
+                    max_tokens=1200,  # Increased for longer stories
+                    temperature=0.7
+                )
+                
+                retry_text = retry_response.choices[0].message.content
+                
+                # Log the retry response
+                print("=" * 80)
+                print("DEBUG: RETRY RESPONSE:")
+                print("=" * 80)
+                print(retry_text)
+                print("=" * 80)
+                
+                title, content, moral = self._parse_story_response(retry_text)
+                
+                # Log final result
                 final_word_count = len(content.split()) if content else 0
-                print(f"DEBUG: All retries failed. Final word count: {final_word_count}, Target: {min_words}-{max_words}")
+                print(f"DEBUG: Retry completed. Final word count: {final_word_count}, Target minimum: {min_words}")
             
             # Create and return the generated story
             target_range = request.get_target_word_count_range()
+            final_word_count = len(content.split()) if content else 0
+            
+            print("=" * 80)
+            print("DEBUG: FINAL STORY SUMMARY:")
+            print(f"Title: {title}")
+            print(f"Word count: {final_word_count}")
+            print(f"Target range: {target_range}")
+            print(f"Moral: {moral}")
+            print("=" * 80)
+            
             return GeneratedStory.create(
                 title=title or "Your Amazing Adventure",
                 content=content,

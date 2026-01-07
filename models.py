@@ -95,14 +95,15 @@ class StoryRequest:
     
     def get_target_word_count_range(self) -> tuple[int, int]:
         """Return (min_words, max_words) based on age_group and story_length."""
+        # Simplified approach - just use minimum word counts that make sense
         word_count_ranges = {
-            "3-4": {"short": (20, 60), "medium": (60, 120), "long": (120, 180)},
-            "5-6": {"short": (50, 120), "medium": (120, 250), "long": (250, 400)},
-            "7-8": {"short": (100, 250), "medium": (250, 400), "long": (400, 500)},
-            "9-10": {"short": (150, 300), "medium": (300, 450), "long": (450, 500)}
+            "3-4": {"short": (50, 100), "medium": (100, 200), "long": (200, 300)},
+            "5-6": {"short": (100, 200), "medium": (200, 400), "long": (400, 600)},
+            "7-8": {"short": (200, 400), "medium": (400, 600), "long": (600, 800)},
+            "9-10": {"short": (300, 500), "medium": (500, 700), "long": (700, 1000)}
         }
         
-        return word_count_ranges.get(self.age_group, {}).get(self.story_length, (100, 300))
+        return word_count_ranges.get(self.age_group, {}).get(self.story_length, (200, 400))
 
 
 @dataclass

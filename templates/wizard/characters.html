@@ -47,6 +47,22 @@ function getWizardData(key) {
     return wizardData[key];
 }
 
+function clearWizardData() {
+    sessionStorage.removeItem('wizardData');
+}
+
+// Check if we should clear wizard data (new session)
+function shouldClearWizardData() {
+    // Clear if coming from story page, if explicitly requested, or if starting fresh
+    const urlParams = new URLSearchParams(window.location.search);
+    const referrer = document.referrer;
+    
+    return urlParams.get('clear') === 'true' || 
+           referrer.includes('/story/') || 
+           referrer.includes('/generate') ||
+           (!referrer || referrer === window.location.origin + '/');
+}
+
 let selectedCharacterCount = 0;
 let characterData = {};
 
@@ -278,6 +294,11 @@ document.getElementById('nextBtn').addEventListener('click', function() {
 
 // Load existing data if returning to this step
 window.addEventListener('load', function() {
+    // Clear wizard data if starting fresh
+    if (shouldClearWizardData()) {
+        clearWizardData();
+    }
+    
     const existingCount = getWizardData('num_characters');
     const existingCharacters = getWizardData('characters');
     

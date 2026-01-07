@@ -27,11 +27,12 @@
 </div>
 
 <!-- Loading State (hidden by default) -->
-<div class="loading" id="loadingState" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); z-index: 1000; text-align: center; padding: 60px 24px;">
+<div class="loading" id="loadingState" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.98); z-index: 9999; text-align: center; padding: 60px 24px;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
         <div style="width: 80px; height: 80px; border: 8px solid var(--accent-light); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 24px;"></div>
         <div style="font-family: 'Fredoka', sans-serif; font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 12px;">Creating your magical story...</div>
         <div style="font-size: 18px; color: var(--text-light); font-weight: 600;">✨ This will only take a moment! ✨</div>
+        <div style="font-size: 14px; color: var(--text-light); font-weight: 500; margin-top: 20px;">Please wait while we generate your personalized adventure...</div>
     </div>
 </div>
 
@@ -349,6 +350,8 @@ function populateForm() {
         <input type="hidden" name="adventure_pack" value="${getWizardData('adventure_pack')}">
         <input type="hidden" name="animal_friend" value="${getWizardData('animal_friend')}">
         <input type="hidden" name="include_image" value="false">
+        <input type="hidden" name="source" value="wizard">
+        <input type="hidden" name="show_loading" value="true">
     `;
     
     // Add character data
@@ -369,6 +372,8 @@ function populateForm() {
 
 // Handle create button
 document.getElementById('createBtn').addEventListener('click', function() {
+    console.log('Create button clicked!');
+    
     // Comprehensive validation before submission
     const characters = getWizardData('characters');
     const numCharacters = getWizardData('num_characters');
@@ -439,18 +444,29 @@ document.getElementById('createBtn').addEventListener('click', function() {
     }
     
     // All validation passed - show loading state and submit
-    const wizardContent = document.querySelector('.wizard-content');
+    console.log('About to show loading state...');
+    
+    // Try multiple selectors to find the content to hide
+    const wizardContent = document.querySelector('.wizard-content') || 
+                         document.querySelector('.container') || 
+                         document.querySelector('main') ||
+                         document.body;
+    
     const loadingState = document.getElementById('loadingState');
     
-    if (wizardContent) {
-        wizardContent.style.display = 'none';
-    }
-    if (loadingState) {
-        loadingState.style.display = 'block';
-    }
+    console.log('Elements found:', { 
+        wizardContent: !!wizardContent, 
+        loadingState: !!loadingState,
+        wizardContentDisplay: wizardContent ? wizardContent.style.display : 'not found',
+        loadingStateDisplay: loadingState ? loadingState.style.display : 'not found'
+    });
     
-    // Submit form
-    document.getElementById('reviewForm').submit();
+    // All validation passed - submit form (loading will be handled server-side)
+    console.log('Submitting form to server...');
+    
+    // Submit form - server will show loading page first
+    const form = document.getElementById('reviewForm');
+    form.submit();
 });
 
 // Load and display review data

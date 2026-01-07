@@ -715,7 +715,7 @@
             <span>⏹️</span>
             <span>Stop Reading</span>
         </button>
-        <a href="{{ url_for('index') }}" class="action-btn action-btn-primary">
+        <a href="{% if came_from_wizard %}{{ url_for('wizard_characters') }}?clear=true{% else %}{{ url_for('index') }}{% endif %}" class="action-btn action-btn-primary">
             <span>✨</span>
             <span>Create Another Story</span>
         </a>

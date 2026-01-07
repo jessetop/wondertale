@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Creating Your Story - WonderTale{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loading-container {
+        text-align: center;
+        padding: 60px 24px;
+    }
+
+    .loading-spinner {
+        width: 100px;
+        height: 100px;
+        border: 10px solid var(--accent-light);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 32px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-title {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 16px;
+    }
+
+    .loading-subtitle {
+        font-size: 20px;
+        color: var(--text-light);
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+
+    .loading-message {
+        font-size: 16px;
+        color: var(--text-light);
+        font-weight: 500;
+        max-width: 400px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .loading-title {
+            font-size: 28px;
+        }
+        
+        .loading-subtitle {
+            font-size: 18px;
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border-width: 8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="loading-container">
+    <div class="loading-spinner"></div>
+    <h1 class="loading-title">Creating your magical story...</h1>
+    <p class="loading-subtitle">✨ This will only take a moment! ✨</p>
+    <p class="loading-message">
+        Our AI storyteller is crafting a personalized adventure just for you. 
+        Please wait while we bring your characters to life!
+    </p>
+</div>
+
+<!-- Hidden form that will auto-submit to generate the actual story -->
+<form id="generateForm" method="POST" action="{{ url_for('generate_story') }}" style="display: none;">
+    {% for key, value in form_data.items() %}
+        {% if key != 'show_loading' %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endif %}
+    {% endfor %}
+</form>
+
+<script>
+// Auto-submit the form after a brief delay to show the loading screen
+setTimeout(function() {
+    document.getElementById('generateForm').submit();
+}, 1000); // 1 second delay to show loading screen
+</script>
+{% endblock %}
