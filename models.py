@@ -64,7 +64,7 @@ class StoryRequest:
                 errors.append(f"Character {i+1}: {str(e)}")
         
         # Validate topic
-        valid_topics = {"space", "community", "dragons", "fairies"}
+        valid_topics = {"space", "community", "dragons", "fairies", "pirates", "outdoors", "underwater", "castle"}
         if self.topic not in valid_topics:
             errors.append(f"Invalid topic: '{self.topic}'. Must be one of: {', '.join(valid_topics)}")
         

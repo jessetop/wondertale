@@ -240,6 +240,35 @@ function checkFormCompletion() {
 document.getElementById('nextBtn').addEventListener('click', function() {
     if (this.disabled) return;
     
+    // Final validation before proceeding
+    if (selectedCharacterCount === 0) {
+        alert('Please select the number of characters!');
+        return;
+    }
+    
+    // Validate character data
+    for (let i = 1; i <= selectedCharacterCount; i++) {
+        const charData = characterData[i];
+        if (!charData || !charData.name || !charData.pronouns) {
+            alert(`Please complete all details for Character ${i}!`);
+            return;
+        }
+        
+        // Validate name contains only letters and spaces
+        const namePattern = /^[A-Za-z\s]+$/;
+        if (!namePattern.test(charData.name)) {
+            alert(`Character ${i} name can only contain letters and spaces!`);
+            return;
+        }
+        
+        // Validate pronouns
+        const validPronouns = ['he/him', 'she/her', 'they/them'];
+        if (!validPronouns.includes(charData.pronouns)) {
+            alert(`Invalid pronouns for Character ${i}!`);
+            return;
+        }
+    }
+    
     // Save all character data
     saveWizardData('characters', characterData);
     

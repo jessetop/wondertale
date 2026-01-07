@@ -93,9 +93,19 @@ document.querySelectorAll('.selection-btn').forEach(btn => {
 
 // Handle next button
 document.getElementById('nextBtn').addEventListener('click', function() {
-    if (selectedValue) {
-        window.location.href = '{{ url_for("wizard_adventure_pack") }}';
+    if (!selectedValue) {
+        alert('Please select a magic tool!');
+        return;
     }
+    
+    // Validate against allowed magic tools
+    const validTools = ['wand', 'sword', 'bow', 'staff', 'shield', 'hammer', 'ring', 'orb'];
+    if (!validTools.includes(selectedValue)) {
+        alert('Invalid magic tool selection. Please choose a different tool.');
+        return;
+    }
+    
+    window.location.href = '{{ url_for("wizard_adventure_pack") }}';
 });
 
 // Load existing selection

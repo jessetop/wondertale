@@ -85,6 +85,19 @@ document.querySelectorAll('.selection-btn').forEach(btn => {
 document.getElementById('nextBtn').addEventListener('click', function() {
     if (this.disabled) return;
     
+    // Validate selection before proceeding
+    if (!selectedLength) {
+        alert('Please select a story length!');
+        return;
+    }
+    
+    // Validate against allowed lengths
+    const validLengths = ['short', 'medium', 'long'];
+    if (!validLengths.includes(selectedLength)) {
+        alert('Invalid length selection. Please choose a different length.');
+        return;
+    }
+    
     // Navigate to next step
     window.location.href = '{{ url_for("wizard_magic_tool") }}';
 });

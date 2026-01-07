@@ -12,20 +12,20 @@
 <form id="ageForm">
     <div class="number-grid" style="max-width: 500px; margin: 0 auto 40px;">
         <button type="button" class="number-btn" data-value="3-4">
-            <div style="font-size: 24px; margin-bottom: 4px;">3-4</div>
-            <div style="font-size: 12px; opacity: 0.8;">Little Reader</div>
+            <div class="age-number">3-4</div>
+            <div class="age-type">Little Reader</div>
         </button>
         <button type="button" class="number-btn" data-value="5-6">
-            <div style="font-size: 24px; margin-bottom: 4px;">5-6</div>
-            <div style="font-size: 12px; opacity: 0.8;">Growing Reader</div>
+            <div class="age-number">5-6</div>
+            <div class="age-type">Growing Reader</div>
         </button>
         <button type="button" class="number-btn" data-value="7-8">
-            <div style="font-size: 24px; margin-bottom: 4px;">7-8</div>
-            <div style="font-size: 12px; opacity: 0.8;">Big Reader</div>
+            <div class="age-number">7-8</div>
+            <div class="age-type">Big Reader</div>
         </button>
         <button type="button" class="number-btn" data-value="9-10">
-            <div style="font-size: 24px; margin-bottom: 4px;">9-10</div>
-            <div style="font-size: 12px; opacity: 0.8;">Super Reader</div>
+            <div class="age-number">9-10</div>
+            <div class="age-type">Super Reader</div>
         </button>
     </div>
 
@@ -38,6 +38,31 @@
         </button>
     </div>
 </form>
+{% endblock %}
+
+{% block wizard_styles %}
+<style>
+.age-number {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+    line-height: 1.2;
+}
+
+.age-type {
+    font-size: 12px;
+    opacity: 0.8;
+    font-weight: 600;
+    display: block;
+    line-height: 1.2;
+}
+
+.number-btn {
+    text-align: center;
+    padding: 16px 12px;
+}
+</style>
 {% endblock %}
 
 {% block wizard_scripts %}
@@ -88,6 +113,19 @@ document.querySelectorAll('.number-btn').forEach(btn => {
 // Handle next button
 document.getElementById('nextBtn').addEventListener('click', function() {
     if (this.disabled) return;
+    
+    // Validate selection before proceeding
+    if (!selectedAge) {
+        alert('Please select your age!');
+        return;
+    }
+    
+    // Validate against allowed age groups
+    const validAges = ['3-4', '5-6', '7-8', '9-10'];
+    if (!validAges.includes(selectedAge)) {
+        alert('Invalid age selection. Please choose a different age.');
+        return;
+    }
     
     // Navigate to next step
     window.location.href = '{{ url_for("wizard_world") }}';

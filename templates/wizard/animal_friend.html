@@ -93,9 +93,19 @@ document.querySelectorAll('.selection-btn').forEach(btn => {
 
 // Handle next button
 document.getElementById('nextBtn').addEventListener('click', function() {
-    if (selectedValue) {
-        window.location.href = '{{ url_for("wizard_review") }}';
+    if (!selectedValue) {
+        alert('Please select an animal friend!');
+        return;
     }
+    
+    // Validate against allowed animal friends
+    const validAnimals = ['wolf', 'parrot', 'owl', 'fox', 'dragon', 'unicorn', 'eagle', 'cat'];
+    if (!validAnimals.includes(selectedValue)) {
+        alert('Invalid animal friend selection. Please choose a different animal.');
+        return;
+    }
+    
+    window.location.href = '{{ url_for("wizard_review") }}';
 });
 
 // Load existing selection

@@ -105,6 +105,19 @@ document.querySelectorAll('.selection-btn').forEach(btn => {
 document.getElementById('nextBtn').addEventListener('click', function() {
     if (this.disabled) return;
     
+    // Validate selection before proceeding
+    if (!selectedWorld) {
+        alert('Please select a world for your adventure!');
+        return;
+    }
+    
+    // Validate against allowed topics
+    const validTopics = ['space', 'community', 'dragons', 'fairies', 'pirates', 'outdoors', 'underwater', 'castle'];
+    if (!validTopics.includes(selectedWorld)) {
+        alert('Invalid world selection. Please choose a different world.');
+        return;
+    }
+    
     // Navigate to next step
     window.location.href = '{{ url_for("wizard_length") }}';
 });

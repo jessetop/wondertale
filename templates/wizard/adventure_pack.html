@@ -93,9 +93,19 @@ document.querySelectorAll('.selection-btn').forEach(btn => {
 
 // Handle next button
 document.getElementById('nextBtn').addEventListener('click', function() {
-    if (selectedValue) {
-        window.location.href = '{{ url_for("wizard_animal_friend") }}';
+    if (!selectedValue) {
+        alert('Please select an adventure pack!');
+        return;
     }
+    
+    // Validate against allowed adventure packs
+    const validPacks = ['backpack', 'cape', 'boots', 'map', 'rope', 'compass', 'lantern', 'pouch'];
+    if (!validPacks.includes(selectedValue)) {
+        alert('Invalid adventure pack selection. Please choose a different pack.');
+        return;
+    }
+    
+    window.location.href = '{{ url_for("wizard_animal_friend") }}';
 });
 
 // Load existing selection
