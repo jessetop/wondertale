@@ -549,21 +549,42 @@
         <!-- Story image if available -->
         {% if story.image_url %}
         <img src="{{ story.image_url }}" alt="Story illustration" class="story-image">
-        {% else %}
-        <div style="text-align: center; padding: 32px; background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); border-radius: 20px; margin: 32px auto; max-width: 500px; color: white;">
-            <div style="font-size: 64px; margin-bottom: 16px;">🎨</div>
-            <div style="font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 8px;">Use Your Imagination!</div>
-            <div style="font-size: 16px; font-weight: 600; opacity: 0.9;">Picture this amazing adventure in your mind as you read!</div>
-        </div>
         {% endif %}
 
         <!-- Story content -->
         <div class="story-content">
-            {% for paragraph in story.content.split('\n\n') %}
-                {% if paragraph.strip() %}
-                    <p>{{ paragraph.strip() }}</p>
+            {% set paragraphs = story.content.split('\n\n') %}
+            {% if paragraphs|length > 1 %}
+                <!-- Content has proper paragraph breaks -->
+                {% for paragraph in paragraphs %}
+                    {% if paragraph.strip() %}
+                        <p>{{ paragraph.strip() }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <!-- Content might be one block, try to split by sentences for better readability -->
+                {% set sentences = story.content.split('. ') %}
+                {% if sentences|length > 3 %}
+                    <!-- Group sentences into paragraphs for better readability -->
+                    {% set paragraph_size = 3 if story.age_group in ['3-4', '5-6'] else 4 %}
+                    {% for i in range(0, sentences|length, paragraph_size) %}
+                        {% set paragraph_sentences = sentences[i:i+paragraph_size] %}
+                        {% if paragraph_sentences %}
+                            <p>
+                                {% for sentence in paragraph_sentences %}
+                                    {% if sentence.strip() %}
+                                        {{ sentence.strip() }}{% if not loop.last and not sentence.endswith('.') %}.{% endif %}{% if not loop.last %} {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if not paragraph_sentences[-1].endswith('.') %}.{% endif %}
+                            </p>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <!-- Short content, display as single paragraph -->
+                    <p>{{ story.content.strip() }}</p>
                 {% endif %}
-            {% endfor %}
+            {% endif %}
         </div>
 
         <!-- Story moral -->
