@@ -42,25 +42,27 @@
 
 {% block wizard_styles %}
 <style>
+.number-btn {
+    text-align: center;
+    padding: 16px 12px;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
 .age-number {
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 4px;
-    display: block;
     line-height: 1.2;
+    margin-bottom: 4px;
 }
 
 .age-type {
     font-size: 12px;
     opacity: 0.8;
     font-weight: 600;
-    display: block;
     line-height: 1.2;
-}
-
-.number-btn {
-    text-align: center;
-    padding: 16px 12px;
 }
 </style>
 {% endblock %}

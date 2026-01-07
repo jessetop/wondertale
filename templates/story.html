@@ -475,10 +475,25 @@
                     {% elif story.topic == 'community' %}🏘️
                     {% elif story.topic == 'dragons' %}🐉
                     {% elif story.topic == 'fairies' %}🧚
+                    {% elif story.topic == 'pirates' %}🏴‍☠️
+                    {% elif story.topic == 'outdoors' %}🏕️
+                    {% elif story.topic == 'underwater' %}🌊
+                    {% elif story.topic == 'castle' %}🏰
                     {% else %}🌟
                     {% endif %}
                 </span>
-                <span>{{ story.topic.title() }}</span>
+                <span>
+                    {% if story.topic == 'space' %}Outer Space
+                    {% elif story.topic == 'community' %}Community
+                    {% elif story.topic == 'dragons' %}Dragon Land
+                    {% elif story.topic == 'fairies' %}Fairy Garden
+                    {% elif story.topic == 'pirates' %}Pirate Adventure
+                    {% elif story.topic == 'outdoors' %}Great Outdoors
+                    {% elif story.topic == 'underwater' %}Underwater World
+                    {% elif story.topic == 'castle' %}Medieval Castle
+                    {% else %}{{ story.topic.title() }}
+                    {% endif %}
+                </span>
             </div>
             <div class="meta-item">
                 <span class="meta-icon">📖</span>
@@ -494,52 +509,130 @@
             </div>
         </div>
 
-        <!-- Adventure Kit Section -->
-        {% if story.magic_tool or story.adventure_pack or story.animal_friend %}
-        <div style="background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); color: white; padding: 24px; border-radius: 20px; margin-bottom: 32px; text-align: center;">
-            <div style="font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 16px;">
-                🎒 Your Adventure Kit 🎒
+        <!-- Story Elements Section -->
+        {% if story.magic_tool or story.adventure_pack or story.animal_friend or story.topic %}
+        <div style="background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); color: white; padding: 16px 20px; border-radius: 16px; margin-bottom: 24px; text-align: center;">
+            <div style="font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">
+                ✨ Your Story Elements ✨
             </div>
-            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                {% if story.magic_tool %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                    <div style="font-size: 32px;">
-                        {% if story.magic_tool == 'wand' %}🪄
-                        {% elif story.magic_tool == 'sword' %}⚔️
-                        {% elif story.magic_tool == 'bow' %}🏹
-                        {% elif story.magic_tool == 'staff' %}🔮
-                        {% else %}✨
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <!-- World Theme -->
+                {% if story.topic %}
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="font-size: 24px;">
+                        {% if story.topic == 'space' %}🚀
+                        {% elif story.topic == 'community' %}🏘️
+                        {% elif story.topic == 'dragons' %}🐉
+                        {% elif story.topic == 'fairies' %}🧚
+                        {% elif story.topic == 'pirates' %}🏴‍☠️
+                        {% elif story.topic == 'outdoors' %}🏕️
+                        {% elif story.topic == 'underwater' %}🌊
+                        {% elif story.topic == 'castle' %}🏰
+                        {% else %}🌟
                         {% endif %}
                     </div>
-                    <div style="font-weight: 700; font-size: 14px;">{{ story.magic_tool.replace('_', ' ').title() }}</div>
+                    <div style="font-weight: 600; font-size: 12px;">
+                        {% if story.topic == 'space' %}Outer Space
+                        {% elif story.topic == 'community' %}Community
+                        {% elif story.topic == 'dragons' %}Dragon Land
+                        {% elif story.topic == 'fairies' %}Fairy Garden
+                        {% elif story.topic == 'pirates' %}Pirate Adventure
+                        {% elif story.topic == 'outdoors' %}Great Outdoors
+                        {% elif story.topic == 'underwater' %}Underwater World
+                        {% elif story.topic == 'castle' %}Medieval Castle
+                        {% else %}{{ story.topic.title() }}
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
                 
+                <!-- Magic Tool -->
+                {% if story.magic_tool %}
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="font-size: 24px;">
+                        {% if story.magic_tool == 'wand' %}🪄
+                        {% elif story.magic_tool == 'sword' %}⚔️
+                        {% elif story.magic_tool == 'bow' %}🏹
+                        {% elif story.magic_tool == 'staff' %}🦯
+                        {% elif story.magic_tool == 'shield' %}🛡️
+                        {% elif story.magic_tool == 'hammer' %}🔨
+                        {% elif story.magic_tool == 'ring' %}💍
+                        {% elif story.magic_tool == 'orb' %}🔮
+                        {% else %}✨
+                        {% endif %}
+                    </div>
+                    <div style="font-weight: 600; font-size: 12px;">
+                        {% if story.magic_tool == 'wand' %}Magic Wand
+                        {% elif story.magic_tool == 'sword' %}Brave Sword
+                        {% elif story.magic_tool == 'bow' %}Magic Bow
+                        {% elif story.magic_tool == 'staff' %}Crystal Staff
+                        {% elif story.magic_tool == 'shield' %}Power Shield
+                        {% elif story.magic_tool == 'hammer' %}Thunder Hammer
+                        {% elif story.magic_tool == 'ring' %}Magic Ring
+                        {% elif story.magic_tool == 'orb' %}Power Orb
+                        {% else %}{{ story.magic_tool.replace('_', ' ').title() }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Adventure Pack -->
                 {% if story.adventure_pack %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                    <div style="font-size: 32px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="font-size: 24px;">
                         {% if story.adventure_pack == 'backpack' %}🎒
                         {% elif story.adventure_pack == 'cape' %}🦸
                         {% elif story.adventure_pack == 'boots' %}👢
                         {% elif story.adventure_pack == 'map' %}🗺️
+                        {% elif story.adventure_pack == 'rope' %}🪢
+                        {% elif story.adventure_pack == 'compass' %}🧭
+                        {% elif story.adventure_pack == 'lantern' %}🏮
+                        {% elif story.adventure_pack == 'pouch' %}👝
                         {% else %}🎒
                         {% endif %}
                     </div>
-                    <div style="font-weight: 700; font-size: 14px;">{{ story.adventure_pack.replace('_', ' ').title() }}</div>
+                    <div style="font-weight: 600; font-size: 12px;">
+                        {% if story.adventure_pack == 'backpack' %}Magic Backpack
+                        {% elif story.adventure_pack == 'cape' %}Flying Cape
+                        {% elif story.adventure_pack == 'boots' %}Speed Boots
+                        {% elif story.adventure_pack == 'map' %}Treasure Map
+                        {% elif story.adventure_pack == 'rope' %}Magic Rope
+                        {% elif story.adventure_pack == 'compass' %}Golden Compass
+                        {% elif story.adventure_pack == 'lantern' %}Glowing Lantern
+                        {% elif story.adventure_pack == 'pouch' %}Magic Pouch
+                        {% else %}{{ story.adventure_pack.replace('_', ' ').title() }}
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
                 
+                <!-- Animal Friend -->
                 {% if story.animal_friend %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                    <div style="font-size: 32px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="font-size: 24px;">
                         {% if story.animal_friend == 'wolf' %}🐺
                         {% elif story.animal_friend == 'parrot' %}🦜
                         {% elif story.animal_friend == 'owl' %}🦉
                         {% elif story.animal_friend == 'fox' %}🦊
+                        {% elif story.animal_friend == 'dragon' %}🐉
+                        {% elif story.animal_friend == 'unicorn' %}🦄
+                        {% elif story.animal_friend == 'eagle' %}🦅
+                        {% elif story.animal_friend == 'cat' %}🐱
                         {% else %}🐾
                         {% endif %}
                     </div>
-                    <div style="font-weight: 700; font-size: 14px;">{{ story.animal_friend.replace('_', ' ').title() }}</div>
+                    <div style="font-weight: 600; font-size: 12px;">
+                        {% if story.animal_friend == 'wolf' %}Brave Wolf
+                        {% elif story.animal_friend == 'parrot' %}Wise Parrot
+                        {% elif story.animal_friend == 'owl' %}Smart Owl
+                        {% elif story.animal_friend == 'fox' %}Clever Fox
+                        {% elif story.animal_friend == 'dragon' %}Baby Dragon
+                        {% elif story.animal_friend == 'unicorn' %}Magic Unicorn
+                        {% elif story.animal_friend == 'eagle' %}Golden Eagle
+                        {% elif story.animal_friend == 'cat' %}Magic Cat
+                        {% else %}{{ story.animal_friend.replace('_', ' ').title() }}
+                        {% endif %}
+                    </div>
                 </div>
                 {% endif %}
             </div>
