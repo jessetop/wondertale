@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - WonderTales{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-dark"] {
+        --primary: #A78BFA;
+        --primary-dark: #8B5CF6;
+        --secondary: #F472B6;
+        --accent: #2DD4BF;
+        --accent-light: #5EEAD4;
+        --bg-main: #1F1B2E;
+        --bg-card: #2D2640;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(167, 139, 250, 0.3);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 30px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--primary-dark);
+    }
+
+    .content {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    h1 {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .last-updated {
+        text-align: center;
+        color: var(--text-light);
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+
+    h2 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.5rem;
+        color: var(--secondary);
+        margin: 30px 0 15px 0;
+    }
+
+    h3 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.2rem;
+        color: var(--accent);
+        margin: 20px 0 10px 0;
+    }
+
+    p {
+        margin-bottom: 15px;
+        color: var(--text-dark);
+    }
+
+    ul {
+        margin: 15px 0 15px 30px;
+    }
+
+    li {
+        margin-bottom: 8px;
+        color: var(--text-dark);
+    }
+
+    .highlight-box {
+        background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 5px solid var(--accent);
+    }
+
+    .highlight-box h3 {
+        color: var(--text-dark);
+        margin-top: 0;
+    }
+
+    .contact-info {
+        background: var(--bg-main);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px 15px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <div class="logo">WonderTales</div>
+    </div>
+    
+    <a href="{{ url_for('landing') }}" class="back-link">
+        ← Back to Home
+    </a>
+    
+    <div class="content">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last Updated: January 7, 2026</p>
+        
+        <div class="highlight-box">
+            <h3>🛡️ Child Safety First</h3>
+            <p><strong>WonderTales is designed for children under 13.</strong> We comply with COPPA (Children's Online Privacy Protection Act) and .kids domain requirements to ensure your child's safety and privacy.</p>
+        </div>
+        
+        <h2>1. Information We Collect</h2>
+        
+        <h3>What We Collect:</h3>
+        <ul>
+            <li><strong>Story Content:</strong> Character names and story preferences you provide</li>
+            <li><strong>Website Usage:</strong> Anonymous page views and basic site statistics (see Analytics section below)</li>
+            <li><strong>Technical Data:</strong> Browser type, device information for functionality</li>
+            <li><strong>Theme Preferences:</strong> Stored locally in your browser only</li>
+        </ul>
+        
+        <h3>What We DON'T Collect:</h3>
+        <ul>
+            <li>Real names, addresses, or contact information</li>
+            <li>Email addresses or phone numbers</li>
+            <li>Location data or tracking information</li>
+            <li>Payment or financial information</li>
+            <li>Photos or personal images</li>
+            <li>Individual user behavior or personal profiles</li>
+        </ul>
+        
+        <h2>2. How We Use Information</h2>
+        <p>We use the information solely to:</p>
+        <ul>
+            <li>Generate personalized stories for your child</li>
+            <li>Ensure the website works properly on your device</li>
+            <li>Remember your theme preferences (stored locally)</li>
+        </ul>
+        
+        <h2>3. Information Sharing</h2>
+        <p><strong>We do NOT share, sell, or distribute any information.</strong> Your child's story content and preferences stay private.</p>
+        
+        <h3>Third-Party Services:</h3>
+        <ul>
+            <li><strong>OpenAI:</strong> Story text is sent to generate stories (not stored by them)</li>
+            <li><strong>Hugging Face:</strong> Story descriptions sent for illustrations (not stored by them)</li>
+        </ul>
+        
+        <h2>4. Data Storage & Security</h2>
+        <ul>
+            <li><strong>Stories:</strong> Not permanently stored - generated fresh each time</li>
+            <li><strong>Preferences:</strong> Stored locally in your browser only</li>
+            <li><strong>Security:</strong> All connections use HTTPS encryption</li>
+            <li><strong>No Accounts:</strong> No registration or login required</li>
+        </ul>
+        
+        <h2>5. Cookies & Local Storage</h2>
+        <p>We use minimal local storage for:</p>
+        <ul>
+            <li><strong>Theme Preferences:</strong> Remember if you prefer light or dark mode</li>
+            <li><strong>No Tracking:</strong> We don't use analytics or advertising cookies</li>
+        </ul>
+        
+        <h2>6. Website Analytics (Privacy-First)</h2>
+        
+        <div class="highlight-box">
+            <h3>📊 What We Track (Anonymously)</h3>
+            <p>We use <strong>Plausible Analytics</strong> - a privacy-first, COPPA-compliant service that helps us understand how families use WonderTales:</p>
+            <ul>
+                <li><strong>Page views:</strong> Which pages are most popular</li>
+                <li><strong>Traffic sources:</strong> How people find WonderTales (Google, direct visits, etc.)</li>
+                <li><strong>Device types:</strong> Mobile, tablet, or desktop usage</li>
+                <li><strong>Country-level location:</strong> General geographic regions (not specific locations)</li>
+                <li><strong>Popular features:</strong> Which story themes and tools kids enjoy most</li>
+            </ul>
+        </div>
+        
+        <h3>🛡️ What Makes This Safe:</h3>
+        <ul>
+            <li><strong>No cookies:</strong> Plausible doesn't use tracking cookies</li>
+            <li><strong>No personal data:</strong> We can't identify individual users</li>
+            <li><strong>No cross-site tracking:</strong> Only tracks activity on WonderTales</li>
+            <li><strong>GDPR & COPPA compliant:</strong> Meets strict privacy standards</li>
+            <li><strong>Open source:</strong> Plausible's code is publicly auditable</li>
+        </ul>
+        
+        <h3>🎯 Why We Track This:</h3>
+        <ul>
+            <li>Understand which story features kids love most</li>
+            <li>Improve website performance and user experience</li>
+            <li>See if new features are helpful to families</li>
+            <li>Ensure the site works well on all devices</li>
+        </ul>
+        
+        <p><strong>You can view our public analytics dashboard at:</strong> <a href="https://plausible.io/wondertales.kids" target="_blank" style="color: var(--primary);">plausible.io/wondertales.kids</a> (completely transparent!)</p>
+        
+        <h2>7. Parental Rights (COPPA Compliance)</h2>
+        
+        <div class="highlight-box">
+            <h3>👨‍👩‍👧‍👦 Parents Have Full Control</h3>
+            <p>As a parent or guardian, you have the right to:</p>
+            <ul>
+                <li>Review any information collected about your child</li>
+                <li>Request deletion of your child's information</li>
+                <li>Refuse further collection of your child's information</li>
+                <li>Ask questions about our privacy practices</li>
+            </ul>
+        </div>
+        
+        <h2>8. Age Restrictions</h2>
+        <p><strong>WonderTales is designed for children ages 3-10 with parental supervision.</strong> We do not knowingly collect personal information from children without parental consent.</p>
+        
+        <h2>9. .kids Domain Compliance</h2>
+        <p>As a .kids domain, WonderTales meets strict requirements:</p>
+        <ul>
+            <li>Child-safe content only</li>
+            <li>No advertising or commercial content</li>
+            <li>Enhanced privacy protections</li>
+            <li>Regular safety monitoring</li>
+        </ul>
+        
+        <h2>10. International Users</h2>
+        <p>WonderTales is hosted in the United States. By using our service, you consent to the transfer of information to the U.S., which may have different privacy laws than your country.</p>
+        
+        <h2>11. Changes to This Policy</h2>
+        <p>We may update this privacy policy occasionally. Changes will be posted on this page with a new "Last Updated" date. We encourage parents to review this policy periodically.</p>
+        
+        <div class="contact-info">
+            <h3>Questions About Privacy?</h3>
+            <p>If you have questions about this privacy policy or your child's information, please share your feedback through our <a href="{{ url_for('feedback') }}" style="color: var(--primary);">feedback page</a>.</p>
+        </div>
+        
+        <h2>12. Effective Date</h2>
+        <p>This privacy policy is effective as of January 7, 2026.</p>
+    </div>
+</div>
+{% endblock %}

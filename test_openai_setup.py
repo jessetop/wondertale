@@ -75,7 +75,7 @@ def show_next_steps():
     print("\n💡 Tip: Your .env file is now protected by .gitignore!")
 
 if __name__ == "__main__":
-    print("WonderTale OpenAI Setup Test")
+    print("WonderTales OpenAI Setup Test")
     print("=" * 40)
     
     api_ready = test_api_key_setup()

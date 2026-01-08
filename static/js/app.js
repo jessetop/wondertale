@@ -1,5 +1,5 @@
 /**
- * WonderTale - Frontend JavaScript
+ * WonderTales - Frontend JavaScript
  * Minimal JavaScript for compatibility with new templates
  */
 
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form interactions are handled in individual templates
     
     // Add any global functionality here if needed
-    console.log('WonderTale loaded successfully!');
+    console.log('WonderTales loaded successfully!');
     
     // Add smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -27,7 +27,7 @@ def test_tts_service():
     # Test audio generation (only if API key is available)
     if is_available:
         print("\nTesting audio generation...")
-        test_text = "Hello! This is a test of the AI voice system for WonderTale stories."
+        test_text = "Hello! This is a test of the AI voice system for WonderTales stories."
         
         audio_path = tts_service.generate_audio(test_text, 'friendly')
         if audio_path:

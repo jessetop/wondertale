@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Enhanced safety controls for the WonderTale children's story generator to eliminate all free-text input except for character names, while implementing robust validation for name inputs to prevent prompt injection attacks and inappropriate content. This system prioritizes child safety by providing only controlled, pre-approved selections for all story elements.
+Enhanced safety controls for the WonderTales children's story generator to eliminate all free-text input except for character names, while implementing robust validation for name inputs to prevent prompt injection attacks and inappropriate content. This system prioritizes child safety by providing only controlled, pre-approved selections for all story elements.
 
 ## Glossary
 

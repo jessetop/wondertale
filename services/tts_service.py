@@ -58,7 +58,7 @@ class TTSService:
         }
         
         # Create audio cache directory
-        self.cache_dir = Path(tempfile.gettempdir()) / 'wondertale_audio'
+        self.cache_dir = Path(tempfile.gettempdir()) / 'wondertales_audio'
         self.cache_dir.mkdir(exist_ok=True)
     
     def is_available(self) -> bool:

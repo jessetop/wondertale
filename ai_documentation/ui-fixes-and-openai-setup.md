@@ -47,7 +47,7 @@ if (!group) {
 
 ### Files Modified
 - `templates/index.html` - Added null checks for DOM elements
-- `templates/sample_ai/wondertale-generator.html` - Enhanced with debugging and safety checks
+- `templates/sample_ai/wondertales-generator.html` - Enhanced with debugging and safety checks
 
 ---
 
@@ -222,7 +222,7 @@ MORAL: [The moral lesson in one clear sentence]
 
 ### Modified Files:
 - `templates/index.html` - Fixed null pointer errors
-- `templates/sample_ai/wondertale-generator.html` - Enhanced error handling
+- `templates/sample_ai/wondertales-generator.html` - Enhanced error handling
 - `services/story_generator.py` - Fixed variable scope bug
 - `.env` - Updated with real API key (protected by .gitignore)
 
@@ -271,4 +271,4 @@ This session successfully:
 5. ✅ Created comprehensive testing tools
 6. ✅ Documented the entire process for future reference
 
-The WonderTale story generator is now fully functional with high-quality AI-generated stories!
+The WonderTales story generator is now fully functional with high-quality AI-generated stories!

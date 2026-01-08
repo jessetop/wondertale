@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service - WonderTales{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-dark"] {
+        --primary: #A78BFA;
+        --primary-dark: #8B5CF6;
+        --secondary: #F472B6;
+        --accent: #2DD4BF;
+        --accent-light: #5EEAD4;
+        --bg-main: #1F1B2E;
+        --bg-card: #2D2640;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(167, 139, 250, 0.3);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 30px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--primary-dark);
+    }
+
+    .content {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    h1 {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .last-updated {
+        text-align: center;
+        color: var(--text-light);
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+
+    h2 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.5rem;
+        color: var(--secondary);
+        margin: 30px 0 15px 0;
+    }
+
+    h3 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.2rem;
+        color: var(--accent);
+        margin: 20px 0 10px 0;
+    }
+
+    p {
+        margin-bottom: 15px;
+        color: var(--text-dark);
+    }
+
+    ul {
+        margin: 15px 0 15px 30px;
+    }
+
+    li {
+        margin-bottom: 8px;
+        color: var(--text-dark);
+    }
+
+    .highlight-box {
+        background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 5px solid var(--accent);
+    }
+
+    .highlight-box h3 {
+        color: var(--text-dark);
+        margin-top: 0;
+    }
+
+    .simple-terms {
+        background: var(--bg-main);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+        border: 2px solid var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px 15px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <div class="logo">WonderTales</div>
+    </div>
+    
+    <a href="{{ url_for('landing') }}" class="back-link">
+        ← Back to Home
+    </a>
+    
+    <div class="content">
+        <h1>Terms of Service</h1>
+        <p class="last-updated">Last Updated: January 7, 2026</p>
+        
+        <div class="simple-terms">
+            <h3>🌟 Simple Version</h3>
+            <p><strong>WonderTales is free, safe, and fun!</strong> Use it to create magical stories with your kids. Be kind, follow the rules, and enjoy the adventure!</p>
+        </div>
+        
+        <h2>1. Acceptance of Terms</h2>
+        <p>By using WonderTales, you agree to these terms. If you don't agree, please don't use our service. Parents or guardians must agree to these terms on behalf of children under 13.</p>
+        
+        <h2>2. Description of Service</h2>
+        <p>WonderTales is a free children's story generator that creates personalized, age-appropriate stories using artificial intelligence. Our service includes:</p>
+        <ul>
+            <li>Interactive story creation wizard</li>
+            <li>AI-generated personalized stories</li>
+            <li>Optional AI-generated illustrations</li>
+            <li>Text-to-speech functionality</li>
+            <li>Print-friendly story formats</li>
+        </ul>
+        
+        <h2>3. Age Requirements & Parental Supervision</h2>
+        
+        <div class="highlight-box">
+            <h3>👨‍👩‍👧‍👦 Parental Guidance Required</h3>
+            <ul>
+                <li><strong>Ages 3-6:</strong> Adult supervision required</li>
+                <li><strong>Ages 7-10:</strong> Parental guidance recommended</li>
+                <li><strong>Under 13:</strong> Parent/guardian must agree to these terms</li>
+            </ul>
+        </div>
+        
+        <h2>4. Acceptable Use</h2>
+        
+        <h3>✅ You May:</h3>
+        <ul>
+            <li>Create stories for personal, non-commercial use</li>
+            <li>Print stories for family enjoyment</li>
+            <li>Share stories with friends and family</li>
+            <li>Use character names and story preferences</li>
+        </ul>
+        
+        <h3>❌ You May Not:</h3>
+        <ul>
+            <li>Use inappropriate or offensive character names</li>
+            <li>Attempt to generate inappropriate content</li>
+            <li>Use the service for commercial purposes</li>
+            <li>Try to hack, disrupt, or damage the service</li>
+            <li>Share personal information in character names</li>
+        </ul>
+        
+        <h2>5. Content Guidelines</h2>
+        <p>WonderTales is designed to create safe, age-appropriate content. We use content filters and safety measures, but parents should always review stories with their children.</p>
+        
+        <h3>Our Commitment:</h3>
+        <ul>
+            <li>All content is designed for children ages 3-10</li>
+            <li>Stories promote positive values and creativity</li>
+            <li>No violent, scary, or inappropriate content</li>
+            <li>Content filters prevent inappropriate generation</li>
+        </ul>
+        
+        <h2>6. Intellectual Property</h2>
+        
+        <h3>Your Stories:</h3>
+        <ul>
+            <li>Stories generated for you belong to you</li>
+            <li>You can print, share, and enjoy them freely</li>
+            <li>We don't claim ownership of your generated content</li>
+        </ul>
+        
+        <h3>Our Service:</h3>
+        <ul>
+            <li>WonderTales website and technology belong to us</li>
+            <li>You can't copy or redistribute our service</li>
+            <li>Our branding and design are protected</li>
+        </ul>
+        
+        <h2>7. Service Availability</h2>
+        <p>We strive to keep WonderTales available 24/7, but sometimes we need to:</p>
+        <ul>
+            <li>Perform maintenance or updates</li>
+            <li>Fix technical issues</li>
+            <li>Improve the service</li>
+        </ul>
+        <p>We'll try to minimize any downtime and appreciate your patience!</p>
+        
+        <h2>8. Limitation of Liability</h2>
+        <p>WonderTales is provided "as is" for entertainment purposes. While we work hard to create safe, appropriate content:</p>
+        <ul>
+            <li>Parents should always supervise children's use</li>
+            <li>We can't guarantee perfect content in every case</li>
+            <li>Use of the service is at your own discretion</li>
+            <li>We're not liable for any issues arising from use</li>
+        </ul>
+        
+        <h2>9. Privacy</h2>
+        <p>Your privacy is important to us. Please read our <a href="{{ url_for('privacy') }}" style="color: var(--primary);">Privacy Policy</a> to understand how we handle information.</p>
+        
+        <h2>10. Third-Party Services</h2>
+        <p>WonderTales uses third-party AI services to generate stories and images:</p>
+        <ul>
+            <li><strong>OpenAI:</strong> For story text generation</li>
+            <li><strong>Hugging Face:</strong> For image generation</li>
+        </ul>
+        <p>These services have their own terms and privacy policies.</p>
+        
+        <h2>11. Termination</h2>
+        <p>We reserve the right to restrict access to users who violate these terms. You can stop using WonderTales at any time.</p>
+        
+        <h2>12. Changes to Terms</h2>
+        <p>We may update these terms occasionally. Changes will be posted here with a new date. Continued use means you accept the updated terms.</p>
+        
+        <h2>13. Contact Information</h2>
+        <p>Questions about these terms? Share your feedback through our <a href="{{ url_for('feedback') }}" style="color: var(--primary);">feedback page</a>.</p>
+        
+        <h2>14. Governing Law</h2>
+        <p>These terms are governed by the laws of the United States. Any disputes will be resolved in accordance with U.S. law.</p>
+        
+        <div class="simple-terms">
+            <h3>🎉 Most Importantly</h3>
+            <p><strong>Have fun creating magical stories with your kids!</strong> WonderTales is here to spark imagination and create wonderful family memories.</p>
+        </div>
+        
+        <p style="text-align: center; margin-top: 30px; color: var(--text-light); font-style: italic;">
+            Thank you for choosing WonderTales! ✨
+        </p>
+    </div>
+</div>
+{% endblock %}

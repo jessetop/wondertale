@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}WonderTale - Adventure starts with your name{% endblock %}
+{% block title %}WonderTales - Adventure starts with your name{% endblock %}
 
 {% block styles %}
 <style>
@@ -653,7 +653,7 @@
 <header>
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div class="logo">WonderTale</div>
+            <div class="logo">WonderTales</div>
             
             <!-- Theme Switcher -->
             <div class="theme-switcher">
@@ -721,7 +721,7 @@
                 <div class="tagline">Adventure starts<br>with your name</div>
             </h1>
             <p class="hero-description">
-                Every child deserves to be the hero of their own story. WonderTale creates safe, personalized adventures that spark imagination and build a love for reading—one magical tale at a time.
+                Every child deserves to be the hero of their own story. WonderTales creates safe, personalized adventures that spark imagination and build a love for reading—one magical tale at a time.
             </p>
             <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 32px;">
                 <a href="{{ url_for('wizard_characters') }}" class="cta-button" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);">
@@ -736,7 +736,7 @@
 
     <section class="features">
         <div class="container">
-            <h2 class="features-title">Why Parents Love WonderTale</h2>
+            <h2 class="features-title">Why Parents Love WonderTales</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🛡️</div>
@@ -769,7 +769,7 @@
 
     <section class="how-it-works">
         <div class="container">
-            <h2 class="how-it-works-title">How WonderTale Works</h2>
+            <h2 class="how-it-works-title">How WonderTales Works</h2>
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
@@ -829,16 +829,16 @@
 
 <footer>
     <div class="container">
-        <div class="footer-logo">WonderTale</div>
+        <div class="footer-logo">WonderTales</div>
         <div class="footer-tagline">"Adventure starts with your name"</div>
         <div class="footer-links">
-            <a href="#" class="footer-link">About</a>
-            <a href="#" class="footer-link">Privacy</a>
-            <a href="#" class="footer-link">Terms</a>
-            <a href="#" class="footer-link">Contact</a>
-            <a href="#" class="footer-link">FAQ</a>
+            <a href="{{ url_for('faq') }}" class="footer-link">About</a>
+            <a href="{{ url_for('privacy') }}" class="footer-link">Privacy</a>
+            <a href="{{ url_for('terms') }}" class="footer-link">Terms</a>
+            <a href="{{ url_for('feedback') }}" class="footer-link">Feedback</a>
+            <a href="{{ url_for('faq') }}" class="footer-link">FAQ</a>
         </div>
-        <p class="footer-copyright">© 2026 WonderTale.kids • Making every child the hero</p>
+        <p class="footer-copyright">© 2026 WonderTales.kids • Making every child the hero</p>
     </div>
 </footer>
 {% endblock %}

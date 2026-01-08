@@ -23,7 +23,7 @@ This guide documents the exact prompts and steps used to replace basic Flask tem
 
 **What This Did:**
 - AI analyzed existing design files
-- Identified brand elements (WonderTale, color schemes, fonts)
+- Identified brand elements (WonderTales, color schemes, fonts)
 - Catalogued features (theme switcher, responsive design, child-friendly UI)
 - Assessed technical requirements (Flask integration needs)
 
@@ -148,7 +148,7 @@ Where should I put the new design files for you to review and implement?"
 ## Results Achieved
 
 **From:** Basic Flask templates with minimal styling
-**To:** Professional WonderTale application with:
+**To:** Professional WonderTales application with:
 - ✅ Branded landing page with theme switching
 - ✅ Child-friendly interactive form
 - ✅ Professional story display page

@@ -1,0 +1,514 @@
+{% extends "base.html" %}
+
+{% block title %}Tell Us What You Think! - WonderTales{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-dark"] {
+        --primary: #A78BFA;
+        --primary-dark: #8B5CF6;
+        --secondary: #F472B6;
+        --accent: #2DD4BF;
+        --accent-light: #5EEAD4;
+        --bg-main: #1F1B2E;
+        --bg-card: #2D2640;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(167, 139, 250, 0.3);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 30px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--primary-dark);
+    }
+
+    .content {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    h1 {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: var(--text-light);
+        margin-bottom: 40px;
+        font-size: 1.2rem;
+    }
+
+    .feedback-section {
+        margin: 40px 0;
+    }
+
+    .feedback-section h2 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.8rem;
+        color: var(--secondary);
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .emoji-options {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
+
+    .emoji-button {
+        background: var(--bg-main);
+        border: 3px solid var(--primary);
+        border-radius: 20px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .emoji-button:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-5px);
+    }
+
+    .emoji-button.selected {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .emoji-button .emoji {
+        font-size: 2.5rem;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .emoji-button .label {
+        font-family: 'Fredoka', cursive;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 25px 0;
+    }
+
+    .choice-button {
+        background: var(--bg-main);
+        border: 2px solid var(--accent);
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        font-family: 'Fredoka', cursive;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .choice-button:hover {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    .choice-button.selected {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+
+    .choice-button .emoji {
+        font-size: 1.5rem;
+        margin-right: 8px;
+    }
+
+    .submit-section {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 20px 40px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-family: 'Fredoka', cursive;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px var(--shadow);
+    }
+
+    .submit-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px var(--shadow);
+    }
+
+    .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .thank-you {
+        background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        margin: 30px 0;
+        display: none;
+    }
+
+    .thank-you h3 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+    }
+
+    .thank-you p {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+    }
+
+    .parent-note {
+        background: #FEF3C7;
+        border: 2px solid #F59E0B;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 30px 0;
+        color: #92400E;
+    }
+
+    .parent-note h3 {
+        color: #92400E;
+        margin-top: 0;
+        font-family: 'Fredoka', cursive;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px 15px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+        }
+        
+        .emoji-options {
+            gap: 10px;
+        }
+        
+        .emoji-button {
+            min-width: 100px;
+            padding: 15px;
+        }
+        
+        .choice-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <div class="logo">WonderTales</div>
+    </div>
+    
+    <a href="{{ url_for('landing') }}" class="back-link">
+        ← Back to Home
+    </a>
+    
+    <div class="content">
+        <h1>Tell Us What You Think! 🌟</h1>
+        <p class="subtitle">Help us make WonderTales even more magical!</p>
+        
+        <div class="parent-note">
+            <h3>👨‍👩‍👧‍👦 For Parents</h3>
+            <p>This feedback form is designed to be kid-friendly with no text input required. Children can safely share their thoughts by clicking on options. No personal information is collected.</p>
+        </div>
+        
+        <form id="feedbackForm">
+            <div class="feedback-section">
+                <h2>How do you feel about WonderTales? 😊</h2>
+                <div class="emoji-options">
+                    <div class="emoji-button" data-value="love">
+                        <span class="emoji">😍</span>
+                        <span class="label">I LOVE it!</span>
+                    </div>
+                    <div class="emoji-button" data-value="like">
+                        <span class="emoji">😊</span>
+                        <span class="label">I like it!</span>
+                    </div>
+                    <div class="emoji-button" data-value="okay">
+                        <span class="emoji">😐</span>
+                        <span class="label">It's okay</span>
+                    </div>
+                    <div class="emoji-button" data-value="dislike">
+                        <span class="emoji">😕</span>
+                        <span class="label">Not for me</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feedback-section">
+                <h2>What do you like most? ✨</h2>
+                <div class="choice-grid">
+                    <div class="choice-button" data-group="like" data-value="stories">
+                        <span class="emoji">📚</span>Creating stories
+                    </div>
+                    <div class="choice-button" data-group="like" data-value="characters">
+                        <span class="emoji">👥</span>Making characters
+                    </div>
+                    <div class="choice-button" data-group="like" data-value="pictures">
+                        <span class="emoji">🎨</span>The pictures
+                    </div>
+                    <div class="choice-button" data-group="like" data-value="voices">
+                        <span class="emoji">🔊</span>Story voices
+                    </div>
+                    <div class="choice-button" data-group="like" data-value="themes">
+                        <span class="emoji">🌟</span>Story themes
+                    </div>
+                    <div class="choice-button" data-group="like" data-value="easy">
+                        <span class="emoji">👍</span>Easy to use
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feedback-section">
+                <h2>What would you like more of? 🚀</h2>
+                <div class="choice-grid">
+                    <div class="choice-button" data-group="want" data-value="animals">
+                        <span class="emoji">🐾</span>More animals
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="adventures">
+                        <span class="emoji">⚔️</span>More adventures
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="magic">
+                        <span class="emoji">✨</span>More magic
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="friends">
+                        <span class="emoji">👫</span>More friends
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="worlds">
+                        <span class="emoji">🌍</span>New worlds
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="tools">
+                        <span class="emoji">🔧</span>Cool tools
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="longer">
+                        <span class="emoji">📖</span>Longer stories
+                    </div>
+                    <div class="choice-button" data-group="want" data-value="games">
+                        <span class="emoji">🎮</span>Story games
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feedback-section">
+                <h2>How old are you? 🎂</h2>
+                <div class="choice-grid">
+                    <div class="choice-button" data-group="age" data-value="3-4">
+                        <span class="emoji">🍼</span>3-4 years old
+                    </div>
+                    <div class="choice-button" data-group="age" data-value="5-6">
+                        <span class="emoji">🎒</span>5-6 years old
+                    </div>
+                    <div class="choice-button" data-group="age" data-value="7-8">
+                        <span class="emoji">📚</span>7-8 years old
+                    </div>
+                    <div class="choice-button" data-group="age" data-value="9-10">
+                        <span class="emoji">🌟</span>9-10 years old
+                    </div>
+                    <div class="choice-button" data-group="age" data-value="parent">
+                        <span class="emoji">👨‍👩‍👧‍👦</span>I'm a parent
+                    </div>
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <button type="submit" class="submit-button" id="submitBtn" disabled>
+                    🌟 Send My Feedback! 🌟
+                </button>
+            </div>
+        </form>
+        
+        <div class="thank-you" id="thankYou">
+            <h3>🎉 Thank You! 🎉</h3>
+            <p>Your feedback helps us make WonderTales even more magical for kids everywhere!</p>
+            <p style="margin-top: 15px;">
+                <a href="{{ url_for('wizard_start') }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                    ✨ Create Another Story! ✨
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+let feedback = {
+    feeling: null,
+    likes: [],
+    wants: [],
+    age: null
+};
+
+// Handle emoji feeling selection
+document.querySelectorAll('.emoji-button').forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove selection from all emoji buttons
+        document.querySelectorAll('.emoji-button').forEach(btn => btn.classList.remove('selected'));
+        // Add selection to clicked button
+        button.classList.add('selected');
+        feedback.feeling = button.dataset.value;
+        updateSubmitButton();
+    });
+});
+
+// Handle choice button selections
+document.querySelectorAll('.choice-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const group = button.dataset.group;
+        const value = button.dataset.value;
+        
+        if (group === 'age') {
+            // Age is single selection
+            document.querySelectorAll(`[data-group="age"]`).forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            feedback.age = value;
+        } else {
+            // Likes and wants are multi-selection
+            button.classList.toggle('selected');
+            
+            if (group === 'like') {
+                if (feedback.likes.includes(value)) {
+                    feedback.likes = feedback.likes.filter(item => item !== value);
+                } else {
+                    feedback.likes.push(value);
+                }
+            } else if (group === 'want') {
+                if (feedback.wants.includes(value)) {
+                    feedback.wants = feedback.wants.filter(item => item !== value);
+                } else {
+                    feedback.wants.push(value);
+                }
+            }
+        }
+        
+        updateSubmitButton();
+    });
+});
+
+function updateSubmitButton() {
+    const submitBtn = document.getElementById('submitBtn');
+    const hasFeeling = feedback.feeling !== null;
+    const hasAge = feedback.age !== null;
+    
+    if (hasFeeling && hasAge) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+    }
+}
+
+// Handle form submission
+document.getElementById('feedbackForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Simulate sending feedback (in a real app, you'd send this to your server)
+    console.log('Feedback submitted:', feedback);
+    
+    // Show thank you message
+    document.getElementById('feedbackForm').style.display = 'none';
+    document.getElementById('thankYou').style.display = 'block';
+    
+    // Scroll to thank you message
+    document.getElementById('thankYou').scrollIntoView({ behavior: 'smooth' });
+});
+</script>
+{% endblock %}

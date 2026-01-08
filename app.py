@@ -82,13 +82,38 @@ def create_app():
     # Routes
     @app.route('/')
     def landing():
-        """Landing page with WonderTale branding"""
+        """Landing page with WonderTales branding"""
         return render_template('landing.html')
     
     @app.route('/create')
     def index():
         """Story creation form"""
         return render_template('index.html')
+    
+    @app.route('/privacy')
+    def privacy():
+        """Privacy policy page"""
+        return render_template('privacy.html')
+    
+    @app.route('/contact')
+    def contact():
+        """Contact page"""
+        return render_template('contact.html')
+    
+    @app.route('/terms')
+    def terms():
+        """Terms of service page"""
+        return render_template('terms.html')
+    
+    @app.route('/faq')
+    def faq():
+        """FAQ page"""
+        return render_template('faq.html')
+    
+    @app.route('/feedback')
+    def feedback():
+        """Kid-friendly feedback page"""
+        return render_template('contact.html')
     
     # New wizard routes
     @app.route('/wizard')

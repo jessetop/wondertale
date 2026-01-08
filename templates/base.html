@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}WonderTale - Adventure starts with your name{% endblock %}</title>
+    <title>{% block title %}WonderTales - Adventure starts with your name{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-jYy2gx_lPjzB1p1l29llp.js"></script>
+    <script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>
+    
     {% block styles %}{% endblock %}
 </head>
 <body>
@@ -15,7 +20,7 @@
     {% block scripts %}
     <script>
         // Theme Management with Cookie Storage
-        const COOKIE_NAME = 'wondertale-theme';
+        const COOKIE_NAME = 'wondertales-theme';
         const COOKIE_DAYS = 365;
 
         // Cookie functions

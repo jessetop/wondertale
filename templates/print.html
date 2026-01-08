@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Print - {{ story.title }} - WonderTale{% endblock %}
+{% block title %}Print - {{ story.title }} - WonderTales{% endblock %}
 
 {% block styles %}
 <style>
@@ -265,7 +265,7 @@
     </div>
 {% elif story %}
     <div class="print-header">
-        <div class="print-logo">WonderTale</div>
+        <div class="print-logo">WonderTales</div>
         <div class="print-tagline">Adventure starts with your name</div>
     </div>
 
@@ -499,7 +499,7 @@
     </div>
 
     <div class="print-footer">
-        <p>Created with WonderTale - Adventure starts with your name</p>
+        <p>Created with WonderTales - Adventure starts with your name</p>
         <p>Characters: {% for character in story.characters %}{{ character.name }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
     </div>
 

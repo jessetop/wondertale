@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design implements comprehensive safety controls for the WonderTale children's story generator by eliminating free-text input for magic words and implementing robust validation for character names. The system prioritizes child safety through controlled selections, advanced input validation, and sophisticated prompt injection prevention while maintaining an engaging, child-friendly user experience.
+This design implements comprehensive safety controls for the WonderTales children's story generator by eliminating free-text input for magic words and implementing robust validation for character names. The system prioritizes child safety through controlled selections, advanced input validation, and sophisticated prompt injection prevention while maintaining an engaging, child-friendly user experience.
 
 ## Architecture
 

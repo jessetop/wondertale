@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - WonderTales{% endblock %}
+
+{% block styles %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Theme Variables */
+    :root {
+        --primary: #8B5CF6;
+        --primary-dark: #6D28D9;
+        --secondary: #EC4899;
+        --accent: #14B8A6;
+        --accent-light: #5EEAD4;
+        --bg-main: #FFF7ED;
+        --bg-card: #FFFFFF;
+        --text-dark: #1F2937;
+        --text-light: #6B7280;
+        --shadow: rgba(139, 92, 246, 0.15);
+    }
+
+    [data-theme="magic-dark"] {
+        --primary: #A78BFA;
+        --primary-dark: #8B5CF6;
+        --secondary: #F472B6;
+        --accent: #2DD4BF;
+        --accent-light: #5EEAD4;
+        --bg-main: #1F1B2E;
+        --bg-card: #2D2640;
+        --text-dark: #F3F4F6;
+        --text-light: #D1D5DB;
+        --shadow: rgba(167, 139, 250, 0.3);
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 30px;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--primary-dark);
+    }
+
+    .content {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    h1 {
+        font-family: 'Fredoka', cursive;
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: var(--text-light);
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+    }
+
+    .safety-highlight {
+        background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        border-radius: 20px;
+        padding: 30px;
+        margin: 30px 0;
+        text-align: center;
+        border: 3px solid var(--accent);
+    }
+
+    .safety-highlight h2 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+    }
+
+    .safety-highlight p {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 0;
+    }
+
+    .faq-section {
+        margin: 40px 0;
+    }
+
+    .faq-item {
+        background: var(--bg-main);
+        border-radius: 15px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+    }
+
+    .faq-item:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .faq-question {
+        background: var(--primary);
+        color: white;
+        padding: 20px;
+        font-family: 'Fredoka', cursive;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: background 0.3s;
+    }
+
+    .faq-question:hover {
+        background: var(--primary-dark);
+    }
+
+    .faq-emoji {
+        font-size: 1.5rem;
+    }
+
+    .faq-answer {
+        padding: 25px;
+        color: var(--text-dark);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .faq-answer p {
+        margin-bottom: 15px;
+    }
+
+    .faq-answer p:last-child {
+        margin-bottom: 0;
+    }
+
+    .faq-answer ul {
+        margin: 15px 0 15px 25px;
+    }
+
+    .faq-answer li {
+        margin-bottom: 8px;
+    }
+
+    .security-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .security-card {
+        background: var(--bg-main);
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        border: 2px solid var(--secondary);
+    }
+
+    .security-card h3 {
+        font-family: 'Fredoka', cursive;
+        color: var(--secondary);
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+    }
+
+    .security-card .emoji {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        margin: 40px 0;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-family: 'Fredoka', cursive;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+
+    .cta-button {
+        background: white;
+        color: var(--primary);
+        padding: 15px 30px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: inline-block;
+        margin-top: 15px;
+        transition: all 0.3s;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px 15px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+        }
+        
+        .security-features {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <div class="logo">WonderTales</div>
+    </div>
+    
+    <a href="{{ url_for('landing') }}" class="back-link">
+        ← Back to Home
+    </a>
+    
+    <div class="content">
+        <h1>Frequently Asked Questions</h1>
+        <p class="subtitle">Everything parents want to know about WonderTales</p>
+        
+        <div class="safety-highlight">
+            <h2>🛡️ Safety First Promise</h2>
+            <p><strong>WonderTales is designed to be the safest story creation tool for children.</strong> We don't collect personal information, we don't allow free text input (except character names), and we use AI to create age-appropriate stories based on your child's selections. Our website analytics are completely anonymous and COPPA-compliant - you can even view our public stats yourself!</p>
+        </div>
+        
+        <div class="faq-section">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">🔒</span>
+                    <span>Is WonderTales really safe for my child?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Absolutely!</strong> WonderTales is built with child safety as our #1 priority:</p>
+                    <ul>
+                        <li><strong>No personal information collected</strong> - We don't ask for names, emails, or addresses</li>
+                        <li><strong>No free text input</strong> - Children can only select from pre-approved options (except character names)</li>
+                        <li><strong>Content filters</strong> - All stories are filtered for age-appropriate content</li>
+                        <li><strong>COPPA compliant</strong> - We follow strict children's privacy laws</li>
+                        <li><strong>No accounts needed</strong> - No registration, passwords, or login required</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">🤖</span>
+                    <span>How does the AI story generation work?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>WonderTales uses advanced AI technology to create unique stories:</p>
+                    <ul>
+                        <li><strong>Child makes selections</strong> - Story world, characters, magic tools, etc.</li>
+                        <li><strong>AI creates the story</strong> - Using OpenAI's safe, filtered AI models</li>
+                        <li><strong>Content is reviewed</strong> - Every story goes through safety filters</li>
+                        <li><strong>Story is delivered</strong> - Fresh, personalized story every time!</li>
+                    </ul>
+                    <p>Each story is unique and created just for your child based on their choices.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">💰</span>
+                    <span>Is WonderTales really free?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Yes, completely free!</strong> There are no hidden costs, subscriptions, or premium features. WonderTales is our gift to families who want to spark their children's imagination.</p>
+                    <p>We believe every child deserves access to magical stories, regardless of their family's financial situation.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">📚</span>
+                    <span>Do you save or store my child's stories?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>No, we don't store stories permanently.</strong> Each story is generated fresh when you create it. This means:</p>
+                    <ul>
+                        <li>No database of your child's information</li>
+                        <li>No story history or tracking</li>
+                        <li>Complete privacy for your family</li>
+                        <li>You can print or save stories yourself if you want to keep them</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">👶</span>
+                    <span>What ages is WonderTales appropriate for?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>WonderTales is designed for children <strong>ages 3-10</strong>:</p>
+                    <ul>
+                        <li><strong>Ages 3-5:</strong> Adult supervision recommended for reading</li>
+                        <li><strong>Ages 6-8:</strong> Can use independently with occasional help</li>
+                        <li><strong>Ages 9-10:</strong> Can create and read stories independently</li>
+                    </ul>
+                    <p>All content is appropriate for the youngest users, so older siblings can help younger ones!</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">🖨️</span>
+                    <span>Can I print the stories?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Yes!</strong> Every story has a beautiful print-friendly version perfect for:</p>
+                    <ul>
+                        <li>Bedtime reading</li>
+                        <li>Creating a personal story collection</li>
+                        <li>Sharing with grandparents and family</li>
+                        <li>Reading offline during travel</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">🎨</span>
+                    <span>How do the illustrations work?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>WonderTales can create beautiful, child-friendly illustrations for stories:</p>
+                    <ul>
+                        <li><strong>Optional feature</strong> - You can choose whether to include pictures</li>
+                        <li><strong>AI-generated</strong> - Created specifically for your story</li>
+                        <li><strong>Child-safe</strong> - All images are filtered for appropriate content</li>
+                        <li><strong>Colorful and engaging</strong> - Designed to capture children's imagination</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">🔊</span>
+                    <span>Can the stories be read aloud?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Yes!</strong> WonderTales includes text-to-speech features:</p>
+                    <ul>
+                        <li><strong>AI voices</strong> - Natural-sounding, child-friendly voices</li>
+                        <li><strong>Multiple options</strong> - Choose from different voice styles</li>
+                        <li><strong>Browser backup</strong> - Your device's built-in voices as backup</li>
+                        <li><strong>Perfect for bedtime</strong> - Let the story read itself!</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">📱</span>
+                    <span>Does WonderTales work on tablets and phones?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Absolutely!</strong> WonderTales is designed to work perfectly on:</p>
+                    <ul>
+                        <li>iPads and Android tablets</li>
+                        <li>Smartphones (though tablets are better for reading)</li>
+                        <li>Desktop and laptop computers</li>
+                        <li>Any device with a web browser</li>
+                    </ul>
+                    <p>The interface is optimized for touch screens and kid-friendly interaction.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span class="faq-emoji">📊</span>
+                    <span>Do you track website usage or analytics?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Yes, but in a completely privacy-safe way!</strong> We use Plausible Analytics, which is:</p>
+                    <ul>
+                        <li><strong>No cookies:</strong> Doesn't use tracking cookies at all</li>
+                        <li><strong>No personal data:</strong> Can't identify individual users</li>
+                        <li><strong>COPPA compliant:</strong> Meets strict children's privacy laws</li>
+                        <li><strong>Completely transparent:</strong> You can view our public stats at <a href="https://plausible.io/wondertales.kids" target="_blank" style="color: var(--primary);">plausible.io/wondertales.kids</a></li>
+                    </ul>
+                    <p><strong>What we see:</strong> Page views, popular features, device types, and country-level traffic sources.</p>
+                    <p><strong>What we DON'T see:</strong> Individual behavior, personal information, or anything that could identify your child.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="security-features">
+            <div class="security-card">
+                <span class="emoji">🚫</span>
+                <h3>No Data Collection</h3>
+                <p>We don't collect, store, or track any personal information about your child.</p>
+            </div>
+            
+            <div class="security-card">
+                <span class="emoji">🎯</span>
+                <h3>Controlled Input</h3>
+                <p>Children can only select from pre-approved, safe options - no free text fields.</p>
+            </div>
+            
+            <div class="security-card">
+                <span class="emoji">🛡️</span>
+                <h3>Content Filtered</h3>
+                <p>Every story is automatically checked for age-appropriate, positive content.</p>
+            </div>
+            
+            <div class="security-card">
+                <span class="emoji">📊</span>
+                <h3>Transparent Analytics</h3>
+                <p>Privacy-first website stats with no cookies or personal tracking. <a href="https://plausible.io/wondertales.kids" target="_blank" style="color: var(--primary);">View our public dashboard</a></p>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h2>Ready to Create Magic? ✨</h2>
+            <p>Join thousands of families creating wonderful stories together!</p>
+            <a href="{{ url_for('wizard_start') }}" class="cta-button">Start Creating Stories</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
