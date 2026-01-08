@@ -5,26 +5,17 @@ Main application entry point with health check endpoint
 
 import os
 import time
-
-try:
-    from flask import Flask, render_template, request, jsonify, redirect, url_for
-    FLASK_AVAILABLE = True
-except ImportError:
-    FLASK_AVAILABLE = False
-    print("Warning: Flask not installed. Please install dependencies with: pip install -r requirements.txt")
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    print("Warning: python-dotenv not installed. Environment variables may not load from .env file")
+    # dotenv is optional - environment variables can be set directly
+    pass
 
 def create_app():
     """Create and configure Flask application"""
-    if not FLASK_AVAILABLE:
-        print("Flask is not available. Please install dependencies first.")
-        return None
-        
     app = Flask(__name__)
     
     # Configure app
@@ -520,8 +511,5 @@ def send_to_google_sheets(feedback_data):
 app = create_app()
 
 if __name__ == '__main__':
-    if app is not None:
-        # Development server
-        app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
-    else:
-        print("Cannot start application. Please install dependencies with: pip install -r requirements.txt")
+    # Development server
+    app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
