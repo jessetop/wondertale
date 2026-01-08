@@ -144,24 +144,24 @@ def create_app():
             if not feeling or not age:
                 return jsonify({'error': 'Missing required fields'}), 400
             
-            # Log the feedback (in a real app, you'd save to database)
+            # Create feedback summary
             feedback_summary = {
-                'timestamp': time.time(),
+                'timestamp': time.strftime('%Y-%m-%d %H:%M:%S UTC'),
                 'feeling': feeling,
                 'likes': likes,
                 'wants': wants,
                 'age': age,
-                'ip_country': request.headers.get('CF-IPCountry', 'Unknown')  # Cloudflare header if available
+                'ip_country': request.headers.get('CF-IPCountry', 'Unknown')
             }
             
-            # For now, just log to console (you could save to file or database)
-            print(f"FEEDBACK RECEIVED: {feedback_summary}")
-            
-            # In a production app, you might:
-            # 1. Save to database
-            # 2. Send email notification
-            # 3. Add to analytics dashboard
-            # 4. Trigger automated responses
+            # Send to Google Sheets via webhook (COPPA-safe, no credentials stored)
+            try:
+                send_to_google_sheets(feedback_summary)
+                print(f"FEEDBACK SENT TO SHEETS: {feedback_summary}")
+            except Exception as webhook_error:
+                print(f"Webhook failed: {webhook_error}")
+                # Still log to console as backup
+                print(f"FEEDBACK LOGGED: {feedback_summary}")
             
             return jsonify({
                 'success': True,
@@ -173,6 +173,47 @@ def create_app():
             return jsonify({
                 'error': 'Something went wrong processing your feedback'
             }), 500
+
+def send_to_google_sheets(feedback_data):
+    """Send feedback to Google Sheets via webhook - no credentials needed"""
+    try:
+        import requests
+        
+        # Get webhook URL from environment (set this in Railway)
+        webhook_url = os.getenv('GOOGLE_SHEETS_WEBHOOK_URL')
+        
+        if not webhook_url:
+            raise Exception("Google Sheets webhook URL not configured")
+        
+        # Format data for Google Sheets
+        payload = {
+            'timestamp': feedback_data['timestamp'],
+            'feeling': feedback_data['feeling'],
+            'likes': ', '.join(feedback_data['likes']) if feedback_data['likes'] else 'None',
+            'wants': ', '.join(feedback_data['wants']) if feedback_data['wants'] else 'None', 
+            'age_group': feedback_data['age'],
+            'country': feedback_data.get('ip_country', 'Unknown'),
+            'likes_count': len(feedback_data['likes']),
+            'wants_count': len(feedback_data['wants'])
+        }
+        
+        # Send to webhook with timeout
+        response = requests.post(
+            webhook_url, 
+            json=payload, 
+            timeout=10,
+            headers={'Content-Type': 'application/json'}
+        )
+        
+        response.raise_for_status()
+        print("Feedback successfully sent to Google Sheets!")
+        
+    except ImportError:
+        print("Requests library not available - feedback logged to console only")
+        raise
+    except Exception as e:
+        print(f"Failed to send to Google Sheets: {e}")
+        raise
     
     # New wizard routes
     @app.route('/wizard')

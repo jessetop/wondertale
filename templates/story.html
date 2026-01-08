@@ -511,15 +511,15 @@
 
         <!-- Story Elements Section -->
         {% if story.magic_tool or story.adventure_pack or story.animal_friend or story.topic %}
-        <div style="background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); color: white; padding: 16px 20px; border-radius: 16px; margin-bottom: 24px; text-align: center;">
-            <div style="font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 12px;">
+        <div style="background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); color: white; padding: 24px 32px; border-radius: 20px; margin-bottom: 32px; text-align: center;">
+            <div style="font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 20px;">
                 ✨ Your Story Elements ✨
             </div>
-            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
                 <!-- World Theme -->
                 {% if story.topic %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <div style="font-size: 24px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 48px;">
                         {% if story.topic == 'space' %}🚀
                         {% elif story.topic == 'community' %}🏘️
                         {% elif story.topic == 'dragons' %}🐉
@@ -531,7 +531,7 @@
                         {% else %}🌟
                         {% endif %}
                     </div>
-                    <div style="font-weight: 600; font-size: 12px;">
+                    <div style="font-weight: 600; font-size: 16px;">
                         {% if story.topic == 'space' %}Outer Space
                         {% elif story.topic == 'community' %}Community
                         {% elif story.topic == 'dragons' %}Dragon Land
@@ -548,8 +548,8 @@
                 
                 <!-- Magic Tool -->
                 {% if story.magic_tool %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <div style="font-size: 24px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 48px;">
                         {% if story.magic_tool == 'wand' %}🪄
                         {% elif story.magic_tool == 'sword' %}⚔️
                         {% elif story.magic_tool == 'bow' %}🏹
@@ -561,7 +561,7 @@
                         {% else %}✨
                         {% endif %}
                     </div>
-                    <div style="font-weight: 600; font-size: 12px;">
+                    <div style="font-weight: 600; font-size: 16px;">
                         {% if story.magic_tool == 'wand' %}Magic Wand
                         {% elif story.magic_tool == 'sword' %}Brave Sword
                         {% elif story.magic_tool == 'bow' %}Magic Bow
@@ -578,8 +578,8 @@
                 
                 <!-- Adventure Pack -->
                 {% if story.adventure_pack %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <div style="font-size: 24px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 48px;">
                         {% if story.adventure_pack == 'backpack' %}🎒
                         {% elif story.adventure_pack == 'cape' %}🦸
                         {% elif story.adventure_pack == 'boots' %}👢
@@ -591,7 +591,7 @@
                         {% else %}🎒
                         {% endif %}
                     </div>
-                    <div style="font-weight: 600; font-size: 12px;">
+                    <div style="font-weight: 600; font-size: 16px;">
                         {% if story.adventure_pack == 'backpack' %}Magic Backpack
                         {% elif story.adventure_pack == 'cape' %}Flying Cape
                         {% elif story.adventure_pack == 'boots' %}Speed Boots
@@ -608,8 +608,8 @@
                 
                 <!-- Animal Friend -->
                 {% if story.animal_friend %}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                    <div style="font-size: 24px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 48px;">
                         {% if story.animal_friend == 'wolf' %}🐺
                         {% elif story.animal_friend == 'parrot' %}🦜
                         {% elif story.animal_friend == 'owl' %}🦉
@@ -621,7 +621,7 @@
                         {% else %}🐾
                         {% endif %}
                     </div>
-                    <div style="font-weight: 600; font-size: 12px;">
+                    <div style="font-weight: 600; font-size: 16px;">
                         {% if story.animal_friend == 'wolf' %}Brave Wolf
                         {% elif story.animal_friend == 'parrot' %}Wise Parrot
                         {% elif story.animal_friend == 'owl' %}Smart Owl
