@@ -173,14 +173,6 @@
 
 {% block content %}
 <div class="container">
-    <div class="header">
-        <div class="logo">WonderTales</div>
-    </div>
-    
-    <a href="{{ url_for('landing') }}" class="back-link">
-        ← Back to Home
-    </a>
-    
     <div class="content">
         <h1>Terms of Service</h1>
         <p class="last-updated">Last Updated: January 7, 2026</p>
@@ -297,6 +289,13 @@
         
         <h2>13. Contact Information</h2>
         <p>Questions about these terms? Share your feedback through our <a href="{{ url_for('feedback') }}" style="color: var(--primary);">feedback page</a>.</p>
+        <p style="margin-top: 15px;">For urgent legal or compliance matters, parents may contact us directly via email (click to reveal):</p>
+        <div style="margin: 15px 0; text-align: center;">
+            <button onclick="revealTermsEmail()" id="termsEmailBtn" style="background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                📧 Parent Contact Email
+            </button>
+            <div id="termsEmailDisplay" style="display: none; margin-top: 10px; font-family: monospace; background: var(--bg-main); padding: 10px; border-radius: 5px; border: 1px solid var(--accent); cursor: pointer; display: inline-block;" onclick="copyTermsEmail()"></div>
+        </div>
         
         <h2>14. Governing Law</h2>
         <p>These terms are governed by the laws of the United States. Any disputes will be resolved in accordance with U.S. law.</p>
@@ -311,4 +310,34 @@
         </p>
     </div>
 </div>
+
+<script>
+function revealTermsEmail() {
+    const encoded = ['hello', '@', 'wondertales', '.', 'kids'];
+    const email = encoded.join('');
+    
+    document.getElementById('termsEmailDisplay').textContent = email;
+    document.getElementById('termsEmailDisplay').style.display = 'inline-block';
+    document.getElementById('termsEmailBtn').style.display = 'none';
+}
+
+function copyTermsEmail() {
+    const email = document.getElementById('termsEmailDisplay').textContent;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(email).then(() => {
+            showTermsCopySuccess();
+        });
+    }
+}
+
+function showTermsCopySuccess() {
+    const display = document.getElementById('termsEmailDisplay');
+    const originalText = display.textContent;
+    display.textContent = '✅ Copied!';
+    setTimeout(() => {
+        display.textContent = originalText;
+    }, 2000);
+}
+</script>
 {% endblock %}

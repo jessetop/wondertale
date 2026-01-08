@@ -172,14 +172,6 @@
 
 {% block content %}
 <div class="container">
-    <div class="header">
-        <div class="logo">WonderTales</div>
-    </div>
-    
-    <a href="{{ url_for('landing') }}" class="back-link">
-        ← Back to Home
-    </a>
-    
     <div class="content">
         <h1>Privacy Policy</h1>
         <p class="last-updated">Last Updated: January 7, 2026</p>
@@ -243,17 +235,15 @@
         
         <h2>6. Website Analytics (Privacy-First)</h2>
         
-        <div class="highlight-box">
-            <h3>📊 What We Track (Anonymously)</h3>
-            <p>We use <strong>Plausible Analytics</strong> - a privacy-first, COPPA-compliant service that helps us understand how families use WonderTales:</p>
-            <ul>
-                <li><strong>Page views:</strong> Which pages are most popular</li>
-                <li><strong>Traffic sources:</strong> How people find WonderTales (Google, direct visits, etc.)</li>
-                <li><strong>Device types:</strong> Mobile, tablet, or desktop usage</li>
-                <li><strong>Country-level location:</strong> General geographic regions (not specific locations)</li>
-                <li><strong>Popular features:</strong> Which story themes and tools kids enjoy most</li>
-            </ul>
-        </div>
+        <h3>📊 What We Track (Anonymously)</h3>
+        <p>We use <strong>Plausible Analytics</strong> - a privacy-first, COPPA-compliant service that helps us understand how families use WonderTales:</p>
+        <ul>
+            <li><strong>Page views:</strong> Which pages are most popular</li>
+            <li><strong>Traffic sources:</strong> How people find WonderTales (Google, direct visits, etc.)</li>
+            <li><strong>Device types:</strong> Mobile, tablet, or desktop usage</li>
+            <li><strong>Country-level location:</strong> General geographic regions (not specific locations)</li>
+            <li><strong>Popular features:</strong> Which story themes and tools kids enjoy most</li>
+        </ul>
         
         <h3>🛡️ What Makes This Safe:</h3>
         <ul>
@@ -271,8 +261,6 @@
             <li>See if new features are helpful to families</li>
             <li>Ensure the site works well on all devices</li>
         </ul>
-        
-        <p><strong>You can view our public analytics dashboard at:</strong> <a href="https://plausible.io/wondertales.kids" target="_blank" style="color: var(--primary);">plausible.io/wondertales.kids</a> (completely transparent!)</p>
         
         <h2>7. Parental Rights (COPPA Compliance)</h2>
         
@@ -307,11 +295,58 @@
         
         <div class="contact-info">
             <h3>Questions About Privacy?</h3>
-            <p>If you have questions about this privacy policy or your child's information, please share your feedback through our <a href="{{ url_for('feedback') }}" style="color: var(--primary);">feedback page</a>.</p>
+            <p>For general feedback, use our <a href="{{ url_for('feedback') }}" style="color: var(--primary);">feedback page</a>.</p>
+            <p style="margin-top: 15px;">For urgent privacy concerns or data requests, parents can contact us directly:</p>
+            <div style="margin: 15px 0;">
+                <button onclick="revealPrivacyEmail()" id="privacyEmailBtn" style="background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    📧 Reveal Parent Contact Email
+                </button>
+                <div id="privacyEmailDisplay" style="display: none; margin-top: 10px; font-family: monospace; background: var(--bg-main); padding: 10px; border-radius: 5px; border: 1px solid var(--primary); cursor: pointer;" onclick="copyPrivacyEmail()"></div>
+            </div>
         </div>
         
         <h2>12. Effective Date</h2>
         <p>This privacy policy is effective as of January 7, 2026.</p>
     </div>
 </div>
+
+<script>
+function revealPrivacyEmail() {
+    // Same encoded email
+    const encoded = ['hello', '@', 'wondertales', '.', 'kids'];
+    const email = encoded.join('');
+    
+    document.getElementById('privacyEmailDisplay').textContent = email;
+    document.getElementById('privacyEmailDisplay').style.display = 'block';
+    document.getElementById('privacyEmailBtn').style.display = 'none';
+}
+
+function copyPrivacyEmail() {
+    const email = document.getElementById('privacyEmailDisplay').textContent;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(email).then(() => {
+            showPrivacyCopySuccess();
+        });
+    } else {
+        // Fallback
+        const textArea = document.createElement('textarea');
+        textArea.value = email;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showPrivacyCopySuccess();
+    }
+}
+
+function showPrivacyCopySuccess() {
+    const display = document.getElementById('privacyEmailDisplay');
+    const originalText = display.textContent;
+    display.textContent = '✅ Copied!';
+    setTimeout(() => {
+        display.textContent = originalText;
+    }, 2000);
+}
+</script>
 {% endblock %}

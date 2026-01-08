@@ -12,10 +12,182 @@
     <script async src="https://plausible.io/js/pa-jYy2gx_lPjzB1p1l29llp.js"></script>
     <script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>
     
+    <!-- Base Styles -->
+    <style>
+        /* Footer Styles - Consistent across all pages */
+        footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            color: var(--text-light);
+            background: var(--bg-main);
+        }
+
+        .footer-logo {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .footer-tagline {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Header Navigation - Consistent across all pages */
+        .site-header {
+            background: var(--bg-card);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-logo {
+            font-family: 'Fredoka', cursive;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .header-logo:hover {
+            color: var(--primary-dark);
+        }
+
+        .header-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+
+        .header-link:hover {
+            color: var(--primary);
+        }
+
+        .header-cta {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .header-nav {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-links {
+                gap: 20px;
+            }
+            
+            .footer-links {
+                gap: 20px;
+            }
+            
+            .footer-logo {
+                font-size: 28px;
+            }
+        }
+    </style>
+    
     {% block styles %}{% endblock %}
 </head>
 <body>
+    <!-- Site Header - Consistent across all pages -->
+    <header class="site-header">
+        <nav class="header-nav">
+            <a href="{{ url_for('landing') }}" class="header-logo">WonderTales</a>
+            <div class="header-links">
+                <a href="{{ url_for('faq') }}" class="header-link">About</a>
+                <a href="{{ url_for('privacy') }}" class="header-link">Privacy</a>
+                <a href="{{ url_for('feedback') }}" class="header-link">Feedback</a>
+                <a href="{{ url_for('wizard_start') }}" class="header-cta">Create Story</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Content -->
     {% block content %}{% endblock %}
+    
+    <!-- Site Footer - Consistent across all pages -->
+    <footer>
+        <div class="container">
+            <div class="footer-logo">WonderTales</div>
+            <div class="footer-tagline">"Adventure starts with your name"</div>
+            <div class="footer-links">
+                <a href="{{ url_for('faq') }}" class="footer-link">About</a>
+                <a href="{{ url_for('privacy') }}" class="footer-link">Privacy</a>
+                <a href="{{ url_for('terms') }}" class="footer-link">Terms</a>
+                <a href="{{ url_for('feedback') }}" class="footer-link">Feedback</a>
+                <a href="{{ url_for('faq') }}" class="footer-link">FAQ</a>
+            </div>
+            <p class="footer-copyright">© 2026 WonderTales.kids • Making every child the hero</p>
+        </div>
+    </footer>
     
     {% block scripts %}
     <script>

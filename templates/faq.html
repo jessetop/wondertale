@@ -273,14 +273,6 @@
 
 {% block content %}
 <div class="container">
-    <div class="header">
-        <div class="logo">WonderTales</div>
-    </div>
-    
-    <a href="{{ url_for('landing') }}" class="back-link">
-        ← Back to Home
-    </a>
-    
     <div class="content">
         <h1>Frequently Asked Questions</h1>
         <p class="subtitle">Everything parents want to know about WonderTales</p>
@@ -440,12 +432,12 @@
                 </div>
                 <div class="faq-answer">
                     <p><strong>Yes, but in a completely privacy-safe way!</strong> We use Plausible Analytics, which is:</p>
-                    <ul>
-                        <li><strong>No cookies:</strong> Doesn't use tracking cookies at all</li>
-                        <li><strong>No personal data:</strong> Can't identify individual users</li>
-                        <li><strong>COPPA compliant:</strong> Meets strict children's privacy laws</li>
-                        <li><strong>Completely transparent:</strong> You can view our public stats at <a href="https://plausible.io/wondertales.kids" target="_blank" style="color: var(--primary);">plausible.io/wondertales.kids</a></li>
-                    </ul>
+                <ul>
+                    <li><strong>No cookies:</strong> Doesn't use tracking cookies at all</li>
+                    <li><strong>No personal data:</strong> Can't identify individual users</li>
+                    <li><strong>COPPA compliant:</strong> Meets strict children's privacy laws</li>
+                    <li><strong>Completely transparent:</strong> Privacy-first analytics with no tracking</li>
+                </ul>
                     <p><strong>What we see:</strong> Page views, popular features, device types, and country-level traffic sources.</p>
                     <p><strong>What we DON'T see:</strong> Individual behavior, personal information, or anything that could identify your child.</p>
                 </div>
@@ -474,7 +466,7 @@
             <div class="security-card">
                 <span class="emoji">📊</span>
                 <h3>Transparent Analytics</h3>
-                <p>Privacy-first website stats with no cookies or personal tracking. <a href="https://plausible.io/wondertales.kids" target="_blank" style="color: var(--primary);">View our public dashboard</a></p>
+                <p>Privacy-first website stats with no cookies or personal tracking.</p>
             </div>
         </div>
         
@@ -483,6 +475,106 @@
             <p>Join thousands of families creating wonderful stories together!</p>
             <a href="{{ url_for('wizard_start') }}" class="cta-button">Start Creating Stories</a>
         </div>
+        
+        <div class="parent-contact-section">
+            <h2 style="color: var(--secondary); text-align: center; margin-bottom: 20px;">👨‍👩‍👧‍👦 Need to Contact Us Directly?</h2>
+            <div style="background: var(--bg-main); border-radius: 15px; padding: 25px; text-align: center; border: 2px solid var(--secondary);">
+                <p style="margin-bottom: 15px; font-weight: 600;">For urgent issues, privacy concerns, or technical problems:</p>
+                
+                <div class="email-reveal" id="emailReveal" style="margin: 20px 0;">
+                    <button onclick="revealEmail()" class="reveal-button" id="revealBtn" style="background: var(--secondary); color: white; border: none; padding: 15px 25px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                        📧 Click to Reveal Email Address
+                    </button>
+                    <div id="emailDisplay" style="display: none; margin-top: 15px;">
+                        <div style="background: var(--bg-card); padding: 15px; border-radius: 10px; border: 2px dashed var(--primary); font-family: monospace; font-size: 1.1rem; color: var(--primary);" id="emailText"></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 10px; font-style: italic;">Click the email to copy it</p>
+                    </div>
+                </div>
+                
+                <div style="background: #FEF3C7; border: 2px solid #F59E0B; border-radius: 10px; padding: 15px; margin-top: 20px; color: #92400E;">
+                    <p style="font-weight: 600; margin-bottom: 5px;">⚠️ Parents Only</p>
+                    <p style="margin: 0; font-size: 0.9rem;">This email is for parent/guardian use only. Please supervise all communications involving children under 13.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+function revealEmail() {
+    // Encoded email to prevent bot scraping
+    const encoded = [
+        'hello', // username part
+        '@',
+        'wondertales', // domain part 1  
+        '.',
+        'kids' // domain part 2
+    ];
+    
+    const email = encoded.join('');
+    
+    // Show the email
+    document.getElementById('emailText').textContent = email;
+    document.getElementById('emailDisplay').style.display = 'block';
+    document.getElementById('revealBtn').style.display = 'none';
+    
+    // Make email clickable to copy
+    document.getElementById('emailText').style.cursor = 'pointer';
+    document.getElementById('emailText').onclick = function() {
+        copyEmailToClipboard(email);
+    };
+}
+
+function copyEmailToClipboard(email) {
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(email).then(() => {
+            showCopySuccess();
+        }).catch(() => {
+            fallbackCopy(email);
+        });
+    } else {
+        fallbackCopy(email);
+    }
+}
+
+function fallbackCopy(email) {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = email;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showCopySuccess();
+    } catch (err) {
+        console.log('Copy failed');
+        // Show email in alert as last resort
+        alert('Email address: ' + email);
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+function showCopySuccess() {
+    const emailText = document.getElementById('emailText');
+    const originalText = emailText.textContent;
+    const originalBg = emailText.style.background;
+    
+    emailText.textContent = '✅ Email copied to clipboard!';
+    emailText.style.background = 'var(--accent)';
+    emailText.style.color = 'white';
+    
+    setTimeout(() => {
+        emailText.textContent = originalText;
+        emailText.style.background = originalBg;
+        emailText.style.color = 'var(--primary)';
+    }, 2500);
+}
+</script>
 {% endblock %}

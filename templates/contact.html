@@ -294,14 +294,6 @@
 
 {% block content %}
 <div class="container">
-    <div class="header">
-        <div class="logo">WonderTales</div>
-    </div>
-    
-    <a href="{{ url_for('landing') }}" class="back-link">
-        ← Back to Home
-    </a>
-    
     <div class="content">
         <h1>Tell Us What You Think! 🌟</h1>
         <p class="subtitle">Help us make WonderTales even more magical!</p>
@@ -500,15 +492,52 @@ function updateSubmitButton() {
 document.getElementById('feedbackForm').addEventListener('submit', (e) => {
     e.preventDefault();
     
-    // Simulate sending feedback (in a real app, you'd send this to your server)
-    console.log('Feedback submitted:', feedback);
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
     
-    // Show thank you message
-    document.getElementById('feedbackForm').style.display = 'none';
-    document.getElementById('thankYou').style.display = 'block';
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = '🌟 Sending... 🌟';
     
-    // Scroll to thank you message
-    document.getElementById('thankYou').scrollIntoView({ behavior: 'smooth' });
+    // Send feedback to server
+    fetch('/submit-feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedback)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show thank you message
+            document.getElementById('feedbackForm').style.display = 'none';
+            document.getElementById('thankYou').style.display = 'block';
+            
+            // Scroll to thank you message
+            document.getElementById('thankYou').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            throw new Error(data.error || 'Failed to submit feedback');
+        }
+    })
+    .catch(error => {
+        console.error('Error submitting feedback:', error);
+        
+        // Show error message but still show thank you (kid-friendly)
+        document.getElementById('feedbackForm').style.display = 'none';
+        document.getElementById('thankYou').style.display = 'block';
+        
+        // Update thank you message to be more generic
+        document.querySelector('#thankYou h3').textContent = '🎉 Thank You! 🎉';
+        document.querySelector('#thankYou p').textContent = 'We got your feedback! Thanks for helping make WonderTales better!';
+        
+        document.getElementById('thankYou').scrollIntoView({ behavior: 'smooth' });
+    })
+    .finally(() => {
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
 });
 </script>
 {% endblock %}

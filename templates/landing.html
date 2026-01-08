@@ -549,56 +549,6 @@
         border: 2px solid rgba(255, 255, 255, 0.3);
     }
 
-    /* Footer */
-    footer {
-        text-align: center;
-        padding: 60px 0 40px;
-        color: var(--text-light);
-    }
-
-    .footer-logo {
-        font-family: 'Fredoka', sans-serif;
-        font-size: 32px;
-        font-weight: 700;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 16px;
-    }
-
-    .footer-tagline {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 32px;
-        font-style: italic;
-    }
-
-    .footer-links {
-        display: flex;
-        justify-content: center;
-        gap: 32px;
-        margin-bottom: 24px;
-        flex-wrap: wrap;
-    }
-
-    .footer-link {
-        color: var(--text-light);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 16px;
-        transition: color 0.3s ease;
-    }
-
-    .footer-link:hover {
-        color: var(--primary);
-    }
-
-    .footer-copyright {
-        font-size: 14px;
-        opacity: 0.7;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
         h1 {
@@ -650,11 +600,10 @@
 {% endblock %}
 
 {% block content %}
-<header>
+<!-- Theme Switcher Section -->
+<section style="background: var(--bg-card); padding: 20px 0; box-shadow: 0 2px 10px var(--shadow);">
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div class="logo">WonderTales</div>
-            
+        <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px;">
             <!-- Theme Switcher -->
             <div class="theme-switcher">
                 <div class="theme-label">Pick Your Colors! 🎨</div>
@@ -711,7 +660,7 @@
             </div>
         </div>
     </div>
-</header>
+</section>
 
 <main>
     <section class="hero">
@@ -826,19 +775,4 @@
         </div>
     </section>
 </main>
-
-<footer>
-    <div class="container">
-        <div class="footer-logo">WonderTales</div>
-        <div class="footer-tagline">"Adventure starts with your name"</div>
-        <div class="footer-links">
-            <a href="{{ url_for('faq') }}" class="footer-link">About</a>
-            <a href="{{ url_for('privacy') }}" class="footer-link">Privacy</a>
-            <a href="{{ url_for('terms') }}" class="footer-link">Terms</a>
-            <a href="{{ url_for('feedback') }}" class="footer-link">Feedback</a>
-            <a href="{{ url_for('faq') }}" class="footer-link">FAQ</a>
-        </div>
-        <p class="footer-copyright">© 2026 WonderTales.kids • Making every child the hero</p>
-    </div>
-</footer>
 {% endblock %}

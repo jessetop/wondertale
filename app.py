@@ -61,6 +61,14 @@ def create_app():
         # Only show debug info in development or if specifically enabled
         if os.getenv('FLASK_ENV') != 'production' or os.getenv('DEBUG_ENABLED') == 'true':
             openai_key = os.getenv('OPENAI_API_KEY', 'NOT_SET')
+            
+            # Simple feedback stats (in production, you'd query a database)
+            feedback_stats = {
+                'total_submissions': 'Not tracked yet',
+                'popular_features': 'Not analyzed yet',
+                'age_distribution': 'Not analyzed yet'
+            }
+            
             return jsonify({
                 'environment_variables': {
                     'FLASK_ENV': os.getenv('FLASK_ENV', 'NOT_SET'),
@@ -74,7 +82,8 @@ def create_app():
                     'flask_available': FLASK_AVAILABLE,
                     'openai_available': check_openai_available(),
                     'dotenv_loaded': True  # If we get here, dotenv worked
-                }
+                },
+                'feedback_stats': feedback_stats
             }), 200
         else:
             return jsonify({'error': 'Debug endpoint disabled in production'}), 403
@@ -114,6 +123,56 @@ def create_app():
     def feedback():
         """Kid-friendly feedback page"""
         return render_template('contact.html')
+    
+    @app.route('/submit-feedback', methods=['POST'])
+    def submit_feedback():
+        """Handle feedback form submissions"""
+        try:
+            # Get the feedback data from the form
+            data = request.get_json()
+            
+            if not data:
+                return jsonify({'error': 'No data received'}), 400
+            
+            # Extract feedback components
+            feeling = data.get('feeling')
+            likes = data.get('likes', [])
+            wants = data.get('wants', [])
+            age = data.get('age')
+            
+            # Basic validation
+            if not feeling or not age:
+                return jsonify({'error': 'Missing required fields'}), 400
+            
+            # Log the feedback (in a real app, you'd save to database)
+            feedback_summary = {
+                'timestamp': time.time(),
+                'feeling': feeling,
+                'likes': likes,
+                'wants': wants,
+                'age': age,
+                'ip_country': request.headers.get('CF-IPCountry', 'Unknown')  # Cloudflare header if available
+            }
+            
+            # For now, just log to console (you could save to file or database)
+            print(f"FEEDBACK RECEIVED: {feedback_summary}")
+            
+            # In a production app, you might:
+            # 1. Save to database
+            # 2. Send email notification
+            # 3. Add to analytics dashboard
+            # 4. Trigger automated responses
+            
+            return jsonify({
+                'success': True,
+                'message': 'Thank you for your feedback!'
+            })
+            
+        except Exception as e:
+            print(f"Error processing feedback: {e}")
+            return jsonify({
+                'error': 'Something went wrong processing your feedback'
+            }), 500
     
     # New wizard routes
     @app.route('/wizard')
