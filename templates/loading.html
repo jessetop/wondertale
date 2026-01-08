@@ -107,10 +107,15 @@
         background: var(--bg-main);
         color: var(--text-dark);
         min-height: 100vh;
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .loading-wrapper {
+        min-height: calc(100vh - 120px); /* Account for header/footer */
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.4s ease, color 0.4s ease;
+        padding: 40px 20px;
     }
 
     .loading-container {
@@ -191,14 +196,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="loading-container">
-    <div class="loading-spinner"></div>
-    <h1 class="loading-title">Creating your magical story...</h1>
-    <p class="loading-subtitle">✨ This will only take a moment! ✨</p>
-    <p class="loading-message">
-        Our AI storyteller is crafting a personalized adventure just for you. 
-        Please wait while we bring your characters to life!
-    </p>
+<div class="loading-wrapper">
+    <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <h1 class="loading-title">Creating your magical story...</h1>
+        <p class="loading-subtitle">✨ This will only take a moment! ✨</p>
+        <p class="loading-message">
+            Our AI storyteller is crafting a personalized adventure just for you. 
+            Please wait while we bring your characters to life!
+        </p>
+    </div>
 </div>
 
 <!-- Hidden form that will auto-submit to generate the actual story -->

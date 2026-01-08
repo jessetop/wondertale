@@ -14,13 +14,58 @@ except ImportError:
     # dotenv is optional - environment variables can be set directly
     pass
 
+def send_to_google_sheets(feedback_data):
+    """Send feedback to Google Sheets via webhook - no credentials needed"""
+    try:
+        import requests
+        
+        # Get webhook URL from environment (set this in Railway)
+        webhook_url = os.getenv('GOOGLE_SHEETS_WEBHOOK_URL')
+        
+        if not webhook_url:
+            raise Exception("Google Sheets webhook URL not configured")
+        
+        # Format data for Google Sheets
+        payload = {
+            'timestamp': feedback_data['timestamp'],
+            'feeling': feedback_data['feeling'],
+            'likes': ', '.join(feedback_data['likes']) if feedback_data['likes'] else 'None',
+            'wants': ', '.join(feedback_data['wants']) if feedback_data['wants'] else 'None', 
+            'age_group': feedback_data['age'],
+            'country': feedback_data.get('ip_country', 'Unknown'),
+            'likes_count': len(feedback_data['likes']),
+            'wants_count': len(feedback_data['wants'])
+        }
+        
+        # Send to webhook with timeout
+        response = requests.post(
+            webhook_url, 
+            json=payload, 
+            timeout=10,
+            headers={'Content-Type': 'application/json'}
+        )
+        
+        response.raise_for_status()
+        print("Feedback successfully sent to Google Sheets!")
+        
+    except ImportError:
+        print("Requests library not available - feedback logged to console only")
+        raise
+    except Exception as e:
+        print(f"Failed to send to Google Sheets: {e}")
+        raise
+
 def create_app():
     """Create and configure Flask application"""
+    print("DEBUG: Inside create_app function")
+    
     app = Flask(__name__)
+    print("DEBUG: Flask app created")
     
     # Configure app
     app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'dev-secret-key-change-in-production')
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+    print("DEBUG: App configured")
     
     # Health check endpoint for deployment platforms
     @app.route('/health')
@@ -37,6 +82,8 @@ def create_app():
             'openai_configured': openai_configured,
             'environment': os.getenv('FLASK_ENV', 'development')
         }), 200
+    
+    print("DEBUG: Health route added")
     
     @app.route('/debug')
     def debug_info():
@@ -70,7 +117,7 @@ def create_app():
                     'PORT': os.getenv('PORT', 'NOT_SET')
                 },
                 'python_packages': {
-                    'flask_available': FLASK_AVAILABLE,
+                    'flask_available': True,  # Flask is available if we got this far
                     'openai_available': check_openai_available(),
                     'dotenv_loaded': True  # If we get here, dotenv worked
                 },
@@ -79,16 +126,22 @@ def create_app():
         else:
             return jsonify({'error': 'Debug endpoint disabled in production'}), 403
     
+    print("DEBUG: Debug route added")
+    
     # Routes
     @app.route('/')
     def landing():
         """Landing page with WonderTales branding"""
         return render_template('landing.html')
     
+    print("DEBUG: Landing route added")
+    
     @app.route('/create')
     def index():
         """Story creation form"""
         return render_template('index.html')
+    
+    print("DEBUG: Create route added")
     
     @app.route('/privacy')
     def privacy():
@@ -114,6 +167,8 @@ def create_app():
     def feedback():
         """Kid-friendly feedback page"""
         return render_template('contact.html')
+    
+    print("DEBUG: Basic routes added")
     
     @app.route('/submit-feedback', methods=['POST'])
     def submit_feedback():
@@ -164,47 +219,8 @@ def create_app():
             return jsonify({
                 'error': 'Something went wrong processing your feedback'
             }), 500
-
-def send_to_google_sheets(feedback_data):
-    """Send feedback to Google Sheets via webhook - no credentials needed"""
-    try:
-        import requests
-        
-        # Get webhook URL from environment (set this in Railway)
-        webhook_url = os.getenv('GOOGLE_SHEETS_WEBHOOK_URL')
-        
-        if not webhook_url:
-            raise Exception("Google Sheets webhook URL not configured")
-        
-        # Format data for Google Sheets
-        payload = {
-            'timestamp': feedback_data['timestamp'],
-            'feeling': feedback_data['feeling'],
-            'likes': ', '.join(feedback_data['likes']) if feedback_data['likes'] else 'None',
-            'wants': ', '.join(feedback_data['wants']) if feedback_data['wants'] else 'None', 
-            'age_group': feedback_data['age'],
-            'country': feedback_data.get('ip_country', 'Unknown'),
-            'likes_count': len(feedback_data['likes']),
-            'wants_count': len(feedback_data['wants'])
-        }
-        
-        # Send to webhook with timeout
-        response = requests.post(
-            webhook_url, 
-            json=payload, 
-            timeout=10,
-            headers={'Content-Type': 'application/json'}
-        )
-        
-        response.raise_for_status()
-        print("Feedback successfully sent to Google Sheets!")
-        
-    except ImportError:
-        print("Requests library not available - feedback logged to console only")
-        raise
-    except Exception as e:
-        print(f"Failed to send to Google Sheets: {e}")
-        raise
+    
+    print("DEBUG: Submit feedback route added")
     
     # New wizard routes
     @app.route('/wizard')
@@ -251,6 +267,8 @@ def send_to_google_sheets(feedback_data):
     def wizard_review():
         """Final: Review and generate"""
         return render_template('wizard/review.html')
+    
+    print("DEBUG: About to add generate route")
     
     @app.route('/generate', methods=['POST'])
     def generate_story():
@@ -504,10 +522,13 @@ def send_to_google_sheets(feedback_data):
                 'voices': [],
                 'message': 'Could not load AI voices. Browser voices will be used instead.'
             })
-    
+
+    print("DEBUG: About to return app")
     return app
 
-# Create app instance
+print("DEBUG: create_app function defined")
+
+# Create app instance for gunicorn
 app = create_app()
 
 if __name__ == '__main__':

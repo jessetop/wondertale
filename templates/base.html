@@ -14,6 +14,98 @@
     
     <!-- Base Styles -->
     <style>
+        /* Theme Variables - Default to magic-light theme */
+        :root {
+            --primary: #8B5CF6;
+            --primary-dark: #6D28D9;
+            --secondary: #EC4899;
+            --accent: #14B8A6;
+            --accent-light: #5EEAD4;
+            --bg-main: #FFF7ED;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(139, 92, 246, 0.15);
+        }
+
+        [data-theme="magic-light"] {
+            --primary: #8B5CF6;
+            --primary-dark: #6D28D9;
+            --secondary: #EC4899;
+            --accent: #14B8A6;
+            --accent-light: #5EEAD4;
+            --bg-main: #FFF7ED;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(139, 92, 246, 0.15);
+        }
+
+        [data-theme="magic-dark"] {
+            --primary: #A78BFA;
+            --primary-dark: #8B5CF6;
+            --secondary: #F472B6;
+            --accent: #2DD4BF;
+            --accent-light: #5EEAD4;
+            --bg-main: #1F1B2E;
+            --bg-card: #2D2640;
+            --text-dark: #F3F4F6;
+            --text-light: #D1D5DB;
+            --shadow: rgba(167, 139, 250, 0.3);
+        }
+
+        [data-theme="sunny-light"] {
+            --primary: #F59E0B;
+            --primary-dark: #D97706;
+            --secondary: #3B82F6;
+            --accent: #FBBF24;
+            --accent-light: #FDE68A;
+            --bg-main: #FEF3C7;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(245, 158, 11, 0.15);
+        }
+
+        [data-theme="sunny-dark"] {
+            --primary: #FCD34D;
+            --primary-dark: #F59E0B;
+            --secondary: #60A5FA;
+            --accent: #FDE047;
+            --accent-light: #FEF08A;
+            --bg-main: #1E1B16;
+            --bg-card: #2C2618;
+            --text-dark: #F3F4F6;
+            --text-light: #D1D5DB;
+            --shadow: rgba(252, 211, 77, 0.3);
+        }
+
+        [data-theme="ocean-light"] {
+            --primary: #0EA5E9;
+            --primary-dark: #0284C7;
+            --secondary: #FB7185;
+            --accent: #34D399;
+            --accent-light: #6EE7B7;
+            --bg-main: #F0FDFA;
+            --bg-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: rgba(14, 165, 233, 0.15);
+        }
+
+        [data-theme="ocean-dark"] {
+            --primary: #38BDF8;
+            --primary-dark: #0EA5E9;
+            --secondary: #FDA4AF;
+            --accent: #6EE7B7;
+            --accent-light: #A7F3D0;
+            --bg-main: #0F1419;
+            --bg-card: #1A2332;
+            --text-dark: #F3F4F6;
+            --text-light: #D1D5DB;
+            --shadow: rgba(56, 189, 248, 0.3);
+        }
+
         /* Footer Styles - Consistent across all pages */
         footer {
             text-align: center;
