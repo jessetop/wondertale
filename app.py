@@ -163,6 +163,21 @@ def create_app():
         """FAQ page"""
         return render_template('faq.html')
     
+    @app.route('/icon-samples')
+    def icon_samples():
+        """View inclusive icon design samples"""
+        return render_template('icon-samples.html')
+    
+    @app.route('/emoji-skin-tones')
+    def emoji_skin_tones():
+        """View emoji skin tone options"""
+        return render_template('emoji-skin-tones.html')
+    
+    @app.route('/precise-emoji-samples')
+    def precise_emoji_samples():
+        """View precise emoji recreations with diverse skin tones"""
+        return render_template('precise-emoji-samples.html')
+    
     @app.route('/feedback')
     def feedback():
         """Kid-friendly feedback page"""

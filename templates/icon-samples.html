@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inclusive Icon Samples - WonderTales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inclusive-icons.css') }}">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #FFF7ED;
+            color: #1F2937;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            text-align: center;
+            color: #8B5CF6;
+            margin-bottom: 40px;
+        }
+        
+        .sample-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+        }
+        
+        .sample-section h2 {
+            font-family: 'Fredoka', sans-serif;
+            color: #EC4899;
+            margin-bottom: 20px;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .icon-demo {
+            text-align: center;
+            padding: 20px;
+            background: #F8FAFC;
+            border-radius: 15px;
+            border: 2px solid #E5E7EB;
+        }
+        
+        .icon-demo h3 {
+            font-size: 16px;
+            margin: 15px 0 10px;
+            color: #374151;
+        }
+        
+        .icon-demo p {
+            font-size: 14px;
+            color: #6B7280;
+            margin: 0;
+        }
+        
+        .pronoun-demo {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .pronoun-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: white;
+            border: 3px solid #E5E7EB;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        
+        .pronoun-btn:hover {
+            border-color: #8B5CF6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+        }
+        
+        .pronoun-btn.selected {
+            border-color: #8B5CF6;
+            background: #F3F4F6;
+        }
+        
+        .pronoun-text {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .comparison-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .old-style {
+            background: #FEF2F2;
+            border: 2px solid #FECACA;
+        }
+        
+        .new-style {
+            background: #F0FDF4;
+            border: 2px solid #BBF7D0;
+        }
+        
+        .old-style h4 {
+            color: #DC2626;
+        }
+        
+        .new-style h4 {
+            color: #16A34A;
+        }
+        
+        .emoji-large {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+        
+        .recommendation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Fredoka', sans-serif;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌈 Inclusive Icon Design Samples</h1>
+        
+        <div class="sample-section">
+            <h2>CSS Recreation of 👦👧 with Diverse Features</h2>
+            <p>Faithful recreation of the boy/girl emoji faces with diverse skin tone gradients and rainbow hair.</p>
+            
+            <div class="icon-grid">
+                <div class="icon-demo">
+                    <div class="inclusive-face boy large">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Boy Face - Large</h3>
+                    <p>Shorter hair style, diverse skin tones</p>
+                </div>
+                
+                <div class="icon-demo">
+                    <div class="inclusive-face girl large">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Girl Face - Large</h3>
+                    <p>Longer hair with side pieces, diverse skin tones</p>
+                </div>
+                
+                <div class="icon-demo">
+                    <div class="inclusive-face boy">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Boy Face - Standard</h3>
+                    <p>Regular size for inline use</p>
+                </div>
+                
+                <div class="icon-demo">
+                    <div class="inclusive-face girl">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Girl Face - Standard</h3>
+                    <p>Regular size for inline use</p>
+                </div>
+            </div>
+            
+            <div class="pronoun-demo">
+                <div class="pronoun-btn">
+                    <div class="inclusive-face boy large">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <span class="pronoun-text">he/him</span>
+                </div>
+                <div class="pronoun-btn">
+                    <div class="inclusive-face girl large">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <span class="pronoun-text">she/her</span>
+                </div>
+                <div class="pronoun-btn">
+                    <div class="inclusive-face boy large">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <span class="pronoun-text">they/them</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sample-section">
+            <h2>Skin Tone Variations</h2>
+            <p>Different skin tone gradients while keeping the same facial structure.</p>
+            <div class="icon-grid">
+                <div class="icon-demo">
+                    <div class="inclusive-face boy large skin-light">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Light Skin Tones</h3>
+                    <p>Peachy to golden gradient</p>
+                </div>
+                
+                <div class="icon-demo">
+                    <div class="inclusive-face girl large skin-medium">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Medium Skin Tones</h3>
+                    <p>Tan to brown gradient</p>
+                </div>
+                
+                <div class="icon-demo">
+                    <div class="inclusive-face boy large skin-dark">
+                        <div class="face">
+                            <div class="hair"></div>
+                            <div class="eyes">
+                                <div class="eye left"></div>
+                                <div class="eye right"></div>
+                            </div>
+                            <div class="nose"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    <h3>Dark Skin Tones</h3>
+                    <p>Brown to deep brown gradient</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sample-section">
+            <h2>Before vs After Comparison</h2>
+            <div class="comparison">
+                <div class="comparison-item old-style">
+                    <h4>Current Emojis</h4>
+                    <div class="emoji-large">👦 👧</div>
+                    <p>Standard emojis with fixed appearance</p>
+                </div>
+                <div class="comparison-item new-style">
+                    <h4>Inclusive CSS Versions</h4>
+                    <div style="display: flex; justify-content: center; gap: 15px; margin: 10px 0;">
+                        <div class="inclusive-face boy large">
+                            <div class="face">
+                                <div class="hair"></div>
+                                <div class="eyes">
+                                    <div class="eye left"></div>
+                                    <div class="eye right"></div>
+                                </div>
+                                <div class="nose"></div>
+                                <div class="mouth"></div>
+                            </div>
+                        </div>
+                        <div class="inclusive-face girl large">
+                            <div class="face">
+                                <div class="hair"></div>
+                                <div class="eyes">
+                                    <div class="eye left"></div>
+                                    <div class="eye right"></div>
+                                </div>
+                                <div class="nose"></div>
+                                <div class="mouth"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>Same facial structure with diverse skin tones and rainbow hair</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recommendation">
+            <h3>🎯 Perfect Solution</h3>
+            <p>These CSS faces give you the best of both worlds:</p>
+            <ul style="text-align: left; max-width: 600px; margin: 20px auto;">
+                <li>✅ Keep the familiar boy/girl face structure you like</li>
+                <li>✅ Add diverse skin tone gradients for inclusivity</li>
+                <li>✅ Rainbow hair makes it fun and magical</li>
+                <li>✅ Proper facial features (eyes, nose, mouth) - no potatoes!</li>
+                <li>✅ Scalable CSS that works at any size</li>
+                <li>✅ Maintains WonderTales' playful aesthetic</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Add interactivity to pronoun buttons
+        document.querySelectorAll('.pronoun-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove selected class from all buttons in this demo
+                this.parentElement.querySelectorAll('.pronoun-btn').forEach(b => b.classList.remove('selected'));
+                // Add selected class to clicked button
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
